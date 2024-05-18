@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Ulagos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .image-section {
+            flex: 1;
+        }
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .content-section {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .content-section h1 {
+            margin-bottom: 10px;
+        }
+        .content-section p {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: center;
+        }
+        .button-container button {
+            width: 80%;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+        }
+        .button-container button:nth-child(1) {
+            background-color: #007bff;
+        }
+        .button-container button:nth-child(2) {
+            background-color: #17a2b8;
+        }
+        .button-container button:nth-child(1):hover, .button-container button:nth-child(2):hover {
+            opacity: 0.8;
+        }
+        .guest-link {
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .guest-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="image-section">
+        <img src="imagen-parking.jpg" alt="Imagen del sector">
+    </div>
+    <div class="content-section">
+        <h1>Parking Ulagos</h1>
+        <p>Ingresa con tus credenciales universitarias o como visita para registrar tu estancia.</p>
+        <div class="button-container">
+            <button onclick="location.href='iniciosesion.html'">Iniciar Sesión</button>
+            <button onclick="location.href='crearcuenta.html'">Crear Cuenta</button>
+        </div>
+        <a href="invitado.html" class="guest-link">Continuar como Invitado</a>
+    </div>
+</div>
+
+</body>
+</html>

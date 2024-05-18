@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estacionamientos - Administrador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group select {
+            width: 200px;
+            padding: 10px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .button-group button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #45a049;
+        }
+        .next-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .next-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Gestión de Estacionamientos</h2>
+    <div class="form-group">
+        <label for="sede">Sede:</label>
+        <select id="sede">
+            <option value="sede1">Sede 1</option>
+            <option value="sede2">Sede 2</option>
+            <option value="sede3">Sede 3</option>
+        </select>
+        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
+        <button><img src="agregar_icono.png" alt="Agregar"></button>
+        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+    </div>
+    <div class="form-group">
+        <label for="edificio">Edificio:</label>
+        <select id="edificio">
+            <option value="edificio1">Edificio 1</option>
+            <option value="edificio2">Edificio 2</option>
+            <option value="edificio3">Edificio 3</option>
+        </select>
+        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
+        <button><img src="agregar_icono.png" alt="Agregar"></button>
+        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+    </div>
+    <div class="form-group">
+        <label for="estacionamiento">Estacionamiento:</label>
+        <select id="estacionamiento">
+            <option value="estacionamiento1">Estacionamiento 1</option>
+            <option value="estacionamiento2">Estacionamiento 2</option>
+            <option value="estacionamiento3">Estacionamiento 3</option>
+        </select>
+        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
+        <button><img src="agregar_icono.png" alt="Agregar"></button>
+        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+    </div>
+    <button class="next-button">Siguiente</button>
+</div>
+
+</body>
+</html>
