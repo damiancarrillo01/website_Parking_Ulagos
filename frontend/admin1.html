@@ -3,58 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Estacionamientos - Administrador</title>
+    <title>Gestión de Estacionamientos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
+            background-color: #f4f4f4;
+            padding: 20px;
         }
         .container {
-            width: 800px;
-            margin: 50px auto;
-            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
             background-color: #fff;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
             text-align: center;
         }
-        h2 {
+        .field {
             margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group select {
-            width: 200px;
-            padding: 10px;
-        }
-        .button-group {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
+            align-items: center;
         }
-        .button-group button {
+        .field label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .field select {
+            flex: 2;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .field button {
+            width: 70px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .field button .fas {
+            font-size: 16px;
+        }
+        .field button.actualizar {
             background-color: #4CAF50;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
         }
-        .button-group button:hover {
-            background-color: #45a049;
+        .field button.agregar {
+            background-color: #008CBA;
+            color: white;
         }
-        .next-button {
+        .field button.eliminar {
+            background-color: #f44336;
+            color: white;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .button-container button {
             background-color: #4CAF50;
             color: white;
+            padding: 15px 32px;
+            font-size: 16px;
             border: none;
-            padding: 10px 40px;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
         }
-        .next-button:hover {
+        .button-container button:hover {
             background-color: #45a049;
         }
     </style>
@@ -62,41 +80,44 @@
 <body>
 
 <div class="container">
-    <h2>Gestión de Estacionamientos</h2>
-    <div class="form-group">
+    <h1>Gestión de Estacionamientos</h1>
+
+    <div class="field">
         <label for="sede">Sede:</label>
         <select id="sede">
             <option value="sede1">Sede 1</option>
             <option value="sede2">Sede 2</option>
-            <option value="sede3">Sede 3</option>
         </select>
-        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
-        <button><img src="agregar_icono.png" alt="Agregar"></button>
-        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar"><i class="fas fa-plus"></i></button>
+        <button class="eliminar"><i class="fas fa-trash"></i></button>
     </div>
-    <div class="form-group">
+
+    <div class="field">
         <label for="edificio">Edificio:</label>
         <select id="edificio">
             <option value="edificio1">Edificio 1</option>
             <option value="edificio2">Edificio 2</option>
-            <option value="edificio3">Edificio 3</option>
         </select>
-        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
-        <button><img src="agregar_icono.png" alt="Agregar"></button>
-        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar"><i class="fas fa-plus"></i></button>
+        <button class="eliminar"><i class="fas fa-trash"></i></button>
     </div>
-    <div class="form-group">
+
+    <div class="field">
         <label for="estacionamiento">Estacionamiento:</label>
         <select id="estacionamiento">
             <option value="estacionamiento1">Estacionamiento 1</option>
             <option value="estacionamiento2">Estacionamiento 2</option>
-            <option value="estacionamiento3">Estacionamiento 3</option>
         </select>
-        <button><img src="actualizar_icono.png" alt="Actualizar"></button>
-        <button><img src="agregar_icono.png" alt="Agregar"></button>
-        <button><img src="eliminar_icono.png" alt="Eliminar"></button>
+        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar"><i class="fas fa-plus"></i></button>
+        <button class="eliminar"><i class="fas fa-trash"></i></button>
     </div>
-    <button class="next-button">Siguiente</button>
+
+    <div class="button-container">
+        <button>Siguiente</button>
+    </div>
 </div>
 
 </body>

@@ -3,59 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Invitados</title>
+    <title>Invitados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            width: 400px;
-            margin: 100px auto;
-            padding: 20px;
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
             background-color: #fff;
-            border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
-        h2 {
+        .image-section {
+            flex: 1;
+            background: url('tu_imagen.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-section h2 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+        }
+        .link {
+            margin-top: 10px;
             text-align: center;
         }
-        label, input {
-            display: block;
-            margin-bottom: 10px;
+        .link a {
+            color: #007bff;
+            text-decoration: none;
         }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        .link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Registro de Invitados</h2>
-    <form action="" method="POST">
-        <label for="email">Correo Electrónico:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="motivo">Motivo de la Visita:</label>
-        <input type="text" id="motivo" name="motivo" required>
-
-        <label for="placa">Placa del Vehículo:</label>
-        <input type="text" id="placa" name="placa" required>
-
-        <input type="submit" value="Registrar">
-    </form>
+    <div class="image-section">
+        <img src="tu_imagen.jpg" alt="Imagen Universidad" style="width: 100%; height: auto;">
+    </div>
+    <div class="form-section">
+        <h2>Invitados</h2>
+        <div class="form-group">
+            <input type="email" id="correo" name="correo" placeholder="Correo" required>
+        </div>
+        <div class="form-group">
+            <select id="motivo" name="motivo" required>
+                <option value="" disabled selected>Motivo</option>
+                <option value="visita">Visita</option>
+                <option value="conferencia">Conferencia</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" id="patente" name="patente" placeholder="Patente" required>
+        </div>
+        <button class="btn" disabled>Ingresar</button>
+        <div class="link">
+            ¿Ya eres parte de la Universidad? <a href="inicio_sesion.html">Iniciar Sesión</a>
+        </div>
+    </div>
 </div>
+
+<script>
+    const correoInput = document.getElementById('correo');
+    const motivoSelect = document.getElementById('motivo');
+    const patenteInput = document.getElementById('patente');
+    const submitButton = document.querySelector('.btn');
+
+    function checkFormValidity() {
+        submitButton.disabled = !(correoInput.value && motivoSelect.value && patenteInput.value);
+    }
+
+    correoInput.addEventListener('input', checkFormValidity);
+    motivoSelect.addEventListener('change', checkFormValidity);
+    patenteInput.addEventListener('input', checkFormValidity);
+</script>
 
 </body>
 </html>
