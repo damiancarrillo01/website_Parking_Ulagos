@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Estacionamientos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,6 +77,15 @@
         .button-container button:hover {
             background-color: #45a049;
         }
+        .swal2-select {
+            width: 63%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -88,20 +99,20 @@
             <option value="sede1">Sede 1</option>
             <option value="sede2">Sede 2</option>
         </select>
-        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar"><i class="fas fa-plus"></i></button>
-        <button class="eliminar"><i class="fas fa-trash"></i></button>
+        <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+        <button class="eliminar" id ="deletebutton" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
     </div>
 
     <div class="field">
         <label for="edificio">Edificio:</label>
         <select id="edificio">
-            <option value="edificio1">Edificio 1</option>
+            <option value="edificio1" >Edificio 1</option>
             <option value="edificio2">Edificio 2</option>
         </select>
-        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar"><i class="fas fa-plus"></i></button>
-        <button class="eliminar"><i class="fas fa-trash"></i></button>
+        <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+        <button class="eliminar" id ="deletebutton2" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
     </div>
 
     <div class="field">
@@ -110,15 +121,335 @@
             <option value="estacionamiento1">Estacionamiento 1</option>
             <option value="estacionamiento2">Estacionamiento 2</option>
         </select>
-        <button class="actualizar"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar"><i class="fas fa-plus"></i></button>
-        <button class="eliminar"><i class="fas fa-trash"></i></button>
+        <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+        <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+        <button class="eliminar"  id ="deletebutton3" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
     </div>
 
     <div class="button-container">
         <button>Siguiente</button>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    function showUpdateModal(buttonId) {
+        if(buttonId=="sedebutton"){
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }   
+        else if(buttonId=="sedebutton2"){
+
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+
+        }
+        else if(buttonId=="sedebutton3"){
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }
+    }
+
+    function showaddModal() {
+        if(buttonId=="sedebutton"){
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }   
+        else if(buttonId=="sedebutton2"){
+
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+
+        }
+        else if(buttonId=="sedebutton3"){
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }
+    }
+
+
+    function showdeleteModal() {
+        if(buttonId=="sedebutton"){
+            Swal.fire({
+                title: '¿Estas seguro de esta eliminacion?',
+                html: `
+                    
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }   
+        else if(buttonId=="sedebutton2"){
+
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+
+        }
+        else if(buttonId=="sedebutton3"){
+            Swal.fire({
+                title: 'Ingrese los Datos para la actualización',
+                html: `
+                    <select id="updateField" class="swal2-select">
+                        <option value="" disabled selected>Dato a Actualizar</option>
+                        <option value="dato1">Dato 1</option>
+                        <option value="dato2">Dato 2</option>
+                    </select>
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                preConfirm: () => {
+                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                    const newData = Swal.getPopup().querySelector('#newData').value
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    if (!updateField || !newData || !securityToken) {
+                        Swal.showValidationMessage(`Por favor, complete todos los campos`)
+                    }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Datos actualizados con éxito',
+                        text: `Campo: ${result.value.updateField}, Nuevo Dato: ${result.value.newData}`
+                    })
+                }
+            })
+        }
+    }
+</script>
 
 </body>
 </html>
