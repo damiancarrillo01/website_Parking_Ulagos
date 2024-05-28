@@ -53,24 +53,26 @@
             margin-top: 20px;
         }
         .location {
-            border: 2px solid #0056b3;
-            border-radius: 8px;
-            overflow: hidden;
-            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .location img {
-            width: 100%;
-            height: auto;
+            width: 400px;
+            height: 300px;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            border-radius: 8px;
         }
         .location button {
-            width: 100%;
+            margin-top: 10px;
             padding: 10px;
-            border: none;
+            border: 2px solid #0056b3;
             background-color: #fff;
             color: #0056b3;
-            font-size: 16px;
+            font-size: 20px;
             cursor: pointer;
-            border-top: 2px solid #0056b3;
+            border-radius: 8px;
         }
         .location button:hover {
             background-color: #e6f0ff;
@@ -90,14 +92,20 @@
     <div class="locations">
         <div class="location">
             <img src="chuyaca.png" alt="Chuyaca">
-            <button onclick="location.href='chuyaca.html'">Chuyaca</button>
+            <button onclick="selectSede('Chuyaca')">Chuyaca</button>
         </div>
         <div class="location">
             <img src="meyer.png" alt="Meyer">
-            <button onclick="location.href='meyer.html'">Meyer</button>
+            <button onclick="selectSede('Meyer')">Meyer</button>
         </div>
     </div>
 </div>
+
+<script>
+    function selectSede(sede) {
+        console.log('Sede seleccionada:', sede);
+    }
+</script>
 
 </body>
 </html>

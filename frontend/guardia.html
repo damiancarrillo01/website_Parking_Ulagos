@@ -46,18 +46,28 @@
             color: #0056b3;
             margin-bottom: 20px;
         }
-        .building-image {
+        .carousel {
+            position: relative;
             width: 300px;
             height: 300px;
             margin: 0 auto;
+            overflow: hidden;
             border: 1px solid #ccc;
             border-radius: 10px;
-            overflow: hidden;
         }
-        .building-image img {
+        .carousel img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: none;
+        }
+        .carousel img.active {
+            display: block;
+        }
+        .carousel-caption {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
         }
         .pagination {
             margin: 20px 0;
@@ -71,6 +81,7 @@
             background-color: #ccc;
             border-radius: 50%;
             display: inline-block;
+            cursor: pointer;
         }
         .pagination span.active {
             background-color: #0056b3;
@@ -101,19 +112,34 @@
 
 <div class="container">
     <h2>Edificios</h2>
-    <div class="building-image">
-        <img src="building_image.jpg" alt="Edificio">
+    <div class="carousel">
+        <img src="chuyaca.png" alt="Chuyaca" class="active">
+        <img src="meyer.png" alt="Meyer">
     </div>
+    <div class="carousel-caption">Chuyaca</div>
     <div class="pagination">
-        <span class="active"></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span class="active" onclick="showSlide(0)"></span>
+        <span onclick="showSlide(1)"></span>
     </div>
     <a href="#" class="select-button">Seleccionar</a>
 </div>
+
+<script>
+    const images = document.querySelectorAll('.carousel img');
+    const captions = ['Chuyaca', 'Meyer']; 
+    const pagination = document.querySelectorAll('.pagination span');
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        images[currentIndex].classList.remove('active');
+        pagination[currentIndex].classList.remove('active');
+        currentIndex = index;
+        images[currentIndex].classList.add('active');
+        pagination[currentIndex].classList.add('active');
+        document.querySelector('.carousel-caption').textContent = captions[currentIndex];
+    }
+
+</script>
 
 </body>
 </html>
