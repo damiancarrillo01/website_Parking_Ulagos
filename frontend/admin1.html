@@ -140,8 +140,8 @@
                 html: `
                     <select id="updateField" class="swal2-select">
                         <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
+                        <option value="dato1">Nombre sede/option>
+                        <option value="dato2">dato 2</option>
                     </select>
                     <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
@@ -175,8 +175,8 @@
                 html: `
                     <select id="updateField" class="swal2-select">
                         <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
+                        <option value="dato1">Nombre edificio</option>
+                        <option value="dato2">dato 2/option>
                     </select>
                     <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
@@ -210,8 +210,8 @@
                 html: `
                     <select id="updateField" class="swal2-select">
                         <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
+                        <option value="dato1">Tipo de estacionamiento</option>
+                        <option value="dato2">tipo de vehiculo</option>
                     </select>
                     <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
@@ -240,7 +240,7 @@
         }
     }
 
-    function showaddModal() {
+    function showaddModal(buttonId) {
         if(buttonId=="sedebutton"){
             Swal.fire({
                 title: 'Ingrese los Datos para la actualización',
@@ -348,7 +348,7 @@
     }
 
 
-    function showdeleteModal() {
+    function showdeleteModal(buttonId) {
         if(buttonId=="sedebutton"){
             Swal.fire({
                 title: '¿Estas seguro de esta eliminacion?',
