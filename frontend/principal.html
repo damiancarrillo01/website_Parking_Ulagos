@@ -6,6 +6,8 @@
     <title>Reservar Estacionamiento</title>
     <!-- Enlace a Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace a SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -98,6 +100,30 @@
         .reserve-button:hover {
             background-color: #004494;
         }
+        /* Estilos del selector de hora digital */
+        .digital-clock {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 20px;
+        }
+        .digital-clock input {
+            width: 3em;
+            text-align: center;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .swal2-popup .swal2-html-container {
+            padding: 20px;
+        }
+
+        .swal2-popup .swal2-actions button {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
@@ -109,9 +135,9 @@
 </div>
 
 <div class="button-container">
-    <button>Hora</button>
-    <button>Vehículo</button>
-    <button>Edificio</button>
+    <button id="horaButton">Hora</button>
+    <button id="vehiculoButton">Vehículo</button>
+    <button id="edificioButton">Edificio</button>
 </div>
 
 <div class="map">
@@ -132,9 +158,137 @@
     </div>
 </div>
 
-<button class="reserve-button">Reservar</button>
+<button class="reserve-button" onclick="location.href='confirmar.html'">Reservar</button>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    document.getElementById('horaButton').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Selecciona la hora de reserva',
+            html: `
+                <div class="digital-clock">
+                    <input type="number" id="horaInput" min="0" max="23" value="12">:
+                    <input type="number" id="minutoInput" min="0" max="59" value="00">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar Hora de Reserva',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const hora = document.getElementById('horaInput').value;
+                const minuto = document.getElementById('minutoInput').value;
+                if (hora === "" || minuto === "") {
+                    Swal.showValidationMessage('Por favor, ingresa una hora y minutos válidos.');
+                    return false;
+                }
+                return `${hora.padStart(2, '0')}:${minuto.padStart(2, '0')}`;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log("Hora seleccionada:", result.value);
+                // Aquí puedes realizar las acciones necesarias con la hora seleccionada
+            }
+        });
+    });
+
+    document.getElementById('vehiculoButton').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Selecciona o registra tu vehículo',
+            html: `
+                <div style="text-align: left;">
+                    <h3>Vehículos Registrados</h3>
+                    <select id="vehiculoSelect" class="swal2-select" style="width: 80%; margin-bottom: 20px;">
+                        <option value="veh1">Veh 1</option>
+                        <option value="veh2">Veh 2</option>
+                    </select>
+                    <button id="registrarVehiculoButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 100%; margin-bottom: 20px;">
+                        Registrar Vehículo
+                    </button>
+                    <form id="formRegistrarVehiculo" style="display: none; flex-direction: column; gap: 10px;">
+                        <label for="patente">Patente:</label>
+                        <input type="text" id="patente" class="swal2-input" placeholder="Ingresa la patente">
+                        <label for="tipo">Tipo:</label>
+                        <select id="tipo" class="swal2-select" style="width: 80%;">
+                            <option value="auto">Auto</option>
+                            <option value="camioneta">Camioneta</option>
+                            <option value="moto">Moto</option>
+                        </select>
+                        <label for="color">Color:</label>
+                        <input type="text" id="color" class="swal2-input" placeholder="Ingresa el color">
+                        <label for="modelo">Modelo:</label>
+                        <input type="text" id="modelo" class="swal2-input" placeholder="Ingresa el modelo">
+                        <label for="tamano">Tamaño:</label>
+                        <select id="tamano" class="swal2-select" style="width: 80%;">
+                            <option value="pequeno">Pequeño</option>
+                            <option value="mediano">Mediano</option>
+                            <option value="grande">Grande</option>
+                        </select>
+                        <div id="confirmarDatosContainer" style="display: flex; justify-content: center;">
+                            <button id="confirmarDatosButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 50%;">
+                                Confirmar Datos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            didOpen: () => {
+                document.getElementById('registrarVehiculoButton').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    ///document.getElementById('formRegistrarVehiculo').style.display = 'flex';
+                    const formRegistrarVehiculo = document.getElementById('formRegistrarVehiculo');
+                    formRegistrarVehiculo.style.display = formRegistrarVehiculo.style.display === 'none' ? 'flex' : 'none';
+                });
+                document.getElementById('confirmarDatosButton').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Validación de campos y acciones necesarias
+                    const patente = document.getElementById('patente').value;
+                    const tipo = document.getElementById('tipo').value;
+                    const color = document.getElementById('color').value;
+                    const modelo = document.getElementById('modelo').value;
+                    const tamano = document.getElementById('tamano').value;
+
+                    if (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "") {
+                        Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
+                        return false;
+                    } else {
+                        Swal.fire('Datos confirmados', '', 'success');
+                    }
+                });
+            },
+            preConfirm: () => {
+                const patente = document.getElementById('patente').value;
+                const tipo = document.getElementById('tipo').value;
+                const color = document.getElementById('color').value;
+                const modelo = document.getElementById('modelo').value;
+                const tamano = document.getElementById('tamano').value;
+
+                if (document.getElementById('formRegistrarVehiculo').style.display === 'flex' && 
+                    (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "")) {
+                    Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
+                    return false;
+                }
+                return {
+                    vehiculo: document.getElementById('vehiculoSelect').value,
+                    registro: {
+                        patente,
+                        tipo,
+                        color,
+                        modelo,
+                        tamano
+                    }
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log("Vehículo seleccionado o registrado:", result.value);
+                // Aquí puedes realizar las acciones necesarias con el vehículo seleccionado o registrado
+            }
+        });
+    });
+
     function selectSpace(element) {
         // Toggle selection of the parking space
         if (element.classList.contains('selected')) {
@@ -145,6 +299,67 @@
             element.style.border = '2px solid #000';
         }
     }
+
+    document.getElementById('edificioButton').addEventListener('click', function() {
+            var selectedSede = localStorage.getItem('selectedSede');
+            if (selectedSede === 'btnMeyer') {
+                Swal.fire({
+                    title: 'Selecciona Edificio',
+                    html: `
+                        <button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>
+                        
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'confirmar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Acciones para "Ed. Principal"
+                    }
+                });
+            } else if (selectedSede === 'btnChuyaca') {
+                Swal.fire({
+                    title: 'Selecciona Edificio',
+                    html: `
+                        <button id="centralButton" class="swal2-confirm swal2-styled">Central</button>
+                        <button id="itrButton" class="swal2-confirm swal2-styled">ITR</button>
+                        <button id="aulasVirtualesButton" class="swal2-confirm swal2-styled">Aulas Virtuales</button>
+                        <button id="saludButton" class="swal2-confirm swal2-styled">Salud</button>
+                        <button id="gimnasio1Button" class="swal2-confirm swal2-styled">Gimnasio 1</button>
+                    `,
+                    showCancelButton: true,
+                    showConfirmButton: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Acciones específicas para cada edificio
+                    }
+                });
+
+                // Añadir event listeners a los botones dentro del Swal
+                document.getElementById('centralButton').addEventListener('click', function() {
+                    Swal.close();
+                    // Acciones para "Central"
+                });
+                document.getElementById('itrButton').addEventListener('click', function() {
+                    Swal.close();
+                    // Acciones para "ITR"
+                });
+                document.getElementById('aulasVirtualesButton').addEventListener('click', function() {
+                    Swal.close();
+                    // Acciones para "Aulas Virtuales"
+                });
+                document.getElementById('saludButton').addEventListener('click', function() {
+                    Swal.close();
+                    // Acciones para "Salud"
+                });
+                document.getElementById('gimnasio1Button').addEventListener('click', function() {
+                    Swal.close();
+                    // Acciones para "Gimnasio 1"
+                });
+            } else {
+                Swal.fire('Error', 'No se ha seleccionado ninguna sede.', 'error');
+            }
+        });
 </script>
 
 </body>

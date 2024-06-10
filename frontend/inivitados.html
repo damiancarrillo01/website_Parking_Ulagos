@@ -35,6 +35,19 @@
             justify-content: center;
             align-items: center;
         }
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
         .form-section {
             flex: 1;
             padding: 40px;
@@ -90,7 +103,7 @@
 
 <div class="container">
     <div class="image-section">
-        <img src="pto montt.png" alt="Imagen Universidad" style="width: 100%; height: auto;">
+        <img src="pto montt.png" alt="Imagen del sector">
     </div>
     <div class="form-section">
         <h2>Invitados</h2>
@@ -98,7 +111,7 @@
             <input type="email" id="correo" name="correo" placeholder="Correo" required>
         </div>
         <div class="form-group">
-            <select id="motivo" name="motivo" required>
+            <select id="motivo" style="width:106%;" name="motivo" required>
                 <option value="" disabled selected>Motivo</option>
                 <option value="visita">Visita</option>
                 <option value="conferencia">Conferencia</option>
@@ -108,7 +121,7 @@
         <div class="form-group">
             <input type="text" id="patente" name="patente" placeholder="Patente" required>
         </div>
-        <button class="btn" disabled>Ingresar</button>
+        <button class="btn" style="width: 100%;margin-left: 5%;">Ingresar</button>
         <div class="link">
             ¿Ya eres parte de la Universidad? <a href="iniciosesion.html">Iniciar Sesión</a>
         </div>

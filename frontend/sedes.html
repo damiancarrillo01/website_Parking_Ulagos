@@ -92,18 +92,20 @@
     <div class="locations">
         <div class="location">
             <img src="chuyaca.png" alt="Chuyaca">
-            <button onclick="selectSede('Chuyaca')">Chuyaca</button>
+            <button id="btnChuyaca" onclick="selectSede(this.id)">Chuyaca</button>
         </div>
         <div class="location">
             <img src="meyer.png" alt="Meyer">
-            <button onclick="selectSede('Meyer')">Meyer</button>
+            <button id="btnMeyer" onclick="selectSede(this.id)">Meyer</button>
         </div>
     </div>
 </div>
 
 <script>
-    function selectSede(sede) {
-        console.log('Sede seleccionada:', sede);
+    function selectSede(buttonId) {
+        console.log('ID del botón seleccionado:', buttonId);
+        localStorage.setItem('selectedSede', buttonId);
+        window.location.href = 'principal.html?buttonId=' + buttonId;
     }
 </script>
 

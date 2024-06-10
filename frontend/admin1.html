@@ -140,7 +140,7 @@
                 html: `
                     <select id="updateField" class="swal2-select">
                         <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Nombre sede/option>
+                        <option value="dato1">Nombre sede</option>
                         <option value="dato2">dato 2</option>
                     </select>
                     <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
@@ -241,16 +241,11 @@
     }
 
     function showaddModal(buttonId) {
-        if(buttonId=="sedebutton"){
+        if(buttonId=="addbutton"){
             Swal.fire({
-                title: 'Ingrese los Datos para la actualización',
+                title: 'Ingrese los Datos para la nueva sede',
                 html: `
-                    <select id="updateField" class="swal2-select">
-                        <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
-                    </select>
-                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nombre sede">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
                 `,
                 showCancelButton: true,
@@ -275,17 +270,12 @@
                 }
             })
         }   
-        else if(buttonId=="sedebutton2"){
+        else if(buttonId=="addbutton2"){
 
             Swal.fire({
-                title: 'Ingrese los Datos para la actualización',
+                title: 'Ingrese los Datos para el nuevo edificio',
                 html: `
-                    <select id="updateField" class="swal2-select">
-                        <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
-                    </select>
-                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="newData" class="swal2-input" placeholder="Nombre edificio">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
                 `,
                 showCancelButton: true,
@@ -311,16 +301,11 @@
             })
 
         }
-        else if(buttonId=="sedebutton3"){
+        else if(buttonId=="addbutton3"){
             Swal.fire({
-                title: 'Ingrese los Datos para la actualización',
+                title: 'Ingrese los Datos para el nuevo estacionamiento',
                 html: `
-                    <select id="updateField" class="swal2-select">
-                        <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
-                    </select>
-                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    <input type="text" id="newData" class="swal2-input" placeholder="tipo estacionamiento">
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
                 `,
                 showCancelButton: true,
@@ -349,7 +334,7 @@
 
 
     function showdeleteModal(buttonId) {
-        if(buttonId=="sedebutton"){
+        if(buttonId=="deletebutton"){
             Swal.fire({
                 title: '¿Estas seguro de esta eliminacion?',
                 html: `
@@ -378,17 +363,12 @@
                 }
             })
         }   
-        else if(buttonId=="sedebutton2"){
+        else if(buttonId=="deletebutton2"){
 
             Swal.fire({
-                title: 'Ingrese los Datos para la actualización',
+                title: '¿Estas seguro de esta eliminacion?',
                 html: `
-                    <select id="updateField" class="swal2-select">
-                        <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
-                    </select>
-                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
                 `,
                 showCancelButton: true,
@@ -414,16 +394,11 @@
             })
 
         }
-        else if(buttonId=="sedebutton3"){
+        else if(buttonId=="deletebutton3"){
             Swal.fire({
-                title: 'Ingrese los Datos para la actualización',
+                title: '¿Estas seguro de esta eliminacion?',
                 html: `
-                    <select id="updateField" class="swal2-select">
-                        <option value="" disabled selected>Dato a Actualizar</option>
-                        <option value="dato1">Dato 1</option>
-                        <option value="dato2">Dato 2</option>
-                    </select>
-                    <input type="text" id="newData" class="swal2-input" placeholder="Nuevo Dato">
+                    
                     <input type="text" id="securityToken" class="swal2-input" placeholder="Ingrese token de seguridad">
                 `,
                 showCancelButton: true,
