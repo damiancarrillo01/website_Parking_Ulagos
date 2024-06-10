@@ -1,7 +1,7 @@
 // app.js
 const express = require('express');
 const app = express();
-const userRoutes = require('./routes/user.routes');
+const userRoutes = require('../routes/user.routes');
 
 // Middleware para parsear el cuerpo de las solicitudes como JSON
 app.use(express.json());
