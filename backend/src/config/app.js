@@ -1,26 +1,40 @@
-// app.js
 const express = require('express');
 const app = express();
+const path = require('path');
 const userRoutes = require('../routes/user.routes');
 
-// Middleware para parsear el cuerpo de las solicitudes como JSON
+// Middleware para manejar datos JSON y URL encoded
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Usar las rutas de usuario
-app.use('/api', userRoutes);
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, '../../../frontend')));
 
-// Manejo de rutas no encontradas
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Recurso no encontrado' });
+// Rutas para los archivos HTML
+app.get('/iniciosesion.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../frontend/iniciosesion.html'));
 });
 
-// Manejo de errores
+app.get('/registro.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../frontend/registro.html'));
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../frontend/inicio.html'));
+});
+
+// Montar rutas de usuarios
+app.use('/usuarios', userRoutes);
+
+// Middleware para manejar rutas no encontradas
+app.use((req, res, next) => {
+    res.status(404).send('Ruta no encontrada');
+});
+
+// Middleware para manejar errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    res.status(500).send('Algo salió mal');
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+module.exports = app;

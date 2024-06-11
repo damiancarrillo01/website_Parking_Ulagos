@@ -6,8 +6,7 @@ const pool = new Pool({
     database: 'postgres',
     password: '5473',
     port: 5432,
-});
-
+});  
 
 const connect = async () => {
     try {

@@ -1,38 +1,64 @@
-// user.controller.js
+// src/controllers/user.controllers.js
+const { pool } = require('../config/database');
 
-// Obtener todos los usuarios
-exports.getAllUsers = (req, res) => {
-  // Lógica para obtener todos los usuarios
-  res.send('Todos los usuarios');
+exports.registroUsuario = async (req, res) => {
+    const { nombre, apellido, correo, contraseña, confirmarContraseña } = req.body;
+    let tipoUsuario;
+
+    console.log('Nombre:', nombre);
+    console.log('Apellido:', apellido);
+    console.log('Correo:', correo);
+    console.log('Contraseña:', contraseña);
+    console.log('Confirmar Contraseña:', confirmarContraseña);
+
+    if (correo.endsWith('@alumnos.ulagos.cl')) {
+        tipoUsuario = 'Estudiante';
+    } else if (correo.endsWith('@ulagos.cl')) {
+        tipoUsuario = 'Docente';
+    } else {
+        return res.status(400).send('El correo electrónico debe ser de la Universidad de Los Lagos');
+    }
+
+    console.log('TipoUsuario:', tipoUsuario);
+
+    try {
+        if (contraseña !== confirmarContraseña) {
+            return res.status(400).send('Las contraseñas no coinciden');
+        }
+
+        const result = await pool.query(
+            'INSERT INTO Usuarios (Correo, Contrasena, Nombre, Apellido, TipoUsuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [correo, contraseña, nombre, apellido, tipoUsuario]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        res.redirect('/')
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
 };
 
-// Obtener un usuario por ID
-exports.getUserById = (req, res) => {
-  const userId = req.params.id;
-  // Lógica para obtener un usuario por ID
-  res.send(`Usuario con ID: ${userId}`);
-};
+exports.inicioSesionUsuario = async (req, res) => {
+    const { correo, contraseña } = req.body;
 
-// Crear un nuevo usuario
-exports.createUser = (req, res) => {
-  const newUser = req.body;
-  // Lógica para crear un nuevo usuario
-  res.status(201).send(`Usuario creado: ${JSON.stringify(newUser)}`);
-};
+    console.log('Correo:', correo);
+    console.log('Contraseña:', contraseña);
 
-// Actualizar un usuario existente
-exports.updateUser = (req, res) => {
-  const userId = req.params.id;
-  const updatedData = req.body;
-  // Lógica para actualizar un usuario existente
-  res.send(`Usuario con ID: ${userId} actualizado con los datos: ${JSON.stringify(updatedData)}`);
-};
+    try {
+        const result = await pool.query(
+            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contrasena = $2',
+            [correo, contraseña]
+        );
 
-// Eliminar un usuario
-exports.deleteUser = (req, res) => {
-  const userId = req.params.id;
-  // Lógica para eliminar un usuario
-  res.send(`Usuario con ID: ${userId} eliminado`);
+        if (result.rows.length > 0) {
+            res.redirect('/sedes.html');
+            //res.send('Inicio de sesión exitoso');
+        } else {
+            res.status(400).send('Correo o contraseña incorrectos');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
 };
-
-// Otras funciones del controlador...

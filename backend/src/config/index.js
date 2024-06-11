@@ -1,23 +1,26 @@
-// main.js
-const app = require('./app');
+const express = require('express');
+const path = require('path');
+const app = require('./app'); // Requerir app.js
 const database = require('./database');
 
 const main = async () => {
     try {
-        // Conectar a la base de datos
         await database.connect();
-        console.log('Conexión a la base de datos exitosa');
-
-        // Iniciar el servidor
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => {
-            console.log(`Servidor escuchando en el puerto ${PORT}`);
+        app.listen(3000, () => {
+            console.log('Servidor escuchando en el puerto 3000');
         });
     } catch (err) {
-        console.error('Error inicializando la aplicación:', err);
+        console.error('Error inicializando la aplicación', err);
         process.exit(1); // Salir del proceso con un código de error
     }
 };
 
-// Llamar a la función principal
 main();
+
+
+
+
+
+
+
+
