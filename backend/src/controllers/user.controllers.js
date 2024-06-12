@@ -22,7 +22,12 @@ exports.registroUsuario = async (req, res) => {
     console.log('TipoUsuario:', tipoUsuario);
 
     try {
-        if (contraseña !== confirmarContraseña) {
+        const contraseñaRegex = /^(?=.*[A-Z])(?=.*\W).{10,}$/;
+
+        if (!contraseñaRegex.test(contraseña)) {
+            return res.status(400).send('La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres.');
+        }
+        else if (contraseña !== confirmarContraseña) {
             return res.status(400).send('Las contraseñas no coinciden');
         }
 
