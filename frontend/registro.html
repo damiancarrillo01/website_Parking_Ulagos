@@ -92,13 +92,14 @@
             text-decoration: underline;
         }
     </style>
+    
 </head>
 <body>
 
 <div class="container">
     <div class="content-section">
         <h1>Crear Cuenta</h1>
-        <form action="/usuarios/registro" method="POST">
+        <form id="registroForm" action="/usuarios/registro" method="POST">
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
             <input type="text" id="apellido" name="apellido" placeholder="Apellido" required>
             <input type="email" id="correo" name="correo" placeholder="Correo" required>
@@ -114,6 +115,17 @@
         <img src="pto montt.png" alt="Imagen del sector">
     </div>
 </div>
+<script>
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+        const contraseña = document.getElementById('contraseña').value;
+        const confirmarContraseña = document.getElementById('confirmarContraseña').value;
+        const contraseñaRegex = /^(?=.*[A-Z])(?=.*\W).{10,}$/;
 
+        if (!contraseñaRegex.test(contraseña)) {
+            alert('La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres.');
+            event.preventDefault(); 
+        }
+    });
+</script>
 </body>
 </html>
