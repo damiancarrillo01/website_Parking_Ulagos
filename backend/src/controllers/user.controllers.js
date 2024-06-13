@@ -58,7 +58,6 @@ exports.inicioSesionUsuario = async (req, res) => {
 
         if (result.rows.length > 0) {
             res.redirect('/sedes.html');
-            //res.send('Inicio de sesión exitoso');
         } else {
             res.status(400).send('Correo o contraseña incorrectos');
         }

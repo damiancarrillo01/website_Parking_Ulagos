@@ -8,6 +8,4 @@ router.post('/registro', userController.registroUsuario);
 router.post('/iniciosesion', userController.inicioSesionUsuario);
 
 
-// Otras rutas de usuario...
-
 module.exports = router;

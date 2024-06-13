@@ -12,10 +12,10 @@ const connect = async () => {
     try {
         const client = await pool.connect();
         console.log('Base de datos conectada');
-        client.release(); // Liberar el cliente de vuelta al pool
+        client.release(); 
     } catch (err) {
         console.error('Error conectando a la base de datos', err.stack);
-        throw err; // Lanzamos el error para que se pueda manejar adecuadamente en main
+        throw err; 
     }
 };
 
