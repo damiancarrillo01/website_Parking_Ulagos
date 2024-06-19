@@ -1,5 +1,3 @@
-const express = require('express');
-const path = require('path');
 const app = require('./app'); // Requerir app.js
 const database = require('./database');
 

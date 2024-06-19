@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const userRoutes = require('../routes/user.routes');
+const bodyParser = require('body-parser');
 
 // Middleware para manejar datos JSON y URL encoded
 app.use(express.json());
@@ -36,5 +37,6 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Algo salió mal');
 });
+
 
 module.exports = app;
