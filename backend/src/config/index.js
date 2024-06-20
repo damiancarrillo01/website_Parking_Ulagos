@@ -4,7 +4,7 @@ const database = require('./database');
 const main = async () => {
     try {
         await database.connect();
-        app.listen(4000, () => {
+        app.listen(10000, () => {
             console.log('Servidor escuchando en el puerto 3000');
         });
     } catch (err) {
