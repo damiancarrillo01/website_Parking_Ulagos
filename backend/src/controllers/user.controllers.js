@@ -5,12 +5,6 @@ exports.registroUsuario = async (req, res) => {
     const { nombre, apellido, correo, contraseña, confirmarContraseña } = req.body;
     let tipoUsuario;
 
-    console.log('Nombre:', nombre);
-    console.log('Apellido:', apellido);
-    console.log('Correo:', correo);
-    console.log('Contraseña:', contraseña);
-    console.log('Confirmar Contraseña:', confirmarContraseña);
-
     if (correo.endsWith('@alumnos.ulagos.cl')) {
         tipoUsuario = 'Estudiante';
     } else if (correo.endsWith('@ulagos.cl')) {
@@ -26,18 +20,24 @@ exports.registroUsuario = async (req, res) => {
 
         if (!contraseñaRegex.test(contraseña)) {
             return res.status(400).send('La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres.');
-        }
-        else if (contraseña !== confirmarContraseña) {
+        } else if (contraseña !== confirmarContraseña) {
             return res.status(400).send('Las contraseñas no coinciden');
         }
 
+        // Verificar si el correo electrónico ya está en uso
+        const existingUser = await pool.query('SELECT * FROM Usuarios WHERE Correo = $1', [correo]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).send('El correo electrónico ya está registrado');
+        }
+
+        // Si el correo electrónico no está en uso, insertar el nuevo usuario
         const result = await pool.query(
             'INSERT INTO Usuarios (Correo, Contrasena, Nombre, Apellido, TipoUsuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [correo, contraseña, nombre, apellido, tipoUsuario]
         );
 
         //res.send('Datos recibidos y procesados con éxito');
-        res.redirect('/')
+        res.redirect('/');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
@@ -67,28 +67,20 @@ exports.inicioSesionUsuario = async (req, res) => {
     }
 };
 
+
 exports.registroAuto = async (req, res) => {
-    const { patente, tipoVehiculo, color, modelo, tamano } = req.body;
-
-    // Convertir el valor del tipo recibido del HTML a TipoVehiculo
-
-    // Imprimir los valores recibidos para depuración
-    console.log('patente:', patente);
-    console.log('TipoVehiculo:', tipoVehiculo);
-    console.log('color:', color);
-    console.log('modelo:', modelo);
-    console.log('tamaño:', tamano);
+    const { patente, TipoVehiculo, color, modelo, tamano } = req.body;
 
     // Validaciones básicas
-    if (!patente || !tipoVehiculo || !color || !modelo || !tamano) {
+    if (!patente || !TipoVehiculo || !color || !modelo || !tamano) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
     try {
         // Guardar la información del automóvil en la base de datos
         const result = await pool.query(
-            'INSERT INTO vehiculos (Patente, TipoVehiculo, Color, Modelo, Tamano) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [patente, tipoVehiculo, color, modelo, tamano]
+            'INSERT INTO vehiculos (Patente, TipoVehiculo, Color, Modelo, Tamaño) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [patente, TipoVehiculo, color, modelo, tamano]
         );
 
         const autoRegistrado = result.rows[0];
