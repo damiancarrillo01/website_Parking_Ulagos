@@ -38,5 +38,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Algo salió mal');
 });
 
+app.post('/principal', userRoutes);
 
 module.exports = app;

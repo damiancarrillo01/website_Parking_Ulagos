@@ -66,3 +66,39 @@ exports.inicioSesionUsuario = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
+
+exports.registroAuto = async (req, res) => {
+    const { patente, tipoVehiculo, color, modelo, tamano } = req.body;
+
+    // Convertir el valor del tipo recibido del HTML a TipoVehiculo
+
+    // Imprimir los valores recibidos para depuración
+    console.log('patente:', patente);
+    console.log('TipoVehiculo:', tipoVehiculo);
+    console.log('color:', color);
+    console.log('modelo:', modelo);
+    console.log('tamaño:', tamano);
+
+    // Validaciones básicas
+    if (!patente || !tipoVehiculo || !color || !modelo || !tamano) {
+        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        // Guardar la información del automóvil en la base de datos
+        const result = await pool.query(
+            'INSERT INTO vehiculos (Patente, TipoVehiculo, Color, Modelo, Tamano) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [patente, tipoVehiculo, color, modelo, tamano]
+        );
+
+        const autoRegistrado = result.rows[0];
+
+        res.status(201).json({
+            mensaje: 'Automóvil registrado exitosamente',
+            auto: autoRegistrado
+        });
+    } catch (error) {
+        console.error('Error al registrar el automóvil:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
