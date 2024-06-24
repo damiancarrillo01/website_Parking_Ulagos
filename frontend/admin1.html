@@ -98,7 +98,7 @@
 
     <div class="field">
         <label for="sede" style="font-size: 88%;">Sede:</label>
-        <select id="sede" onchange="mostrarEdificioAsignado();">
+        <select id="sede" onchange="mostrarEdificiosPorSede();">
             <option value="sede0"></option>
         </select>
         <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
@@ -108,7 +108,7 @@
 
     <div class="field">
         <label for="edificio" style="font-size: 88%;">Edificio:</label>
-        <select id="edificio">
+        <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
             <option value="edificio0"></option>
         </select>
         <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
@@ -135,17 +135,8 @@
 
 <!-- DATOS DE BASE DE DATOS EN OPCIONES -- INICIO -->
 <script>
-    // Función para obtener sede seleccionada
-    function mostrarEdificioAsignado() {
-        let var_sede = document.getElementById('sede').value;
-        console.log('var_sede:',var_sede);
-        return var_sede;
-    };
-
     document.addEventListener('DOMContentLoaded', async () => {
         try {
-            let var_sede = mostrarEdificioAsignado();
-
             // Se recolectan los datos de la base de datos
             const response = await fetch('usuarios/admin'); // Ajusta la URL si es necesario
             const data = await response.json();
@@ -163,54 +154,56 @@
                 sedesContainer.appendChild(sede);
             });
 
-            // Mostrar TODOS los edificios (temporal)
-            data.datos_edificios.forEach(edificios => {
-                const edificio = document.createElement('option');
-                edificio.setAttribute('value', `edificio${edificios.id_edificio}`);
-                edificio.textContent = `${edificios.nombre_edificio}`;
-                edificiosContainer.appendChild(edificio);
-            });
-
-            // Mostrar TODOS los espacios de estacionamiento (temporal)
-            data.datos_estacionamietos.forEach(estacionamientos => {
-                const estacionamieto = document.createElement('option');
-                estacionamieto.setAttribute('value', `estacionamiento${estacionamientos.id_espacio}`);
-                estacionamieto.textContent = `Estacionamiento ${estacionamientos.id_espacio}`;
-                estacionamientoContainer.appendChild(estacionamieto);
-            });
-
-
+            // Datos de Edificios y Estacionamientos para ser usados posteriormente
+            window.datosEdificios = data.datos_edificios;
+            window.datosEstacionamientos = data.datos_estacionamietos;
             
-            // Funcionalidades de cambio de lista de opciones de edificio de acuerdo a sede seleccionada (en progreso)
-
-            // Función para mostrar los edificios por sede
-            const mostrarEdificios = (edificios) => {
-                edificios.forEach(edificios => {
-                    const edificio = document.createElement('option');
-                    edificio.setAttribute('value', `edificio${edificios.id_edificio}`);
-                    edificio.textContent = `${edificios.nombre_edificio}`;
-                    edificiosContainer.appendChild(edificio);
-                });
-            };
-
-            // Función para cambiar los edificios a mostrar al cambiar sede
-            if (var_sede == 'sede1') {
-                mostrarEdificios(data.datos_edificios_1);
-            } else if (var_sede == 'sede2') {
-                mostrarEdificios(data.datos_edificios_2);
-            } else if (var_sede == 'sede3') {
-                mostrarEdificios(data.datos_edificios_3);
-            } else if (var_sede == 'sede4') {
-                mostrarEdificios(data.datos_edificios_4);
-            } else {
-                console.log('Ninguna sede seleccionada');
-            };
-            
-
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     });
+
+    // Función para obtener sede seleccionada
+    function mostrarEdificiosPorSede() {
+        const edificiosContainer = document.getElementById('edificio');
+        const sedeSeleccionada = document.getElementById('sede').value;
+
+        // Limpiar las opciones existentes
+        edificiosContainer.innerHTML = '<option value=""></option>';
+
+        // Mostrar los edificios de la sede seleccionada
+        window.datosEdificios.forEach(edificios => {
+            if (`sede${edificios.id_sede_edificio}` == sedeSeleccionada) {
+                const edificio = document.createElement('option');
+                edificio.setAttribute('value', `edificio${edificios.id_edificio}`);
+                edificio.textContent = edificios.nombre_edificio;
+                edificiosContainer.appendChild(edificio);
+            };
+        });
+
+        // Se limpian las opciones de estacionamiento al cambiar sede
+        const estacionamientoContainer = document.getElementById('estacionamiento');
+        estacionamientoContainer.innerHTML = '<option value=""></option>';
+    }
+
+    // Función para obtener sede seleccionada
+    function mostrarEstacionamientosPorEdificio() {
+        const estacionamientosContainer = document.getElementById('estacionamiento');
+        const edificioSeleccionado = document.getElementById('edificio').value;
+
+        // Limpiar las opciones existentes
+        estacionamientosContainer.innerHTML = '<option value=""></option>';
+
+        // Mostrar los edificios de la sede seleccionada
+        window.datosEstacionamientos.forEach(Estacionamientos => {
+            if (`edificio${Estacionamientos.id_edificio_estacionamiento}` == edificioSeleccionado) {
+                const estacionamiento = document.createElement('option');
+                estacionamiento.setAttribute('value', `estacionamiento${Estacionamientos.id_espacio}`);
+                estacionamiento.textContent = Estacionamientos.id_espacio;
+                estacionamientosContainer.appendChild(estacionamiento);
+            };
+        });
+    }
 
 </script>
 <!-- DATOS DE BASE DE DATOS EN OPCIONES -- FIN -->

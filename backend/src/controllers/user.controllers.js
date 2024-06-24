@@ -111,40 +111,16 @@ exports.admin = async (req, res) => {
         );
 
         const { rows: datos_edificios } = await pool.query(
-            'SELECT id_edificio, nombre_edificio FROM edificios'
-        );
-
-        const { rows: datos_edificios_1 } = await pool.query(
-            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
-            [1] 
-        );
-
-        const { rows: datos_edificios_2 } = await pool.query(
-            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
-            [2]
-        );
-
-        const { rows: datos_edificios_3 } = await pool.query(
-            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
-            [3]
-        );
-
-        const { rows: datos_edificios_4 } = await pool.query(
-            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
-            [4]
+            'SELECT id_edificio, nombre_edificio, id_sede AS id_sede_edificio FROM edificios'
         );
 
         const { rows: datos_estacionamietos } = await pool.query(
-            'SELECT id_espacio FROM espacio_estacionamiento'
+            'SELECT id_espacio, id_edificio AS id_edificio_estacionamiento FROM espacio_estacionamiento'
         );
 
         res.json({
             datos_sedes,
             datos_edificios,
-            datos_edificios_1,
-            datos_edificios_2,
-            datos_edificios_3,
-            datos_edificios_4,
             datos_estacionamietos
         });
     } catch (err) {
