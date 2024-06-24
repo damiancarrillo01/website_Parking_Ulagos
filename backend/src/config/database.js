@@ -6,11 +6,20 @@ const { config } = require('dotenv');
 config();
 
 // Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
-const pool = new Pool({
+/*const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   }
+});*/
+
+// Para mi conexión local -Sergio
+const pool = new Pool({
+  user: 'postgres',
+	password: 'compuvi',
+	host: 'localhost',
+	port: '5433',
+	database: 'postgres',
 });
 
 const connect = async () => {

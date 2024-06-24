@@ -32,7 +32,7 @@ exports.registroUsuario = async (req, res) => {
         }
 
         const result = await pool.query(
-            'INSERT INTO Usuarios (Correo, Contrasena, Nombre, Apellido, TipoUsuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            'INSERT INTO Usuarios (Correo, Contraseña, Nombre, Apellido, tipo_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [correo, contraseña, nombre, apellido, tipoUsuario]
         );
 
@@ -52,7 +52,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
     try {
         const result = await pool.query(
-            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contrasena = $2',
+            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
 
@@ -102,3 +102,76 @@ exports.registroAuto = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
+// Administración
+exports.admin = async (req, res) => {
+    try {
+        const { rows: datos_sedes } = await pool.query(
+            'SELECT id_sede, nombre_sede FROM sedes'
+        );
+
+        const { rows: datos_edificios } = await pool.query(
+            'SELECT id_edificio, nombre_edificio FROM edificios'
+        );
+
+        const { rows: datos_edificios_1 } = await pool.query(
+            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
+            [1] 
+        );
+
+        const { rows: datos_edificios_2 } = await pool.query(
+            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
+            [2]
+        );
+
+        const { rows: datos_edificios_3 } = await pool.query(
+            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
+            [3]
+        );
+
+        const { rows: datos_edificios_4 } = await pool.query(
+            'SELECT id_edificio, nombre_edificio FROM edificios WHERE id_sede = $1',
+            [4]
+        );
+
+        const { rows: datos_estacionamietos } = await pool.query(
+            'SELECT id_espacio FROM espacio_estacionamiento'
+        );
+
+        res.json({
+            datos_sedes,
+            datos_edificios,
+            datos_edificios_1,
+            datos_edificios_2,
+            datos_edificios_3,
+            datos_edificios_4,
+            datos_estacionamietos
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+/*exports.adminAcciones = async (req, res) => {
+    const { correo, contraseña } = req.body; 
+
+    console.log('Correo:', correo); 
+    console.log('Contraseña:', contraseña);
+
+    try {
+        const result = await pool.query(
+            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
+            [correo, contraseña]
+        ); 
+
+        if (result.rows.length > 0) {
+            res.redirect('/sedes.html');
+        } else {
+            res.status(400).send('Correo o contraseña incorrectos');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};*/

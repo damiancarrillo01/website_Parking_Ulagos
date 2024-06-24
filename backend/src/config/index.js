@@ -5,7 +5,7 @@ const main = async () => {
     try {
         await database.connect();
         app.listen(10000, () => {
-            console.log('Servidor escuchando en el puerto 3000');
+            console.log('Servidor escuchando en el puerto 10000');
         });
     } catch (err) {
         console.error('Error inicializando la aplicación', err);

@@ -8,4 +8,7 @@ router.post('/registro', userController.registroUsuario);
 router.post('/iniciosesion', userController.inicioSesionUsuario);
 router.post('/principal', userController.registroAuto);
 
+router.get('/admin', userController.admin);
+//router.post('/adminAcciones', userController.adminAcciones);
+
 module.exports = router;
