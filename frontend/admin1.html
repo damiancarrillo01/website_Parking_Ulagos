@@ -94,12 +94,12 @@
     <div class="container">
         <h1>Gestión de Estacionamientos</h1>
     
-        <form action="/admin" method="POST"></form>
+        <form action="/admin" method="GET"></form>
     
         <div class="field">
             <label for="sede" style="font-size: 88%;">Sede:</label>
             <select id="sede" onchange="mostrarEdificiosPorSede();">
-                <option value="sede0"></option>
+                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -109,7 +109,7 @@
         <div class="field">
             <label for="edificio" style="font-size: 88%;">Edificio:</label>
             <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
-                <option value="edificio0"></option>
+                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -119,7 +119,7 @@
         <div class="field">
             <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
             <select id="estacionamiento">
-                <option value="estacionamiento0"></option>
+                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -149,13 +149,13 @@
                 // Mostrar las sedes
                 data.datos_sedes.forEach((sedes, index) => {
                     const sede = document.createElement('option');
-                    sede.setAttribute('value', `sede${sedes.id_sede}`);
+                    sede.setAttribute('value', sedes.id_sede);
                     sede.textContent = `${sedes.nombre_sede}`;
                     sedesContainer.appendChild(sede);
     
                     // Seleccionar la primera sede por defecto
                     if (index === 0) {
-                        sedesContainer.value = `sede${sedes.id_sede}`;
+                        sedesContainer.value = sedes.id_sede;
                     }
                 });
     
@@ -180,16 +180,16 @@
             edificiosContainer.innerHTML = '<option value=""></option>';
     
             // Mostrar los edificios de la sede seleccionada
-            const edificiosFiltrados = window.datosEdificios.filter(edificios => `sede${edificios.id_sede_edificio}` == sedeSeleccionada);
+            const edificiosFiltrados = window.datosEdificios.filter(edificios => edificios.id_sede_edificio == sedeSeleccionada);
             edificiosFiltrados.forEach((edificios, index) => {
                 const edificio = document.createElement('option');
-                edificio.setAttribute('value', `edificio${edificios.id_edificio}`);
+                edificio.setAttribute('value', edificios.id_edificio);
                 edificio.textContent = edificios.nombre_edificio;
                 edificiosContainer.appendChild(edificio);
     
                 // Seleccionar el primer edificio por defecto si es la carga inicial
                 if (isInitialLoad && index === 0) {
-                    edificiosContainer.value = `edificio${edificios.id_edificio}`;
+                    edificiosContainer.value = edificios.id_edificio;
                 }
             });
     
@@ -212,16 +212,16 @@
             estacionamientoContainer.innerHTML = '<option value=""></option>';
     
             // Mostrar los estacionamientos del edificio seleccionado
-            const estacionamientosFiltrados = window.datosEstacionamientos.filter(estacionamientos => `edificio${estacionamientos.id_edificio_estacionamiento}` == edificioSeleccionado);
+            const estacionamientosFiltrados = window.datosEstacionamientos.filter(estacionamientos => estacionamientos.id_edificio_estacionamiento == edificioSeleccionado);
             estacionamientosFiltrados.forEach((estacionamientos, index) => {
                 const estacionamiento = document.createElement('option');
-                estacionamiento.setAttribute('value', `estacionamiento${estacionamientos.id_espacio}`);
+                estacionamiento.setAttribute('value', estacionamientos.id_espacio);
                 estacionamiento.textContent = `Estacionamiento ${estacionamientos.id_espacio}`;
                 estacionamientoContainer.appendChild(estacionamiento);
     
                 // Seleccionar el primer estacionamiento por defecto si es la carga inicial
                 if (isInitialLoad && index === 0) {
-                    estacionamientoContainer.value = `estacionamiento${estacionamientos.id_espacio}`;
+                    estacionamientoContainer.value = estacionamientos.id_espacio;
                 }
             });
         }
@@ -249,13 +249,24 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateSede = document.getElementById('sede').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    console.log(`updateField: ${updateField}, newData: ${newData}, securityToken: ${securityToken}, updateSede: ${updateSede}`);
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateSede: updateSede }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateSede } = result.value;
+                        fetch('/usuarios/adminUpdateSede', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateSede: updateSede })
+                    });
+                //if (result.isConfirmed) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',

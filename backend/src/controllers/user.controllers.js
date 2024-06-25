@@ -106,6 +106,7 @@ exports.registroAuto = async (req, res) => {
 // Administración
 exports.admin = async (req, res) => {
     try {
+        // Se obtienen datos de base de datos 
         const { rows: datos_sedes } = await pool.query(
             'SELECT id_sede, nombre_sede FROM sedes'
         );
@@ -118,6 +119,7 @@ exports.admin = async (req, res) => {
             'SELECT id_espacio, id_edificio AS id_edificio_estacionamiento FROM espacio_estacionamiento'
         );
 
+        // Se envían datos a página
         res.json({
             datos_sedes,
             datos_edificios,
@@ -129,25 +131,27 @@ exports.admin = async (req, res) => {
     }
 };
 
-/*exports.adminAcciones = async (req, res) => {
-    const { correo, contraseña } = req.body; 
+exports.adminUpdateSede = async (req, res) => {
+    const { updateField, newData, securityToken, updateSede } = req.body; 
 
-    console.log('Correo:', correo); 
-    console.log('Contraseña:', contraseña);
+    console.log('updateField:', updateField); 
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+    console.log('updateSede:', updateSede);
 
     try {
+        if (updateField == 'dato1') {
         const result = await pool.query(
-            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
-            [correo, contraseña]
-        ); 
+            'UPDATE sedes SET nombre_sede=$1 WHERE id_sede= $2',
+            [newData, updateSede]
+        );
+        ;}
 
-        if (result.rows.length > 0) {
-            res.redirect('/sedes.html');
-        } else {
-            res.status(400).send('Correo o contraseña incorrectos');
-        }
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminUpdateSede');
+        res.redirect('/admin1.html');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
     }
-};*/
+};

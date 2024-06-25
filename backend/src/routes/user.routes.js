@@ -9,6 +9,6 @@ router.post('/iniciosesion', userController.inicioSesionUsuario);
 router.post('/principal', userController.registroAuto);
 
 router.get('/admin', userController.admin);
-//router.post('/adminAcciones', userController.adminAcciones);
+router.post('/adminUpdateSede', userController.adminUpdateSede);
 
 module.exports = router;
