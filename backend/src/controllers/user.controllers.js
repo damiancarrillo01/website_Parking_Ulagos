@@ -87,7 +87,7 @@ exports.registroAuto = async (req, res) => {
     try {
         // Guardar la información del automóvil en la base de datos
         const result = await pool.query(
-            'INSERT INTO vehiculos (Patente, TipoVehiculo, Color, Modelo, Tamano) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            'INSERT INTO vehiculo (patente, tipo_vehiculo, color, tamaño, modelo) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [patente, tipoVehiculo, color, modelo, tamano]
         );
 
