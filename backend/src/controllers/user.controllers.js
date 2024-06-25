@@ -58,7 +58,7 @@ exports.inicioSesionUsuario = async (req, res) => {
     
     try {
         const result = await pool.query(
-            'SELECT id_usuario, correo, contraseña,tipousuario FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
+            'SELECT id_usuario, correo, contraseña,tipo_usuario FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
         if (result.rows.length > 0) {
