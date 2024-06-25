@@ -68,19 +68,19 @@ exports.inicioSesionUsuario = async (req, res) => {
 };
 
 exports.registroAuto = async (req, res) => {
-    const { patente, tipoVehiculo, color, modelo, tamano } = req.body;
+    const { patente, tipo_vehiculo, color, modelo, tamano } = req.body;
 
-    // Convertir el valor del tipo recibido del HTML a TipoVehiculo
+    // Convertir el valor del tipo recibido del HTML a Tipo_vehiculo
 
     // Imprimir los valores recibidos para depuración
     console.log('patente:', patente);
-    console.log('TipoVehiculo:', tipoVehiculo);
+    console.log('Tipo_vehiculo:', tipo_vehiculo);
     console.log('color:', color);
     console.log('modelo:', modelo);
     console.log('tamaño:', tamano);
 
     // Validaciones básicas
-    if (!patente || !tipoVehiculo || !color || !modelo || !tamano) {
+    if (!patente || !tipo_vehiculo || !color || !modelo || !tamano) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
@@ -88,7 +88,7 @@ exports.registroAuto = async (req, res) => {
         // Guardar la información del automóvil en la base de datos
         const result = await pool.query(
             'INSERT INTO vehiculo (patente, tipo_vehiculo, color, tamaño, modelo) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [patente, tipoVehiculo, color, modelo, tamano]
+            [patente, tipo_vehiculo, color, modelo, tamano]
         );
 
         const autoRegistrado = result.rows[0];
