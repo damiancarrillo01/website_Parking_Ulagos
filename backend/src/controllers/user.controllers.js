@@ -66,19 +66,19 @@ exports.inicioSesionUsuario = async (req, res) => {
       correo.endsWith("@alumnos.ulagos.cl") ||
       correo.endsWith("@ulagos.cl")
     ) {
-      const result = await pool.query(
+       global.result = await pool.query(
         "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
     } else {
-      const result = await pool.query(
+       global.result = await pool.query(
         "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña],
         (global.tipoUsuario = "guardia")
       );
     }
     if (result.rows.length > 0) {
-      global.usuarioId = result.rows[0].id_usuario;
+      global.usuarioId = global.result.rows[0].id_usuario;
       console.log("ID de Usuario:", global.usuarioId); // Corrección aquí
       console.log("Tipo de Usuario:", global.tipoUsuario);
       res.json({ tipo_usuario: result.rows[0].tipo_usuario }); // Enviar tipo_usuario como JSON
