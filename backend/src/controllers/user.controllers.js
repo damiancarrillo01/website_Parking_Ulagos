@@ -52,7 +52,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
     try {
         const result = await pool.query(
-            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contrasena = $2',
+            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
 
