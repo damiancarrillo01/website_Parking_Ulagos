@@ -10,5 +10,7 @@ router.post('/principal', userController.registroAuto);
 
 router.get('/admin', userController.admin);
 router.post('/adminUpdateSede', userController.adminUpdateSede);
+router.post('/adminUpdateEdificio', userController.adminUpdateEdificio);
+router.post('/adminUpdateEstacionamiento', userController.adminUpdateEstacionamiento);
 
 module.exports = router;

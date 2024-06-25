@@ -99,7 +99,6 @@
         <div class="field">
             <label for="sede" style="font-size: 88%;">Sede:</label>
             <select id="sede" onchange="mostrarEdificiosPorSede();">
-                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -109,7 +108,6 @@
         <div class="field">
             <label for="edificio" style="font-size: 88%;">Edificio:</label>
             <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
-                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -119,7 +117,6 @@
         <div class="field">
             <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
             <select id="estacionamiento">
-                <option value="0"></option>
             </select>
             <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
             <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
@@ -295,13 +292,23 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateEdificio = document.getElementById('edificio').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    console.log(`updateField: ${updateField}, newData: ${newData}, securityToken: ${securityToken}, updateEdificio: ${updateEdificio}`);
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateEdificio: updateEdificio }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateEdificio } = result.value;
+                        fetch('/usuarios/adminUpdateEdificio', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateEdificio: updateEdificio })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -330,13 +337,22 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateEstacionamiento = document.getElementById('estacionamiento').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateEstacionamiento: updateEstacionamiento }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateEstacionamiento } = result.value;
+                        fetch('/usuarios/adminUpdateEstacionamiento', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateEstacionamiento: updateEstacionamiento })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',

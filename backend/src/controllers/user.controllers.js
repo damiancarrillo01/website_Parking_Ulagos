@@ -155,3 +155,59 @@ exports.adminUpdateSede = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
+
+exports.adminUpdateEdificio = async (req, res) => {
+    const { updateField, newData, securityToken, updateEdificio } = req.body; 
+
+    console.log('updateField:', updateField); 
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+    console.log('updateEdificio:', updateEdificio);
+
+    try {
+        if (updateField == 'dato1') {
+        const result = await pool.query(
+            'UPDATE edificios SET nombre_edificio=$1 WHERE id_edificio= $2',
+            [newData, updateEdificio]
+        );
+        ;}
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminUpdateEdificio');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminUpdateEstacionamiento = async (req, res) => {
+    const { updateField, newData, securityToken, updateEstacionamiento } = req.body; 
+
+    console.log('updateField:', updateField); 
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+    console.log('updateEstacionamiento:', updateEstacionamiento);
+
+    try {
+        if (updateField == 'dato1') {
+        const result = await pool.query(
+            'UPDATE espacio_estacionamiento SET tamaño_estacionamiento=$1 WHERE id_espacio= $2',
+            [newData, updateEstacionamiento]
+        );
+        ;}
+        if (updateField == 'dato2') {
+        const result = await pool.query(
+            'UPDATE espacio_estacionamiento SET tipo_vehiculo=$1 WHERE id_espacio= $2',
+            [newData, updateEstacionamiento]
+        );
+        ;}
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminUpdateEstacionamiento');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
