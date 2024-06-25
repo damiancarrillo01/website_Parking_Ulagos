@@ -32,6 +32,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../../frontend/inicio.html'));
 });
 
+app.get('/vehiculos', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../frontend/principal.html'));
+});
+
 //app.post('/sedes', userRoutes);
 //app.post('/principal', userRoutes);
 

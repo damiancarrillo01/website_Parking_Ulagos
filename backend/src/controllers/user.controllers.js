@@ -68,7 +68,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
 exports.sedes = async(req,res) => {
     const idboton =req.body
-    const id_usuario = req.session.usuarioId; 
+    const id_usuario = global.usuarioId;
     console.log(idboton)
     console.log('ID de Usuario en sedes:', id_usuario);
     if (!id_usuario) {
@@ -128,7 +128,7 @@ exports.registroAuto = async (req, res) => {
 };
 
 exports.vehiculos = async (req,res)=>{
-    const id_usuario = req.session.usuarioId;  // Obtén el ID del usuario de la sesión
+    const id_usuario = global.usuarioId;  // Obtén el ID del usuario de la sesión
     console.log(id_usuario)
     if (!id_usuario) {
         return res.status(401).send('Usuario no autenticado');
