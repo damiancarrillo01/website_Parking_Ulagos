@@ -108,15 +108,15 @@ exports.admin = async (req, res) => {
     try {
         // Se obtienen datos de base de datos 
         const { rows: datos_sedes } = await pool.query(
-            'SELECT id_sede, nombre_sede FROM sedes'
+            'SELECT id_sede, nombre_sede FROM sedes ORDER BY id_sede'
         );
 
         const { rows: datos_edificios } = await pool.query(
-            'SELECT id_edificio, nombre_edificio, id_sede AS id_sede_edificio FROM edificios'
+            'SELECT id_edificio, nombre_edificio, id_sede AS id_sede_edificio FROM edificios ORDER BY id_edificio'
         );
 
         const { rows: datos_estacionamietos } = await pool.query(
-            'SELECT id_espacio, id_edificio AS id_edificio_estacionamiento FROM espacio_estacionamiento'
+            'SELECT id_espacio, id_edificio AS id_edificio_estacionamiento FROM espacio_estacionamiento ORDER BY id_espacio'
         );
 
         // Se envían datos a página
