@@ -199,7 +199,7 @@
             if (`edificio${Estacionamientos.id_edificio_estacionamiento}` == edificioSeleccionado) {
                 const estacionamiento = document.createElement('option');
                 estacionamiento.setAttribute('value', `estacionamiento${Estacionamientos.id_espacio}`);
-                estacionamiento.textContent = Estacionamientos.id_espacio;
+                estacionamiento.textContent = `Estacionamiento ${Estacionamientos.id_espacio}`;
                 estacionamientosContainer.appendChild(estacionamiento);
             };
         });
