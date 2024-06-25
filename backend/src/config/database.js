@@ -12,7 +12,15 @@ const pool = new Pool({
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   }
 });
-
+/*
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'postgres',
+  password: '5473',
+  port: 5432,
+});  
+*/
 const connect = async () => {
   let client;
   try {
