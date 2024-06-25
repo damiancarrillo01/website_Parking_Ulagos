@@ -50,20 +50,23 @@ exports.registroUsuario = async (req, res) => {
 };
 
 exports.inicioSesionUsuario = async (req, res) => {
-    const { correo, contraseña } = req.body;
+    const { correo, contraseña,tipoUsuario } = req.body;
 
     console.log('Correo:', correo);
     console.log('Contraseña:', contraseña);
+    console.log('Tipo de Usuario:', tipoUsuario);
     
     try {
         const result = await pool.query(
-            'SELECT id_usuario, correo, contraseña FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
+            'SELECT id_usuario, correo, contraseña,tipousuario FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
         if (result.rows.length > 0) {
             global.usuarioId = result.rows[0].id_usuario;
             console.log('ID de Usuario:', global.usuarioId);
-            res.redirect('/sedes.html');
+            global.tipoUsuario = result.rows[0].tipoUsuario;
+            console.log('Tipo de Usuario:', global.tipoUsuario);
+            res.redirect('/inicio.html');
         } else {
             res.status(400).send('Este usuario no existe');
         }
