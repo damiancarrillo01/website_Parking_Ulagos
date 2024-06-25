@@ -48,25 +48,23 @@ exports.registroUsuario = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
-
 exports.inicioSesionUsuario = async (req, res) => {
-    const { correo, contraseña,tipoUsuario } = req.body;
+    const { correo, contraseña } = req.body;
 
     console.log('Correo:', correo);
     console.log('Contraseña:', contraseña);
-    console.log('Tipo de Usuario:', tipoUsuario);
-    
+
     try {
         const result = await pool.query(
-            'SELECT id_usuario, correo, contraseña,tipo_usuario FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
+            'SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2',
             [correo, contraseña]
         );
         if (result.rows.length > 0) {
             global.usuarioId = result.rows[0].id_usuario;
             console.log('ID de Usuario:', global.usuarioId);
-            global.tipoUsuario = result.rows[3].tipoUsuario;
+            global.tipoUsuario = result.rows[0].tipo_usuario;  // Corrección aquí
             console.log('Tipo de Usuario:', global.tipoUsuario);
-            res.redirect('/inicio.html');
+            res.json({ tipo_usuario: result.rows[0].tipo_usuario });  // Enviar tipo_usuario como JSON
         } else {
             res.status(400).send('Este usuario no existe');
         }
@@ -75,6 +73,7 @@ exports.inicioSesionUsuario = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
+
 
 exports.sedes = async(req,res) => {
     const idboton =req.body
