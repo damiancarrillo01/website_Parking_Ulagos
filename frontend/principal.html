@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservar Estacionamiento</title>
+    <!-- CSS de Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Script de Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <!-- Enlace a Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Enlace a SweetAlert -->
@@ -20,7 +28,7 @@
         }
         .header {
             width: 100%;
-            background-color: #0056b3;
+            background-color: #003DA6;
             color: #fff;
             display: flex;
             justify-content: space-between;
@@ -159,7 +167,14 @@
 </div>
 
 <button class="reserve-button" onclick="location.href='confirmar.html'">Reservar</button>
+<!-- CSS de Select2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
 
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Script de Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('horaButton').addEventListener('click', function() {
@@ -204,11 +219,11 @@
                     <button id="registrarVehiculoButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 100%; margin-bottom: 20px;">
                         Registrar Vehículo
                     </button>
-                    <form id="formRegistrarVehiculo" style="display: none; flex-direction: column; gap: 10px;">
+                    <form id="formRegistrarVehiculo" style="display: none; flex-direction: column; gap: 10px;" method="POST">
                         <label for="patente">Patente:</label>
                         <input type="text" id="patente" class="swal2-input" placeholder="Ingresa la patente">
-                        <label for="tipo">Tipo:</label>
-                        <select id="tipo" class="swal2-select" style="width: 80%;">
+                        <label for="TipoVehiculo">TipoVehiculo:</label>
+                        <select id="TipoVehiculo" class="swal2-select" style="width: 80%;">
                             <option value="auto">Auto</option>
                             <option value="camioneta">Camioneta</option>
                             <option value="moto">Moto</option>
@@ -219,7 +234,7 @@
                         <input type="text" id="modelo" class="swal2-input" placeholder="Ingresa el modelo">
                         <label for="tamano">Tamaño:</label>
                         <select id="tamano" class="swal2-select" style="width: 80%;">
-                            <option value="pequeno">Pequeño</option>
+                            <option value="pequeño">Pequeño</option>
                             <option value="mediano">Mediano</option>
                             <option value="grande">Grande</option>
                         </select>
@@ -245,52 +260,57 @@
                     e.preventDefault();
                     // Validación de campos y acciones necesarias
                     const patente = document.getElementById('patente').value;
-                    const tipo = document.getElementById('tipo').value;
+                    const TipoVehiculo = document.getElementById('TipoVehiculo').value;
                     const color = document.getElementById('color').value;
                     const modelo = document.getElementById('modelo').value;
                     const tamano = document.getElementById('tamano').value;
 
-                    if (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "") {
+                    console.log('patente:', patente);
+                    console.log('TipoVehiculo:', TipoVehiculo);
+                    console.log('color:', color);
+                    console.log('modelo:', modelo);
+                    console.log('tamaño:', tamano);
+
+
+                    if (patente === "" || TipoVehiculo === "" || color === "" || modelo === "" || tamano === "") {
                         Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
                         return false;
                     } else {
-                        Swal.fire('Datos confirmados', '', 'success');
+                        $.ajax({
+                        type: 'POST',
+                        url: "/usuarios/principal",
+                        data: {
+                            patente: patente,
+                            TipoVehiculo: TipoVehiculo,
+                            color: color,
+                            modelo: modelo,
+                            tamano: tamano,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            console.log('Datos enviados exitosamente');
+                            Swal.fire({
+                                title: 'Datos modificados correctamente',
+                                icon: 'success',
+                                timer: 2000, 
+                                showConfirmButton: false,
+                            });
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        },
+                        error: function (error) {
+                            console.error('Error al enviar los datos: ', error);
+                            Swal.fire('Error al enviar datos al servidor', '', 'error');
+                        }
+                    });
                     }
                 });
             },
-            preConfirm: () => {
-                const patente = document.getElementById('patente').value;
-                const tipo = document.getElementById('tipo').value;
-                const color = document.getElementById('color').value;
-                const modelo = document.getElementById('modelo').value;
-                const tamano = document.getElementById('tamano').value;
-
-                if (document.getElementById('formRegistrarVehiculo').style.display === 'flex' && 
-                    (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "")) {
-                    Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
-                    return false;
-                }
-                return {
-                    vehiculo: document.getElementById('vehiculoSelect').value,
-                    registro: {
-                        patente,
-                        tipo,
-                        color,
-                        modelo,
-                        tamano
-                    }
-                };
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                console.log("Vehículo seleccionado o registrado:", result.value);
-                // Aquí puedes realizar las acciones necesarias con el vehículo seleccionado o registrado
-            }
-        });
+        })
     });
 
     function selectSpace(element) {
-        // Toggle selection of the parking space
         if (element.classList.contains('selected')) {
             element.classList.remove('selected');
             element.style.border = 'none';
