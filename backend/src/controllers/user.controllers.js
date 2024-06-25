@@ -4,13 +4,7 @@ const { pool } = require('../config/database');
 exports.registroUsuario = async (req, res) => {
     const { nombre, apellido, correo, contraseña, confirmarContraseña } = req.body;
     let tipoUsuario;
-
-    console.log('Nombre:', nombre);
-    console.log('Apellido:', apellido);
-    console.log('Correo:', correo);
-    console.log('Contraseña:', contraseña);
-    console.log('Confirmar Contraseña:', confirmarContraseña);
-
+    
     if (correo.endsWith('@alumnos.ulagos.cl')) {
         tipoUsuario = 'Estudiante';
     } else if (correo.endsWith('@ulagos.cl')) {
@@ -22,22 +16,26 @@ exports.registroUsuario = async (req, res) => {
     console.log('TipoUsuario:', tipoUsuario);
 
     try {
+        const correoExistente = await pool.query('SELECT correo FROM usuarios WHERE correo = $1', [correo]);
+
+        if (correoExistente.rowCount > 0) {
+            return res.status(400).send("correo en uso")
+        }
+
         const contraseñaRegex = /^(?=.*[A-Z])(?=.*\W).{10,}$/;
 
         if (!contraseñaRegex.test(contraseña)) {
             return res.status(400).send('La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres.');
-        }
-        else if (contraseña !== confirmarContraseña) {
+        } else if (contraseña !== confirmarContraseña) {
             return res.status(400).send('Las contraseñas no coinciden');
         }
 
         const result = await pool.query(
-            'INSERT INTO Usuarios (Correo, Contrasena, Nombre, Apellido, TipoUsuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            'INSERT INTO Usuarios (Correo, Contraseña, Nombre, Apellido, Tipo_Usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [correo, contraseña, nombre, apellido, tipoUsuario]
         );
 
-        //res.send('Datos recibidos y procesados con éxito');
-        res.redirect('/')
+        res.redirect('/');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
@@ -49,20 +47,100 @@ exports.inicioSesionUsuario = async (req, res) => {
 
     console.log('Correo:', correo);
     console.log('Contraseña:', contraseña);
-
+    
     try {
         const result = await pool.query(
-            'SELECT * FROM Usuarios WHERE Correo = $1 AND Contrasena = $2',
+            'SELECT id_usuario,correo,contraseña FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
-
         if (result.rows.length > 0) {
-            res.redirect('/sedes.html');
+            const id_usuario = result.rows[0].id_usuario; // Aquí obtienes el id_usuario
+            req.session.usuarioId = id_usuario; // Guarda el id_usuario en la sesión
+
+            console.log('ID de Usuario:', id_usuario);
+            res.redirect('/sedes.html')
         } else {
-            res.status(400).send('Correo o contraseña incorrectos');
+            res.status(400).send('Este usuario no existe');
         }
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
     }
 };
+exports.sedes = async(req,res) => {
+    const idboton =req.body
+    const id_usuario = req.session.usuarioId; 
+    console.log(idboton)
+    console.log('ID de Usuario en sedes:', id_usuario);
+    if (!id_usuario) {
+        return res.status(401).send('Usuario no autenticado');
+    }
+
+    try {
+        // Realiza cualquier lógica adicional si es necesario
+
+        // Responder con un JSON que indique al frontend que redirija
+        res.status(200).json({ redirectUrl: '/principal.html' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+}
+exports.registroAuto = async (req, res) => {
+    const { patente, TipoVehiculo, color, modelo, tamano } = req.body;
+    const id_usuario = req.session.usuarioId;
+    console.log('usuarioid',id_usuario)
+    console.log('patente:', patente);
+    console.log('TipoVehiculo:', TipoVehiculo);
+    console.log('color:', color);
+    console.log('modelo:', modelo);
+    console.log('tamaño:', tamano);
+
+    // Validaciones básicas
+    if (!patente || !TipoVehiculo || !color || !modelo || !tamano) {
+        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+    
+
+    try {
+        // Guardar la información del automóvil en la base de datos
+        const result = await pool.query(
+            'INSERT INTO vehiculo (Patente, Tipo_Vehiculo, Color, Modelo, Tamaño) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [patente, TipoVehiculo, color, modelo, tamano]
+        );
+
+        const autoRegistrado = result.rows[0];
+
+        const poseer = await pool.query(
+            'INSERT INTO poseer_vehiculo (id_usuario,patente) VALUES ($1,$2) RETURNING *',
+            [id_usuario,patente]
+        )
+        res.status(201).json({
+            mensaje: 'Automóvil registrado exitosamente',
+            auto: autoRegistrado
+        });
+    } catch (error) {
+        console.error('Error al registrar el automóvil:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+exports.vehiculos = async (req,res)=>{
+    const id_usuario = req.session.usuarioId;  // Obtén el ID del usuario de la sesión
+    console.log(id_usuario)
+    if (!id_usuario) {
+        return res.status(401).send('Usuario no autenticado');
+    }
+
+    try {
+        const result = await pool.query(
+            'SELECT p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v join poseer_vehiculo p on p.patente=v.patente WHERE p.id_usuario =$1',
+            [id_usuario]
+        );
+        console.log(result.rows)
+        res.json(result.rows); // Envía los vehículos como respuesta JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener los vehículos');
+    }
+}
