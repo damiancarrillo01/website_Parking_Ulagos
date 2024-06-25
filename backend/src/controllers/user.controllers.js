@@ -50,15 +50,13 @@ exports.inicioSesionUsuario = async (req, res) => {
     
     try {
         const result = await pool.query(
-            'SELECT id_usuario,correo,contraseña FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
+            'SELECT id_usuario, correo, contraseña FROM Usuarios WHERE Correo = $1 AND Contraseña = $2',
             [correo, contraseña]
         );
         if (result.rows.length > 0) {
-            const id_usuario = result.rows[0].id_usuario; // Aquí obtienes el id_usuario
-            req.session.usuarioId = id_usuario; // Guarda el id_usuario en la sesión
-
-            console.log('ID de Usuario:', id_usuario);
-            res.redirect('/sedes.html')
+            global.usuarioId = result.rows[0].id_usuario;
+            console.log('ID de Usuario:', global.usuarioId);
+            res.redirect('/sedes.html');
         } else {
             res.status(400).send('Este usuario no existe');
         }
@@ -67,6 +65,7 @@ exports.inicioSesionUsuario = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
+
 exports.sedes = async(req,res) => {
     const idboton =req.body
     const id_usuario = req.session.usuarioId; 
@@ -87,26 +86,29 @@ exports.sedes = async(req,res) => {
     }
 }
 exports.registroAuto = async (req, res) => {
-    const { patente, TipoVehiculo, color, modelo, tamano } = req.body;
-    const id_usuario = req.session.usuarioId;
+    const { patente, tipo_vehiculo, color, modelo, tamaño } = req.body;
+    const id_usuario = global.usuarioId;
     console.log('usuarioid',id_usuario)
     console.log('patente:', patente);
-    console.log('TipoVehiculo:', TipoVehiculo);
+    console.log('tipo_vehiculo:', tipo_vehiculo);
     console.log('color:', color);
     console.log('modelo:', modelo);
-    console.log('tamaño:', tamano);
+    console.log('tamaño:', tamaño);
 
     // Validaciones básicas
-    if (!patente || !TipoVehiculo || !color || !modelo || !tamano) {
+    if (!patente || !tipo_vehiculo || !color || !modelo || !tamaño) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
     
+    if (!id_usuario) {
+        return res.status(400).json({ error: 'Usuario no autenticado' });
+    }
 
     try {
         // Guardar la información del automóvil en la base de datos
         const result = await pool.query(
             'INSERT INTO vehiculo (Patente, Tipo_Vehiculo, Color, Modelo, Tamaño) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [patente, TipoVehiculo, color, modelo, tamano]
+            [patente, tipo_vehiculo, color, modelo, tamaño]
         );
 
         const autoRegistrado = result.rows[0];
