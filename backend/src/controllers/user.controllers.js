@@ -9,6 +9,13 @@ exports.registroUsuario = async (req, res) => {
         tipoUsuario = 'Estudiante';
     } else if (correo.endsWith('@ulagos.cl')) {
         tipoUsuario = 'Docente';
+
+    }else if (correo.endsWith('@guardias.ulagos.cl')) {
+        tipoUsuario = 'Guardia';
+    
+    }else if (correo.endsWith('@admin.ulagos.cl')) {
+        tipoUsuario = 'Admin';
+        
     } else {
         return res.status(400).send('El correo electrónico debe ser de la Universidad de Los Lagos');
     }
