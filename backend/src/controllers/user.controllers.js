@@ -130,19 +130,22 @@ exports.registroAuto = async (req, res) => {
 exports.vehiculos = async (req,res)=>{
     const id_usuario = global.usuarioId;  // Obtén el ID del usuario de la sesión
     console.log(id_usuario)
+    // Verifica si el usuario está autenticado
     if (!id_usuario) {
         return res.status(401).send('Usuario no autenticado');
     }
 
     try {
+        // Consulta para obtener los vehículos del usuario
         const result = await pool.query(
-            'SELECT p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v join poseer_vehiculo p on p.patente=v.patente WHERE p.id_usuario =$1',
+            'SELECT p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v JOIN poseer_vehiculo p ON p.patente = v.patente WHERE p.id_usuario = $1',
             [id_usuario]
         );
-        console.log(result.rows)
+
+        console.log(result.rows); // Muestra los resultados en la consola para depuración
         res.json(result.rows); // Envía los vehículos como respuesta JSON
     } catch (err) {
-        console.error(err);
+        console.error('Error al obtener los vehículos:', err);
         res.status(500).send('Error al obtener los vehículos');
     }
-}
+};
