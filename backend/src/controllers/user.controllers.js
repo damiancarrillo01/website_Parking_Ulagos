@@ -71,18 +71,18 @@ exports.inicioSesionUsuario = async (req, res) => {
         [correo, contraseña]
       );
     } else {
-      global.result = await pool.query(
-        "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
-        [correo, contraseña],
-        (global.tipoUsuario = "guardia")
-      );
+      (global.Guardia = "guardia"),
+        (global.result = await pool.query(
+          "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
+          [correo, contraseña]
+        ));
     }
     if (result.rows.length > 0) {
       global.usuarioId = global.result.rows[0].id_usuario;
       console.log("ID de Usuario:", global.usuarioId); // Corrección aquí
       console.log("Tipo de Usuario:", global.tipoUsuario);
       if (tipoUsuario == "guardia") {
-        res.json({ tipo_usuario: global.tipoUsuario }); // Enviar tipo_usuario como JSON
+        res.json({ tipo_usuario: global.Guardia }); // Enviar tipo_usuario como JSON
       } else {
         res.json({ tipo_usuario: rows[0].tipoUsuario }); // Enviar tipo_usuario como JSON
       }
