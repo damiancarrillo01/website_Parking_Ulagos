@@ -66,12 +66,12 @@ exports.inicioSesionUsuario = async (req, res) => {
       correo.endsWith("@alumnos.ulagos.cl") ||
       correo.endsWith("@ulagos.cl")
     ) {
-       global.result = await pool.query(
+      global.result = await pool.query(
         "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
     } else {
-       global.result = await pool.query(
+      global.result = await pool.query(
         "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña],
         (global.tipoUsuario = "guardia")
@@ -81,7 +81,11 @@ exports.inicioSesionUsuario = async (req, res) => {
       global.usuarioId = global.result.rows[0].id_usuario;
       console.log("ID de Usuario:", global.usuarioId); // Corrección aquí
       console.log("Tipo de Usuario:", global.tipoUsuario);
-      res.json({ tipo_usuario: result.rows[0].tipo_usuario }); // Enviar tipo_usuario como JSON
+      if (tipoUsuario == "guardia") {
+        res.json({ tipo_usuario: global.tipoUsuario }); // Enviar tipo_usuario como JSON
+      } else {
+        res.json({ tipo_usuario: rows[0].tipoUsuario }); // Enviar tipo_usuario como JSON
+      }
     } else {
       res.status(400).send("Este usuario no existe");
     }
