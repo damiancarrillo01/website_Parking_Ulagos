@@ -60,32 +60,37 @@ exports.inicioSesionUsuario = async (req, res) => {
 
   console.log("Correo:", correo);
   console.log("Contraseña:", contraseña);
-
   try {
+    let result;
+    let tipoUsuario;
+
     if (
       correo.endsWith("@alumnos.ulagos.cl") ||
       correo.endsWith("@ulagos.cl")
     ) {
-      global.result = await pool.query(
+      result = await pool.query(
         "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
-    } else {
-      (global.Guardia = "guardia"),
-        (global.result = await pool.query(
-          "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
-          [correo, contraseña]
-        ));
-    }
-    if (result.rows.length > 0) {
-      global.usuarioId = global.result.rows[0].id_usuario;
-      console.log("ID de Usuario:", global.usuarioId); // Corrección aquí
-      console.log("Tipo de Usuario:", global.tipoUsuario);
-      if (tipoUsuario == "guardia") {
-        res.json({ tipo_usuario: global.Guardia }); // Enviar tipo_usuario como JSON
-      } else {
-        res.json({ tipo_usuario: rows[0].tipoUsuario }); // Enviar tipo_usuario como JSON
+      if (result.rows.length > 0) {
+        global.usuarioId = result.rows[0].id_usuario;
+        tipoUsuario = result.rows[0].tipo_usuario;
       }
+    } else {
+      result = await pool.query(
+        "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
+        [correo, contraseña]
+      );
+      if (result.rows.length > 0) {
+        global.usuarioId = result.rows[0].id_guardia;
+        tipoUsuario = "guardia";
+      }
+    }
+
+    if (result.rows.length > 0) {
+      console.log("ID de Usuario:", global.usuarioId);
+      console.log("Tipo de Usuario:", tipoUsuario);
+      res.json({ tipo_usuario: tipoUsuario });
     } else {
       res.status(400).send("Este usuario no existe");
     }
