@@ -64,7 +64,7 @@ exports.inicioSesionUsuario = async (req, res) => {
         if (result.rows.length > 0) {
             global.usuarioId = result.rows[0].id_usuario;
             console.log('ID de Usuario:', global.usuarioId);
-            global.tipoUsuario = result.rows[0].tipoUsuario;
+            global.tipoUsuario = result.rows[3].tipoUsuario;
             console.log('Tipo de Usuario:', global.tipoUsuario);
             res.redirect('/inicio.html');
         } else {
