@@ -91,122 +91,142 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Gestión de Estacionamientos</h1>
-
-    <form action="/admin" method="POST"></form>
-
-    <div class="field">
-        <label for="sede" style="font-size: 88%;">Sede:</label>
-        <select id="sede" onchange="mostrarEdificiosPorSede();">
-            <option value="sede0"></option>
-        </select>
-        <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar" id ="deletebutton" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+    <div class="container">
+        <h1>Gestión de Estacionamientos</h1>
+    
+        <form action="/admin" method="POST"></form>
+    
+        <div class="field">
+            <label for="sede" style="font-size: 88%;">Sede:</label>
+            <select id="sede" onchange="mostrarEdificiosPorSede();">
+                <option value="sede0"></option>
+            </select>
+            <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar" id ="deletebutton" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="field">
+            <label for="edificio" style="font-size: 88%;">Edificio:</label>
+            <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
+                <option value="edificio0"></option>
+            </select>
+            <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar" id ="deletebutton2" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="field">
+            <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
+            <select id="estacionamiento">
+                <option value="estacionamiento0"></option>
+            </select>
+            <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar"  id ="deletebutton3" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="button-container">
+            <button>Siguiente</button>
+        </div>
     </div>
-
-    <div class="field">
-        <label for="edificio" style="font-size: 88%;">Edificio:</label>
-        <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
-            <option value="edificio0"></option>
-        </select>
-        <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar" id ="deletebutton2" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
-    </div>
-
-    <div class="field">
-        <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
-        <select id="estacionamiento">
-            <option value="estacionamiento0"></option>
-        </select>
-        <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar"  id ="deletebutton3" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
-    </div>
-
-    <div class="button-container">
-        <button>Siguiente</button>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
-<!-- DATOS DE BASE DE DATOS EN OPCIONES -- INICIO -->
-<script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            // Se recolectan los datos de la base de datos
-            const response = await fetch('usuarios/admin'); // Ajusta la URL si es necesario
-            const data = await response.json();
-
-            // Secciones donde deben ir los datos
-            const sedesContainer = document.getElementById('sede');
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- DATOS DE BASE DE DATOS EN OPCIONES -- INICIO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Se recolectan los datos de la base de datos
+                const response = await fetch('usuarios/admin'); // Ajusta la URL si es necesario
+                const data = await response.json();
+    
+                // Secciones donde deben ir los datos
+                const sedesContainer = document.getElementById('sede');
+                const edificiosContainer = document.getElementById('edificio');
+                const estacionamientoContainer = document.getElementById('estacionamiento');
+    
+                // Mostrar las sedes
+                data.datos_sedes.forEach((sedes, index) => {
+                    const sede = document.createElement('option');
+                    sede.setAttribute('value', `sede${sedes.id_sede}`);
+                    sede.textContent = `${sedes.nombre_sede}`;
+                    sedesContainer.appendChild(sede);
+    
+                    // Seleccionar la primera sede por defecto
+                    if (index === 0) {
+                        sedesContainer.value = `sede${sedes.id_sede}`;
+                    }
+                });
+    
+                // Datos de Edificios y Estacionamientos para ser usados posteriormente
+                window.datosEdificios = data.datos_edificios;
+                window.datosEstacionamientos = data.datos_estacionamietos;
+    
+                // Mostrar edificios de la primera sede por defecto
+                mostrarEdificiosPorSede(true);
+    
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    
+        // Función para obtener sede seleccionada y mostrar edificios correspondientes
+        function mostrarEdificiosPorSede(isInitialLoad = false) {
             const edificiosContainer = document.getElementById('edificio');
-            const estacionamientoContainer = document.getElementById('estacionamiento');
-
-            // Mostrar las sedes
-            data.datos_sedes.forEach(sedes => {
-                const sede = document.createElement('option');
-                sede.setAttribute('value', `sede${sedes.id_sede}`);
-                sede.textContent = `${sedes.nombre_sede}`;
-                sedesContainer.appendChild(sede);
-            });
-
-            // Datos de Edificios y Estacionamientos para ser usados posteriormente
-            window.datosEdificios = data.datos_edificios;
-            window.datosEstacionamientos = data.datos_estacionamietos;
-            
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    });
-
-    // Función para obtener sede seleccionada
-    function mostrarEdificiosPorSede() {
-        const edificiosContainer = document.getElementById('edificio');
-        const sedeSeleccionada = document.getElementById('sede').value;
-
-        // Limpiar las opciones existentes
-        edificiosContainer.innerHTML = '<option value=""></option>';
-
-        // Mostrar los edificios de la sede seleccionada
-        window.datosEdificios.forEach(edificios => {
-            if (`sede${edificios.id_sede_edificio}` == sedeSeleccionada) {
+            const sedeSeleccionada = document.getElementById('sede').value;
+    
+            // Limpiar las opciones existentes
+            edificiosContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar los edificios de la sede seleccionada
+            const edificiosFiltrados = window.datosEdificios.filter(edificios => `sede${edificios.id_sede_edificio}` == sedeSeleccionada);
+            edificiosFiltrados.forEach((edificios, index) => {
                 const edificio = document.createElement('option');
                 edificio.setAttribute('value', `edificio${edificios.id_edificio}`);
                 edificio.textContent = edificios.nombre_edificio;
                 edificiosContainer.appendChild(edificio);
-            };
-        });
-
-        // Se limpian las opciones de estacionamiento al cambiar sede
-        const estacionamientoContainer = document.getElementById('estacionamiento');
-        estacionamientoContainer.innerHTML = '<option value=""></option>';
-    }
-
-    // Función para obtener sede seleccionada
-    function mostrarEstacionamientosPorEdificio() {
-        const estacionamientosContainer = document.getElementById('estacionamiento');
-        const edificioSeleccionado = document.getElementById('edificio').value;
-
-        // Limpiar las opciones existentes
-        estacionamientosContainer.innerHTML = '<option value=""></option>';
-
-        // Mostrar los edificios de la sede seleccionada
-        window.datosEstacionamientos.forEach(Estacionamientos => {
-            if (`edificio${Estacionamientos.id_edificio_estacionamiento}` == edificioSeleccionado) {
+    
+                // Seleccionar el primer edificio por defecto si es la carga inicial
+                if (isInitialLoad && index === 0) {
+                    edificiosContainer.value = `edificio${edificios.id_edificio}`;
+                }
+            });
+    
+            // Limpiar los estacionamientos al cambiar de sede
+            const estacionamientoContainer = document.getElementById('estacionamiento');
+            estacionamientoContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar estacionamientos del primer edificio por defecto
+            if (isInitialLoad) {
+                mostrarEstacionamientosPorEdificio(true);
+            }
+        }
+    
+        // Función para obtener edificio seleccionado y mostrar estacionamientos correspondientes
+        function mostrarEstacionamientosPorEdificio(isInitialLoad = false) {
+            const estacionamientoContainer = document.getElementById('estacionamiento');
+            const edificioSeleccionado = document.getElementById('edificio').value;
+    
+            // Limpiar las opciones existentes
+            estacionamientoContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar los estacionamientos del edificio seleccionado
+            const estacionamientosFiltrados = window.datosEstacionamientos.filter(estacionamientos => `edificio${estacionamientos.id_edificio_estacionamiento}` == edificioSeleccionado);
+            estacionamientosFiltrados.forEach((estacionamientos, index) => {
                 const estacionamiento = document.createElement('option');
-                estacionamiento.setAttribute('value', `estacionamiento${Estacionamientos.id_espacio}`);
-                estacionamiento.textContent = `Estacionamiento ${Estacionamientos.id_espacio}`;
-                estacionamientosContainer.appendChild(estacionamiento);
-            };
-        });
-    }
-
-</script>
-<!-- DATOS DE BASE DE DATOS EN OPCIONES -- FIN -->
+                estacionamiento.setAttribute('value', `estacionamiento${estacionamientos.id_espacio}`);
+                estacionamiento.textContent = `Estacionamiento ${estacionamientos.id_espacio}`;
+                estacionamientoContainer.appendChild(estacionamiento);
+    
+                // Seleccionar el primer estacionamiento por defecto si es la carga inicial
+                if (isInitialLoad && index === 0) {
+                    estacionamientoContainer.value = `estacionamiento${estacionamientos.id_espacio}`;
+                }
+            });
+        }
+    </script>
+    <!-- DATOS DE BASE DE DATOS EN OPCIONES -- FIN -->    
 
 <script>
     function showUpdateModal(buttonId) {
