@@ -32,8 +32,8 @@ exports.registroUsuario = async (req, res) => {
         }
 
         const result = await pool.query(
-            'INSERT INTO Usuarios (Correo, Contrasena, Nombre, Apellido, TipoUsuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [correo, contraseña, nombre, apellido, tipoUsuario]
+            'INSERT INTO usuarios (nombre, apellido, correo, contraseña, tipo_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [nombre, apellido, correo, contraseña, tipoUsuario]
         );
 
         //res.send('Datos recibidos y procesados con éxito');
