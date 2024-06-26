@@ -211,3 +211,164 @@ exports.adminUpdateEstacionamiento = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
+
+exports.adminCreateSede = async (req, res) => {
+    const { newData, securityToken } = req.body; 
+
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO sedes (nombre_sede) VALUES ($1);',
+            [newData]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminCreateSede');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminCreateEdificio = async (req, res) => {
+    const { updateSede, newData, securityToken } = req.body; 
+
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+    console.log('updateSede:', updateSede);
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO edificios (nombre_edificio, id_sede, cantidad_est) VALUES ($1, $2, $3);',
+            [newData, updateSede, 0]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminCreateEdificios');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminCreateEstacionamiento = async (req, res) => {
+    const { updateEdificio, newData, securityToken } = req.body; 
+
+    console.log('newData:', newData);
+    console.log('securityToken:', securityToken);
+    console.log('updateEdificio:', updateEdificio);
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO espacio_estacionamiento (tamaño_estacionamiento, id_edificio, estado, tipo_vehiculo) VALUES ($1, $2, $3, $4);',
+            [newData, updateEdificio, 'Disponible', 'Automóvil']
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminCreateEstacionamientos');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminDeleteSede = async (req, res) => { 
+    const { updateEstacionamiento, updateSede, updateEdificio, securityToken } = req.body; 
+
+    console.log('updateSede:', updateEstacionamiento);
+    console.log('updateSede:', updateSede);
+    console.log('updateEdificio:', updateEdificio);
+    console.log('securityToken:', securityToken);
+
+    try {
+        const result1 = await pool.query(
+            'DELETE FROM reservas WHERE id_espacio=$1;',
+            [updateEstacionamiento]
+        );
+
+        const result2 = await pool.query(
+            'DELETE FROM espacio_estacionamiento WHERE id_edificio=$1;',
+            [updateEdificio]
+        );
+
+        const result3 = await pool.query(
+            'DELETE FROM edificios WHERE id_sede=$1;',
+            [updateSede]
+        );
+
+        const result4 = await pool.query(
+            'DELETE FROM sedes WHERE id_sede=$1;',
+            [updateSede]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito'); 
+        console.log('En adminDeleteSede');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminDeleteEdificio = async (req, res) => { 
+    const { updateEstacionamiento, updateEdificio, securityToken } = req.body; 
+
+    console.log('updateSede:', updateEstacionamiento);
+    console.log('updateEdificio:', updateEdificio);
+    console.log('securityToken:', securityToken);
+
+    try {
+        const result1 = await pool.query(
+            'DELETE FROM reservas WHERE id_espacio=$1;',
+            [updateEstacionamiento]
+        );
+
+        const result2 = await pool.query(
+            'DELETE FROM espacio_estacionamiento WHERE id_edificio=$1;',
+            [updateEdificio]
+        );
+
+        const result3 = await pool.query(
+            'DELETE FROM edificios WHERE id_edificio=$1;',
+            [updateEdificio]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminDeleteEdificio');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
+
+exports.adminDeleteEstacionamiento = async (req, res) => { 
+    const { updateEstacionamiento, securityToken } = req.body; 
+
+    console.log('updateEstacionamiento:', updateEstacionamiento);
+    console.log('securityToken:', securityToken);
+
+    try {
+        const result1 = await pool.query(
+            'DELETE FROM reservas WHERE id_espacio=$1;',
+            [updateEstacionamiento]
+        );
+
+        const result2 = await pool.query(
+            'DELETE FROM espacio_estacionamiento WHERE id_espacio=$1;',
+            [updateEstacionamiento]
+        );
+
+        //res.send('Datos recibidos y procesados con éxito');
+        console.log('En adminDeleteEstacionamiento');
+        res.redirect('/admin1.html');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error procesando los datos');
+    }
+};
