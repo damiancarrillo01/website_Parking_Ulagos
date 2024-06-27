@@ -494,22 +494,22 @@
                 preConfirm: () => {
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value;
                     const updateSede = document.getElementById('sede').value;
-                    const updateEdificio = document.getElementById('edificio').value;
-                    const updateEstacionamiento = document.getElementById('estacionamiento').value;
+                    //const updateEdificio = document.getElementById('edificio').value;
+                    //const updateEstacionamiento = document.getElementById('estacionamiento').value;
                     if (!securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateSede: updateSede, updateEdificio: updateEdificio, updateEstacionamiento: updateEstacionamiento, securityToken: securityToken }
+                    return { updateSede: updateSede, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const { updateSede, updateEdificio, updateEstacionamiento, securityToken } = result.value;
+                    const { updateSede, securityToken } = result.value;
                         fetch('/usuarios/adminDeleteSede', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ updateSede: updateSede, updateEdificio: updateEdificio, updateEstacionamiento: updateEstacionamiento, securityToken: securityToken })
+                            body: JSON.stringify({ updateSede: updateSede, securityToken: securityToken })
                     });
                     Swal.fire({
                         icon: 'success',
@@ -533,21 +533,21 @@
                 preConfirm: () => {
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
                     const updateEdificio = document.getElementById('edificio').value;
-                    const updateEstacionamiento = document.getElementById('estacionamiento').value;
+                    //const updateEstacionamiento = document.getElementById('estacionamiento').value;
                     if (!securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateEdificio: updateEdificio, updateEstacionamiento: updateEstacionamiento, securityToken: securityToken }
+                    return { updateEdificio: updateEdificio, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const { updateEdificio, updateEstacionamiento, securityToken } = result.value;
+                    const { updateEdificio, securityToken } = result.value;
                         fetch('/usuarios/adminDeleteEdificio', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ updateEdificio: updateEdificio, updateEstacionamiento: updateEstacionamiento, securityToken: securityToken })
+                            body: JSON.stringify({ updateEdificio: updateEdificio, securityToken: securityToken })
                     });
                     Swal.fire({
                         icon: 'success',

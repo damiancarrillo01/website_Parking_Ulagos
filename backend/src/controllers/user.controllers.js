@@ -278,30 +278,38 @@ exports.adminCreateEstacionamiento = async (req, res) => {
 };
 
 exports.adminDeleteSede = async (req, res) => { 
-    const { updateEstacionamiento, updateSede, updateEdificio, securityToken } = req.body; 
+    const { updateSede, securityToken } = req.body; 
 
-    console.log('updateSede:', updateEstacionamiento);
     console.log('updateSede:', updateSede);
-    console.log('updateEdificio:', updateEdificio);
     console.log('securityToken:', securityToken);
 
     try {
+        // Borra espacios de estacionamiento de sede en cuestión en reservas
         const result1 = await pool.query(
-            'DELETE FROM reservas WHERE id_espacio=$1;',
-            [updateEstacionamiento]
-        );
-
-        const result2 = await pool.query(
-            'DELETE FROM espacio_estacionamiento WHERE id_edificio=$1;',
-            [updateEdificio]
-        );
-
-        const result3 = await pool.query(
-            'DELETE FROM edificios WHERE id_sede=$1;',
+            'DELETE FROM reservas WHERE id_espacio IN (SELECT esp_est.id_espacio FROM sedes, edificios, espacio_estacionamiento AS esp_est WHERE sedes.id_sede=$1 AND esp_est.id_edificio=edificios.id_edificio AND edificios.id_sede=sedes.id_sede);',
             [updateSede]
         );
 
+        // Borra espacios de estacionamiento de sede en cuestión
+        const result2 = await pool.query(
+            'DELETE FROM espacio_estacionamiento WHERE id_espacio IN (SELECT esp_est.id_espacio FROM sedes, edificios, espacio_estacionamiento AS esp_est WHERE sedes.id_sede=$1 AND esp_est.id_edificio=edificios.id_edificio AND edificios.id_sede=sedes.id_sede);',
+            [updateSede]
+        );
+
+        // Borra edificios de sede en cuestión en guardias
+        const result3 = await pool.query(
+            'DELETE FROM guardias WHERE id_edificio IN (SELECT edificios.id_edificio FROM sedes, edificios WHERE sedes.id_sede=$1 AND edificios.id_sede=sedes.id_sede);',
+            [updateSede]
+        );
+
+        // Borra edificios de sede en cuestión
         const result4 = await pool.query(
+            'DELETE FROM edificios WHERE id_edificio IN (SELECT edificios.id_edificio FROM sedes, edificios WHERE sedes.id_sede=$1 AND edificios.id_sede=sedes.id_sede);',
+            [updateSede]
+        );
+
+        // Borra sede en cuestión
+        const result5 = await pool.query(
             'DELETE FROM sedes WHERE id_sede=$1;',
             [updateSede]
         );
@@ -316,24 +324,32 @@ exports.adminDeleteSede = async (req, res) => {
 };
 
 exports.adminDeleteEdificio = async (req, res) => { 
-    const { updateEstacionamiento, updateEdificio, securityToken } = req.body; 
+    const { updateEdificio, securityToken } = req.body; 
 
-    console.log('updateSede:', updateEstacionamiento);
     console.log('updateEdificio:', updateEdificio);
     console.log('securityToken:', securityToken);
 
     try {
+        // Borra espacios de estacionamiento de edificio en cuestión en reservas
         const result1 = await pool.query(
-            'DELETE FROM reservas WHERE id_espacio=$1;',
-            [updateEstacionamiento]
-        );
-
-        const result2 = await pool.query(
-            'DELETE FROM espacio_estacionamiento WHERE id_edificio=$1;',
+            'DELETE FROM reservas WHERE id_espacio IN (SELECT esp_est.id_espacio FROM edificios, espacio_estacionamiento AS esp_est WHERE edificios.id_edificio=$1 AND esp_est.id_edificio=edificios.id_edificio);',
             [updateEdificio]
         );
 
+        // Borra espacios de estacionamiento de edificio en cuestión
+        const result2 = await pool.query(
+            'DELETE FROM espacio_estacionamiento WHERE id_espacio IN (SELECT esp_est.id_espacio FROM edificios, espacio_estacionamiento AS esp_est WHERE edificios.id_edificio=$1 AND esp_est.id_edificio=edificios.id_edificio);',
+            [updateEdificio]
+        );
+
+        // Borra edificio en cuestión en guardias
         const result3 = await pool.query(
+            'DELETE FROM guardias WHERE id_edificio IN (SELECT edificios.id_edificio FROM edificios WHERE edificios.id_edificio=$1);',
+            [updateEdificio]
+        );
+
+        // Borra edificio en cuestión
+        const result4 = await pool.query(
             'DELETE FROM edificios WHERE id_edificio=$1;',
             [updateEdificio]
         );
@@ -354,11 +370,13 @@ exports.adminDeleteEstacionamiento = async (req, res) => {
     console.log('securityToken:', securityToken);
 
     try {
+        // Borra espacio de estacionamiento en cuestión en reservas
         const result1 = await pool.query(
             'DELETE FROM reservas WHERE id_espacio=$1;',
             [updateEstacionamiento]
         );
 
+        // Borra espacio de estacionamiento en cuestión
         const result2 = await pool.query(
             'DELETE FROM espacio_estacionamiento WHERE id_espacio=$1;',
             [updateEstacionamiento]
