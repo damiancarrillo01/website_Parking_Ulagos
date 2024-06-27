@@ -219,10 +219,19 @@ exports.adminCreateSede = async (req, res) => {
     console.log('securityToken:', securityToken);
 
     try {
-        const result = await pool.query(
-            'INSERT INTO sedes (nombre_sede) VALUES ($1);',
+        const result1 = await pool.query(
+            'SELECT * FROM sedes WHERE nombre_sede=$1;',
             [newData]
         );
+ 
+        if (result1.rows.length > 0) {
+            console.log('¡La sede ya existe!');
+        } else {
+            const result2 = await pool.query(
+                'INSERT INTO sedes (nombre_sede) VALUES ($1);',
+                [newData]
+            );
+        };
 
         //res.send('Datos recibidos y procesados con éxito');
         console.log('En adminCreateSede');
@@ -241,10 +250,19 @@ exports.adminCreateEdificio = async (req, res) => {
     console.log('updateSede:', updateSede);
 
     try {
-        const result = await pool.query(
-            'INSERT INTO edificios (nombre_edificio, id_sede, cantidad_est) VALUES ($1, $2, $3);',
-            [newData, updateSede, 0]
+        const result1 = await pool.query(
+            'SELECT * FROM edificios WHERE nombre_edificio=$1;',
+            [newData]
         );
+
+        if (result1.rows.length > 0) {
+            console.log('¡El edificio ya existe!');
+        } else {
+            const result2 = await pool.query(
+                'INSERT INTO edificios (nombre_edificio, id_sede, cantidad_est) VALUES ($1, $2, $3);',
+                [newData, updateSede, 0]
+            );
+        };
 
         //res.send('Datos recibidos y procesados con éxito');
         console.log('En adminCreateEdificios');
@@ -262,11 +280,20 @@ exports.adminCreateEstacionamiento = async (req, res) => {
     console.log('securityToken:', securityToken);
     console.log('updateEdificio:', updateEdificio);
 
-    try {
-        const result = await pool.query(
-            'INSERT INTO espacio_estacionamiento (tamaño_estacionamiento, id_edificio, estado, tipo_vehiculo) VALUES ($1, $2, $3, $4);',
-            [newData, updateEdificio, 'Disponible', 'Automóvil']
+    try {/*
+        const result1 = await pool.query(
+            'SELECT * FROM sedes WHERE nombre_sede=$1;',
+            [newData]
         );
+
+        if (result1.rows.length > 0) {
+            console.log('¡El estacionamiento ya existe!');
+        } else {*/
+            const result2 = await pool.query(
+                'INSERT INTO espacio_estacionamiento (tamaño_estacionamiento, id_edificio, estado, tipo_vehiculo) VALUES ($1, $2, $3, $4);',
+                [newData, updateEdificio, 'Disponible', 'Automóvil']
+            );
+        //};
 
         //res.send('Datos recibidos y procesados con éxito');
         console.log('En adminCreateEstacionamientos');
