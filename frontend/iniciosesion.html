@@ -94,6 +94,31 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        async function iniciarSesion(event) {
+            event.preventDefault();
+
+            const correo = document.getElementById('correo').value;
+            const contraseña = document.getElementById('contraseña').value;
+
+            const response = await fetch('/usuarios/iniciosesion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ correo, contraseña })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Tipo de Usuario:', data.tipo_usuario);
+                // Redirigir a la URL proporcionada en el JSON
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error('Error en la autenticación');
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -103,10 +128,10 @@
     </div>
     <div class="content-section">
         <h1>Iniciar Sesión</h1>
-        <form action="/usuarios/iniciosesion" method="POST">
+        <form onsubmit="iniciarSesion(event)">
             <input type="email" id="correo" name="correo" placeholder="Correo institucional" required>
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
-            <button type="submit" onclick="location.href='sedes.html'">Iniciar Sesión</button>
+            <button type="submit">Iniciar Sesión</button>
         </form>
         <div class="links">
             <a href="registro.html">¿No tienes cuenta? Regístrate</a>

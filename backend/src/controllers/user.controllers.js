@@ -55,15 +55,23 @@ exports.registroUsuario = async (req, res) => {
     res.status(500).send("Error procesando los datos");
   }
 };
+
 exports.inicioSesionUsuario = async (req, res) => {
   const { correo, contraseña } = req.body;
 
+  // Validar que los campos no estén vacíos
+  if (!correo || !contraseña) {
+    return res.status(400).send("Por favor completa todos los campos.");
+  }
+
   console.log("Correo:", correo);
   console.log("Contraseña:", contraseña);
+
   try {
     let result;
     let tipoUsuario;
 
+    // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
     if (
       correo.endsWith("@alumnos.ulagos.cl") ||
       correo.endsWith("@ulagos.cl")
@@ -76,7 +84,9 @@ exports.inicioSesionUsuario = async (req, res) => {
         global.usuarioId = result.rows[0].id_usuario;
         tipoUsuario = result.rows[0].tipo_usuario;
       }
-    } else {
+    }
+    // Consulta para guardias
+    else {
       result = await pool.query(
         "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
@@ -90,7 +100,9 @@ exports.inicioSesionUsuario = async (req, res) => {
     if (result.rows.length > 0) {
       console.log("ID de Usuario:", global.usuarioId);
       console.log("Tipo de Usuario:", tipoUsuario);
-      res.json({ tipo_usuario: tipoUsuario });
+
+      // Redirigir según el tipo de usuario
+      res.json({ tipo_usuario: tipoUsuario, redirectUrl: "/sedes.html" });
     } else {
       res.status(400).send("Este usuario no existe");
     }
@@ -181,5 +193,77 @@ exports.vehiculos = async (req, res) => {
   } catch (err) {
     console.error("Error al obtener los vehículos:", err);
     res.status(500).send("Error al obtener los vehículos");
+  }
+};
+exports.reserva = async (req, res) => {
+  const { edificio, patente, id_espacio, hora_entrada, hora_salida } = req.body;
+  const id_usuario = global.usuarioId;
+
+  console.log("usuarioid : ", id_usuario);
+  console.log("Edificio : ", edificio);
+  console.log("hora entrada : ", hora_entrada);
+  console.log("hora salida : ", hora_salida);
+  console.log("Espacio : ", id_espacio);
+
+  // Convertir id_espacio a entero
+  const id_espacio_int = parseInt(id_espacio, 10); // Base 10
+
+  // Validaciones básicas
+  if (!edificio || !patente || !hora_entrada || !hora_salida) {
+    return res.status(400).json({ error: "Todos los campos son obligatorios" });
+  }
+
+  if (!id_usuario) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    // Select para verificar si ya existe una reserva
+    const resultUsu = await pool.query(
+      "SELECT id_usuario FROM reservas WHERE id_usuario = $1",
+      [id_usuario]
+    );
+
+    if (resultUsu.rows.length > 0) {
+      return res.status(121).json({ error: "Ya tienes una reserva" });
+    } else {
+      const id_edificio = await pool.query(
+        "SELECT id_edificio FROM edificios WHERE nombre_edificio = $1",
+        [edificio]
+      );
+
+      // Extraer horas y minutos de las cadenas de hora_entrada y hora_salida
+      const hora_entrada_parts = hora_entrada.split(':');
+      const hora_salida_parts = hora_salida.split(':');
+
+      // Obtener la fecha actual
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1; // Month is zero-indexed, so add 1
+      const day = now.getDate();
+
+      // Construir fechas completas
+      const hora_entrada_completa = `${year}-${month}-${day} ${hora_entrada_parts[0]}:${hora_entrada_parts[1]}:00`;
+      const hora_salida_completa = `${year}-${month}-${day} ${hora_salida_parts[0]}:${hora_salida_parts[1]}:00`;
+
+      const result = await pool.query(
+        "INSERT INTO reservas (id_edificio, id_espacio, id_usuario, patente, hora_entrada_reserva, hora_salida_reserva) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+        [id_edificio.rows[0].id_edificio, id_espacio_int, id_usuario, patente, hora_entrada_completa, hora_salida_completa]
+      );
+
+      const updateEstado= await pool.query(
+        "UPDATE espacio_estacionamiento SET estado=$1 WHERE id_espacio = $2",
+        ["Reservado",id_espacio_int]
+      )
+
+      const reservaRegistrada = result.rows[0];
+      res.status(201).json({
+        mensaje: "Reserva registrada exitosamente",
+        reserva: reservaRegistrada,
+      });
+    }
+  } catch (error) {
+    console.error("Error al registrar la reserva:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
