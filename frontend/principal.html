@@ -1,366 +1,531 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservar Estacionamiento</title>
     <!-- Enlace a Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <!-- Enlace a SweetAlert -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            width: 100%;
-            background-color: #0056b3;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-        .header .menu-icon, .header .location-icon {
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-        }
-        .header h1 .location-icon {
-            margin-right: 10px;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .button-container button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            background-color: #e6f0ff;
-            color: #0056b3;
-            font-size: 16px;
-        }
-        .button-container button:hover {
-            background-color: #cce0ff;
-        }
-        .map {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .map-column {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .parking-space {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .green { background-color: #00ff00; }
-        .yellow { background-color: #ffff00; }
-        .red { background-color: #ff0000; }
-        .divider {
-            width: 2px;
-            background-color: #000;
-        }
-        .divider::before {
-            content: '';
-            display: block;
-            height: 100%;
-            border-left: 2px dashed #000;
-        }
-        .reserve-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            background-color: #0056b3;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .reserve-button:hover {
-            background-color: #004494;
-        }
-        /* Estilos del selector de hora digital */
-        .digital-clock {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            font-family: 'Courier New', Courier, monospace;
-            margin-bottom: 20px;
-        }
-        .digital-clock input {
-            width: 3em;
-            text-align: center;
-            font-size: 1em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin: 0 5px;
-        }
-        .swal2-popup .swal2-html-container {
-            padding: 20px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f2f2f2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .header {
+        width: 100%;
+        background-color: #0056b3;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+      .header .menu-icon,
+      .header .location-icon {
+        font-size: 24px;
+        cursor: pointer;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+      }
+      .header h1 .location-icon {
+        margin-right: 10px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .button-container button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        background-color: #e6f0ff;
+        color: #0056b3;
+        font-size: 16px;
+      }
+      .button-container button:hover {
+        background-color: #cce0ff;
+      }
+      .map {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      .map-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .parking-space {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .green {
+        background-color: #00ff00;
+      }
+      .yellow {
+        background-color: #ffff00;
+      }
+      .red {
+        background-color: #ff0000;
+      }
+      .divider {
+        width: 2px;
+        background-color: #000;
+      }
+      .divider::before {
+        content: "";
+        display: block;
+        height: 100%;
+        border-left: 2px dashed #000;
+      }
+      .reserve-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        background-color: #0056b3;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .reserve-button:hover {
+        background-color: #004494;
+      }
+      /* Estilos del selector de hora digital */
+      .digital-clock {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;
+        font-family: "Courier New", Courier, monospace;
+        margin-bottom: 20px;
+      }
+      .digital-clock input {
+        width: 3em;
+        text-align: center;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 0 5px;
+      }
+      .swal2-popup .swal2-html-container {
+        padding: 20px;
+      }
 
-        .swal2-popup .swal2-actions button {
-            margin: 5px;
-        }
+      .swal2-popup .swal2-actions button {
+        margin: 5px;
+      }
     </style>
-</head>
-<body>
-
-<div class="header">
-    <i class="fas fa-bars menu-icon"></i>
-    <h1><i class="fas fa-map-marker-alt location-icon"></i> Reservar Estacionamiento</h1>
-    <span></span>
-</div>
-
-<div class="button-container">
-    <button id="horaButton">Hora</button>
-    <button id="vehiculoButton">Vehículo</button>
-    <button id="edificioButton">Edificio</button>
-</div>
-
-<div class="map">
-    <div class="map-column">
-        <div class="parking-space green" onclick="selectSpace(this)"></div>
-        <div class="parking-space red" onclick="selectSpace(this)"></div>
-        <div class="parking-space yellow" onclick="selectSpace(this)"></div>
-        <div class="parking-space red" onclick="selectSpace(this)"></div>
-        <div class="parking-space green" onclick="selectSpace(this)"></div>
+  </head>
+  <body>
+    <div class="header">
+      <i class="fas fa-bars menu-icon"></i>
+      <h1>
+        <i class="fas fa-map-marker-alt location-icon"></i> Reservar
+        Estacionamiento
+      </h1>
+      <span></span>
     </div>
-    <div class="divider"></div>
-    <div class="map-column">
+
+    <div class="button-container">
+      <button id="horaButton">Hora</button>
+      <button id="vehiculoButton">Vehículo</button>
+      <button id="edificioButton">Edificio</button>
+    </div>
+
+    <div class="map">
+      <div class="map-column">
+        <div class="parking-space green" onclick="selectSpace(this)"></div>
+        <div class="parking-space red" onclick="selectSpace(this)"></div>
+        <div class="parking-space yellow" onclick="selectSpace(this)"></div>
+        <div class="parking-space red" onclick="selectSpace(this)"></div>
+        <div class="parking-space green" onclick="selectSpace(this)"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="map-column">
         <div class="parking-space yellow" onclick="selectSpace(this)"></div>
         <div class="parking-space green" onclick="selectSpace(this)"></div>
         <div class="parking-space red" onclick="selectSpace(this)"></div>
         <div class="parking-space green" onclick="selectSpace(this)"></div>
         <div class="parking-space yellow" onclick="selectSpace(this)"></div>
+      </div>
     </div>
-</div>
 
-<button class="reserve-button" onclick="location.href='confirmar.html'">Reservar</button>
+    <button class="reserve-button" onclick="location.href='confirmar.html'">
+      Reservar
+    </button>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.getElementById('horaButton').addEventListener('click', function() {
-        Swal.fire({
-            title: 'Selecciona la hora de reserva',
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document
+        .getElementById("horaButton")
+        .addEventListener("click", function () {
+          Swal.fire({
+            title: "Selecciona la hora de reserva",
             html: `
-                <div class="digital-clock">
-                    <input type="number" id="horaInput" min="0" max="23" value="12">:
-                    <input type="number" id="minutoInput" min="0" max="59" value="00">
-                </div>
-            `,
+                  <div class="digital-clock">
+                      <input type="number" id="horaInput" min="0" max="23" value="12">:
+                      <input type="number" id="minutoInput" min="0" max="59" value="00">
+                  </div>
+              `,
             showCancelButton: true,
-            confirmButtonText: 'Confirmar Hora de Reserva',
-            cancelButtonText: 'Cancelar',
+            confirmButtonText: "Confirmar Hora de Reserva",
+            cancelButtonText: "Cancelar",
             preConfirm: () => {
-                const hora = document.getElementById('horaInput').value;
-                const minuto = document.getElementById('minutoInput').value;
-                if (hora === "" || minuto === "") {
-                    Swal.showValidationMessage('Por favor, ingresa una hora y minutos válidos.');
-                    return false;
-                }
-                return `${hora.padStart(2, '0')}:${minuto.padStart(2, '0')}`;
-            }
-        }).then((result) => {
+              const hora = document.getElementById("horaInput").value;
+              const minuto = document.getElementById("minutoInput").value;
+              if (hora === "" || minuto === "") {
+                Swal.showValidationMessage(
+                  "Por favor, ingresa una hora y minutos válidos."
+                );
+                return false;
+              }
+              return `${hora.padStart(2, "0")}:${minuto.padStart(2, "0")}`;
+            },
+          }).then((result) => {
             if (result.isConfirmed) {
-                console.log("Hora seleccionada:", result.value);
-                // Aquí puedes realizar las acciones necesarias con la hora seleccionada
+              console.log("Hora seleccionada:", result.value);
+              // Guardar la hora seleccionada en localStorage
+              localStorage.setItem("horaSeleccionada", result.value);
             }
+          });
         });
-    });
 
-    document.getElementById('vehiculoButton').addEventListener('click', function() {
-        Swal.fire({
-            title: 'Selecciona o registra tu vehículo',
+      document
+        .getElementById("vehiculoButton")
+        .addEventListener("click", function () {
+          Swal.fire({
+            title: "Selecciona o registra tu vehículo",
             html: `
-                <div style="text-align: left;">
-                    <h3>Vehículos Registrados</h3>
-                    <select id="vehiculoSelect" class="swal2-select" style="width: 80%; margin-bottom: 20px;">
-                        <option value="veh1">Veh 1</option>
-                        <option value="veh2">Veh 2</option>
-                    </select>
-                    <button id="registrarVehiculoButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 100%; margin-bottom: 20px;">
-                        Registrar Vehículo
-                    </button>
-                    <form id="formRegistrarVehiculo" style="display: none; flex-direction: column; gap: 10px;">
-                        <label for="patente">Patente:</label>
-                        <input type="text" id="patente" class="swal2-input" placeholder="Ingresa la patente">
-                        <label for="tipo">Tipo:</label>
-                        <select id="tipo" class="swal2-select" style="width: 80%;">
-                            <option value="auto">Auto</option>
-                            <option value="camioneta">Camioneta</option>
-                            <option value="moto">Moto</option>
-                        </select>
-                        <label for="color">Color:</label>
-                        <input type="text" id="color" class="swal2-input" placeholder="Ingresa el color">
-                        <label for="modelo">Modelo:</label>
-                        <input type="text" id="modelo" class="swal2-input" placeholder="Ingresa el modelo">
-                        <label for="tamano">Tamaño:</label>
-                        <select id="tamano" class="swal2-select" style="width: 80%;">
-                            <option value="pequeno">Pequeño</option>
-                            <option value="mediano">Mediano</option>
-                            <option value="grande">Grande</option>
-                        </select>
-                        <div id="confirmarDatosContainer" style="display: flex; justify-content: center;">
-                            <button id="confirmarDatosButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 50%;">
-                                Confirmar Datos
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            `,
+          <div style="text-align: left;">
+            <h3>Vehículos Registrados</h3>
+            <select id="vehiculoSelect" class="swal2-select" style="width: 80%; margin-bottom: 20px;">
+              <!-- Opciones se generarán dinámicamente con JavaScript -->
+            </select>
+            <button id="registrarVehiculoButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 100%; margin-bottom: 20px;">
+              Registrar Vehículo
+            </button>
+            <form id="formRegistrarVehiculo" style="display: none; flex-direction: column; gap: 10px;">
+              <label for="patente">Patente:</label>
+              <input type="text" id="patente" class="swal2-input" placeholder="Ingresa la patente">
+              <label for="tipo_vehiculo">Tipo de Vehiculo:</label>
+              <select id="tipo_vehiculo" class="swal2-select" style="width: 80%;">
+                <option value="auto">Auto</option>
+                <option value="camioneta">Camioneta</option>
+                <option value="moto">Moto</option>
+              </select>
+              <label for="color">Color:</label>
+              <input type="text" id="color" class="swal2-input" placeholder="Ingresa el color">
+              <label for="modelo">Modelo:</label>
+              <input type="text" id="modelo" class="swal2-input" placeholder="Ingresa el modelo">
+              <label for="tamaño">Tamaño:</label>
+              <select id="tamaño" class="swal2-select" style="width: 80%;">
+                <option value="pequeno">Pequeño</option>
+                <option value="mediano">Mediano</option>
+                <option value="grande">Grande</option>
+              </select>
+              <div id="confirmarDatosContainer" style="display: flex; justify-content: center;">
+                <button id="confirmarDatosButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; border: none; width: 50%;">
+                  Confirmar Datos
+                </button>
+              </div>
+            </form>
+          </div>
+        `,
             showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
             didOpen: () => {
-                document.getElementById('registrarVehiculoButton').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    ///document.getElementById('formRegistrarVehiculo').style.display = 'flex';
-                    const formRegistrarVehiculo = document.getElementById('formRegistrarVehiculo');
-                    formRegistrarVehiculo.style.display = formRegistrarVehiculo.style.display === 'none' ? 'flex' : 'none';
+              document
+                .getElementById("registrarVehiculoButton")
+                .addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const formRegistrarVehiculo = document.getElementById(
+                    "formRegistrarVehiculo"
+                  );
+                  formRegistrarVehiculo.style.display =
+                    formRegistrarVehiculo.style.display === "none"
+                      ? "flex"
+                      : "none";
                 });
-                document.getElementById('confirmarDatosButton').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Validación de campos y acciones necesarias
-                    const patente = document.getElementById('patente').value;
-                    const tipo = document.getElementById('tipo').value;
-                    const color = document.getElementById('color').value;
-                    const modelo = document.getElementById('modelo').value;
-                    const tamano = document.getElementById('tamano').value;
 
-                    if (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "") {
-                        Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
-                        return false;
-                    } else {
-                        Swal.fire('Datos confirmados', '', 'success');
-                    }
+              async function obtenerVehiculos() {
+                try {
+                  const response = await fetch("/usuarios/vehiculos", {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  });
+
+                  if (response.ok) {
+                    const vehiculos = await response.json();
+                    console.log("Vehículos registrados:", vehiculos);
+                    agregarVehiculosAlSelect(vehiculos);
+                  } else {
+                    console.error("Error al obtener los vehículos");
+                  }
+                } catch (error) {
+                  console.error("Error en la solicitud:", error);
+                }
+              }
+
+              function agregarVehiculosAlSelect(vehiculos) {
+                const vehiculoSelect =
+                  document.getElementById("vehiculoSelect");
+                vehiculoSelect.innerHTML = "";
+
+                vehiculos.forEach((vehiculo) => {
+                  const option = document.createElement("option");
+                  option.value = vehiculo.patente;
+                  option.text = `${vehiculo.modelo} - ${vehiculo.patente}`;
+                  vehiculoSelect.appendChild(option);
+                });
+              }
+
+              obtenerVehiculos();
+
+              document
+                .getElementById("confirmarDatosButton")
+                .addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const patente = document.getElementById("patente").value;
+                  const tipo_vehiculo = document.getElementById("tipo_vehiculo").value;
+                  const color = document.getElementById("color").value;
+                  const modelo = document.getElementById("modelo").value;
+                  const tamaño = document.getElementById("tamaño").value;
+
+                  console.log("patente:", patente);
+                  console.log("tipo_vehiculo:", tipo_vehiculo);
+                  console.log("color:", color);
+                  console.log("modelo:", modelo);
+                  console.log("tamaño:", tamaño);
+
+                  if (
+                    patente === "" ||
+                    tipo_vehiculo === "" ||
+                    color === "" ||
+                    modelo === "" ||
+                    tamaño === ""
+                  ) {
+                    Swal.showValidationMessage(
+                      "Por favor, completa todos los campos del formulario de registro."
+                    );
+                    return false;
+                  } else {
+                    fetch("/usuarios/principal", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                      },
+                      body: JSON.stringify({
+                        patente: patente,
+                        tipo_vehiculo: tipo_vehiculo,
+                        color: color,
+                        modelo: modelo,
+                        tamaño: tamaño,
+                      }),
+                    })
+                      .then((response) => {
+                        if (response.ok) {
+                          console.log("Datos enviados exitosamente");
+                          Swal.fire({
+                            title: "Datos modificados correctamente",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false,
+                          });
+                          setTimeout(() => {
+                            location.reload();
+                          }, 2000);
+                        } else {
+                          console.error("Error al enviar los datos");
+                          Swal.fire(
+                            "Error al enviar datos al servidor",
+                            "",
+                            "error"
+                          );
+                        }
+                      })
+                      .catch((error) => {
+                        console.error("Error en la solicitud:", error);
+                        Swal.fire(
+                          "Error al enviar datos al servidor",
+                          "",
+                          "error"
+                        );
+                      });
+                  }
                 });
             },
             preConfirm: () => {
-                const patente = document.getElementById('patente').value;
-                const tipo = document.getElementById('tipo').value;
-                const color = document.getElementById('color').value;
-                const modelo = document.getElementById('modelo').value;
-                const tamano = document.getElementById('tamano').value;
+              const patente = document.getElementById("patente").value;
+              const tipo_vehiculo = document.getElementById("tipo_vehiculo").value;
+              const color = document.getElementById("color").value;
+              const modelo = document.getElementById("modelo").value;
+              const tamaño = document.getElementById("tamaño").value;
 
-                if (document.getElementById('formRegistrarVehiculo').style.display === 'flex' && 
-                    (patente === "" || tipo === "" || color === "" || modelo === "" || tamano === "")) {
-                    Swal.showValidationMessage('Por favor, completa todos los campos del formulario de registro.');
-                    return false;
-                }
-                return {
-                    vehiculo: document.getElementById('vehiculoSelect').value,
-                    registro: {
-                        patente,
-                        tipo,
-                        color,
-                        modelo,
-                        tamano
-                    }
-                };
-            }
-        }).then((result) => {
+              if (
+                document.getElementById("formRegistrarVehiculo").style
+                  .display === "flex" &&
+                (patente === "" ||
+                  tipo_vehiculo === "" ||
+                  color === "" ||
+                  modelo === "" ||
+                  tamaño === "")
+              ) {
+                Swal.showValidationMessage(
+                  "Por favor, completa todos los campos del formulario de registro."
+                );
+                return false;
+              }
+              return {
+                vehiculo: document.getElementById("vehiculoSelect").value,
+                registro: {
+                  patente,
+                  tipo_vehiculo,
+                  color,
+                  modelo,
+                  tamaño,
+                },
+              };
+            },
+          }).then((result) => {
             if (result.isConfirmed) {
-                console.log("Vehículo seleccionado o registrado:", result.value);
-                // Aquí puedes realizar las acciones necesarias con el vehículo seleccionado o registrado
-            }
-        });
-    });
+              console.log(
+                "Vehículo seleccionado o registrado:",
+                result.value.vehiculo
+              );
 
-    function selectSpace(element) {
+              localStorage.setItem(
+                "vehiculoSeleccionada",
+                result.value
+                  ? result.value.vehiculo
+                  : "No hay vehículo seleccionado"
+              );
+            }
+          });
+        });
+      function selectSpace(element) {
         // Toggle selection of the parking space
-        if (element.classList.contains('selected')) {
-            element.classList.remove('selected');
-            element.style.border = 'none';
+        if (element.classList.contains("selected")) {
+          element.classList.remove("selected");
+          element.style.border = "none";
         } else {
-            element.classList.add('selected');
-            element.style.border = '2px solid #000';
+          element.classList.add("selected");
+          element.style.border = "2px solid #000";
         }
-    }
+      }
 
-    document.getElementById('edificioButton').addEventListener('click', function() {
-            var selectedSede = localStorage.getItem('selectedSede');
-            if (selectedSede === 'btnMeyer') {
-                Swal.fire({
-                    title: 'Selecciona Edificio',
-                    html: `
-                        <button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>
-                        
-                    `,
-                    showCancelButton: true,
-                    confirmButtonText: 'confirmar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Acciones para "Ed. Principal"
-                    }
-                });
-            } else if (selectedSede === 'btnChuyaca') {
-                Swal.fire({
-                    title: 'Selecciona Edificio',
-                    html: `
-                        <button id="centralButton" class="swal2-confirm swal2-styled">Central</button>
-                        <button id="itrButton" class="swal2-confirm swal2-styled">ITR</button>
-                        <button id="aulasVirtualesButton" class="swal2-confirm swal2-styled">Aulas Virtuales</button>
-                        <button id="saludButton" class="swal2-confirm swal2-styled">Salud</button>
-                        <button id="gimnasio1Button" class="swal2-confirm swal2-styled">Gimnasio 1</button>
-                    `,
-                    showCancelButton: true,
-                    showConfirmButton: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Acciones específicas para cada edificio
-                    }
-                });
+      document
+        .getElementById("edificioButton")
+        .addEventListener("click", function () {
+          var selectedSede = localStorage.getItem("selectedSede");
+          if (selectedSede === "btnMeyer") {
+            Swal.fire({
+              title: "Selecciona Edificio",
+              html: `<button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>`,
+              showCancelButton: true,
+              confirmButtonText: "Confirmar",
+              cancelButtonText: "Cancelar",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                let edificioSeleccionado = "";
+                const principalButton =
+                  document.getElementById("principalButton");
+                if (
+                  principalButton &&
+                  principalButton.classList.contains("swal2-styled")
+                ) {
+                  edificioSeleccionado = "Principal";
+                } else {
+                  edificioSeleccionado = "No se seleccionó ningún edificio";
+                }
+                localStorage.setItem(
+                  "edificioSeleccionado",
+                  edificioSeleccionado
+                );
+                console.log("Edificio seleccionado:", edificioSeleccionado);
+              }
+            });
+          } else if (selectedSede === "btnChuyaca") {
+            Swal.fire({
+              title: "Selecciona Edificio",
+              html: `
+            <div style="text-align: left;">
+                <h3>Edificios</h3>
+                <button class="swal2-confirm swal2-styled" id="centralButton" data-value="Central">Central</button>
+                <button class="swal2-confirm swal2-styled" id="itrButton" data-value="ITR">ITR</button>
+                <button class="swal2-confirm swal2-styled" id="aulasVirtualesButton" data-value="Aulas Virtuales">Aulas Virtuales</button>
+                <button class="swal2-confirm swal2-styled" id="saludButton" data-value="Salud">Salud</button>
+                <button class="swal2-confirm swal2-styled" id="gimnasio1Button" data-value="Gimnasio 1">Gimnasio 1</button>
+            </div>
+        `,
+              showCancelButton: true,
+              confirmButtonText: "Confirmar Edificio",
+              cancelButtonText: "Cancelar",
+              preConfirm: () => {
+                const selectedButton = document.querySelector(
+                  ".swal2-confirm.swal2-styled.selected"
+                );
+                if (!selectedButton) {
+                  Swal.showValidationMessage(
+                    "Por favor, selecciona un edificio."
+                  );
+                  return false;
+                }
+                return selectedButton.getAttribute("data-value");
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                console.log("Edificio seleccionado:", result.value);
+                // Guardar el edificio seleccionado en localStorage
+                localStorage.setItem("edificioSeleccionado", result.value);
+              }
+            });
 
-                // Añadir event listeners a los botones dentro del Swal
-                document.getElementById('centralButton').addEventListener('click', function() {
-                    Swal.close();
-                    // Acciones para "Central"
+            document
+              .querySelectorAll(".swal2-confirm.swal2-styled")
+              .forEach((button) => {
+                button.addEventListener("click", function () {
+                  document
+                    .querySelectorAll(".swal2-confirm.swal2-styled")
+                    .forEach((btn) => btn.classList.remove("selected"));
+                  this.classList.add("selected");
                 });
-                document.getElementById('itrButton').addEventListener('click', function() {
-                    Swal.close();
-                    // Acciones para "ITR"
-                });
-                document.getElementById('aulasVirtualesButton').addEventListener('click', function() {
-                    Swal.close();
-                    // Acciones para "Aulas Virtuales"
-                });
-                document.getElementById('saludButton').addEventListener('click', function() {
-                    Swal.close();
-                    // Acciones para "Salud"
-                });
-                document.getElementById('gimnasio1Button').addEventListener('click', function() {
-                    Swal.close();
-                    // Acciones para "Gimnasio 1"
-                });
-            } else {
-                Swal.fire('Error', 'No se ha seleccionado ninguna sede.', 'error');
-            }
+              });
+          } else {
+            Swal.fire("Error", "No se ha seleccionado ninguna sede.", "error");
+          }
+
+          function selectSpace(element) {
+            // Aquí puedes agregar la lógica para seleccionar un espacio de estacionamiento
+            alert("Espacio de estacionamiento seleccionado");
+          }
         });
-</script>
-
-</body>
+    </script>
+  </body>
 </html>

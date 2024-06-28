@@ -1,68 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confirmar Reserva</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f2f2f2;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        p {
-            margin-bottom: 10px;
-        }
-        .button-container {
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            background-color: #0056b3;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #004494;
-        }
+      /* Estilos CSS */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f2f2f2;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      p {
+        margin-bottom: 10px;
+      }
+      .button-container {
+        text-align: center;
+      }
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        background-color: #e6f0ff;
+        color: #0056b3;
+        font-size: 16px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background-color: #cce0ff;
+      }
     </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>Confirmar Reserva</h2>
-    <p><strong>Hora de Reserva:</strong> 12:30</p>
-    <p><strong>Edificio:</strong> Edificio A</p>
-    <p><strong>Vehículo:</strong> Vehículo 1</p>
-    <p><strong>Sede:</strong> Sede Principal</p>
-    <p><strong>Tipo de Vehículo:</strong> Auto</p>
-    
-    <div class="button-container">
-        <button id="confirmarReservaButton">Confirmar Reserva</button>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Confirmar Reserva</h2>
+      <p>
+        <strong>Hora de Reserva:</strong> <span id="horaSeleccionada"></span>
+      </p>
+      <p><strong>Edificio:</strong> <span id="edificioSeleccionado"></span></p>
+      <p><strong>Vehículo:</strong> <span id="vehiculoSeleccionada"></span></p>
+      <p><strong>Sede:</strong> <span id="selectedSede"></span></p>
+      <p><strong>Tipo de Vehículo:</strong> Auto</p>
     </div>
-</div>
 
-<script>
-    document.getElementById('confirmarReservaButton').addEventListener('click', function() {
-        alert('Reserva confirmada correctamente.');
-    });
-</script>
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      // Obtener la hora seleccionada del localStorage
+      const horaSeleccionada = localStorage.getItem("horaSeleccionada");
+      const vehiculoSeleccionado = localStorage.getItem("vehiculoSeleccionada");
+      const edificioSeleccionado = localStorage.getItem("edificioSeleccionado");
+      const selectedSede = localStorage.getItem("selectedSede");
+      if (selectedSede === "btnMeyer") {
+        var sedeSeleccionada = "Meyer";
+      } else if (selectedSede === "btnChuyaca") {
+        var sedeSeleccionada = "Chuyaca";
+      }
+      // Mostrar la hora, vehículo y edificio seleccionados en la página
+      document.getElementById("horaSeleccionada").innerText =
+        horaSeleccionada || "No seleccionada";
+      document.getElementById("vehiculoSeleccionada").innerText =
+        vehiculoSeleccionado || "No seleccionado";
+      document.getElementById("edificioSeleccionado").innerText =
+        edificioSeleccionado || "No seleccionado";
+      document.getElementById("selectedSede").innerText =
+        sedeSeleccionada || "No seleccionado";
+    </script>
+  </body>
 </html>
