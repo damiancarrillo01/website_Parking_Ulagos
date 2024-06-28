@@ -230,11 +230,9 @@ exports.reserva = async (req, res) => {
       const id_edificio = await pool.query(
         "SELECT id_edificio FROM edificios WHERE nombre_edificio = $1",
         [edificio]
-      );
-
-      // Extraer horas y minutos de las cadenas de hora_entrada y hora_salida
-      const hora_entrada_parts = hora_entrada.split(':');
-      const hora_salida_parts = hora_salida.split(':');
+      ); // Asumiendo que hora_entrada y hora_salida están en formato "HH:mm"
+      const hora_entrada_parts = hora_entrada.split(":");
+      const hora_salida_parts = hora_salida.split(":");
 
       // Obtener la fecha actual
       const now = new Date();
@@ -242,19 +240,56 @@ exports.reserva = async (req, res) => {
       const month = now.getMonth() + 1; // Month is zero-indexed, so add 1
       const day = now.getDate();
 
-      // Construir fechas completas
-      const hora_entrada_completa = `${year}-${month}-${day} ${hora_entrada_parts[0]}:${hora_entrada_parts[1]}:00`;
-      const hora_salida_completa = `${year}-${month}-${day} ${hora_salida_parts[0]}:${hora_salida_parts[1]}:00`;
+      // Construir fechas completas ajustadas a la zona horaria UTC-4
+      const hora_entrada_utc = new Date(
+        Date.UTC(
+          year,
+          month - 1,
+          day,
+          hora_entrada_parts[0],
+          hora_entrada_parts[1]
+        )
+      );
+      hora_entrada_utc.setHours(hora_entrada_utc.getHours() - 4);
+      const hora_entrada_completa = hora_entrada_utc
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ");
+
+      const hora_salida_utc = new Date(
+        Date.UTC(
+          year,
+          month - 1,
+          day,
+          hora_salida_parts[0],
+          hora_salida_parts[1]
+        )
+      );
+      hora_salida_utc.setHours(hora_salida_utc.getHours() - 4);
+      const hora_salida_completa = hora_salida_utc
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ");
+
+      // Ahora hora_entrada_completa y hora_salida_completa deberían estar en formato ISO8601 compatible
+      // para insertar en SQL sin problemas de zona horaria.
 
       const result = await pool.query(
         "INSERT INTO reservas (id_edificio, id_espacio, id_usuario, patente, hora_entrada_reserva, hora_salida_reserva) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-        [id_edificio.rows[0].id_edificio, id_espacio_int, id_usuario, patente, hora_entrada_completa, hora_salida_completa]
+        [
+          id_edificio.rows[0].id_edificio,
+          id_espacio_int,
+          id_usuario,
+          patente,
+          hora_entrada_completa,
+          hora_salida_completa,
+        ]
       );
 
-      const updateEstado= await pool.query(
+      const updateEstado = await pool.query(
         "UPDATE espacio_estacionamiento SET estado=$1 WHERE id_espacio = $2",
-        ["Reservado",id_espacio_int]
-      )
+        ["Reservado", id_espacio_int]
+      );
 
       const reservaRegistrada = result.rows[0];
       res.status(201).json({
@@ -264,6 +299,129 @@ exports.reserva = async (req, res) => {
     }
   } catch (error) {
     console.error("Error al registrar la reserva:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+exports.eliminarReserva = async (req, res) => {
+  const { patente, id_espacio } = req.body;
+  const id_usuario = global.usuarioId;
+
+  // Convertir id_espacio a entero
+  const id_espacio_int = parseInt(id_espacio, 10); // Base 10
+
+  if (!id_usuario) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    // Select para verificar si ya existe una reserva
+    const resultUsu = await pool.query(
+      "SELECT id_usuario FROM reservas WHERE id_usuario = $1",
+      [id_usuario]
+    );
+
+    if (resultUsu.rows.length > 0) {
+      const DeleteReserva = await pool.query(
+        "DELETE FROM  reservas WHERE id_usuario = $1 and patente= $2",
+        [id_usuario, patente]
+      );
+      const updateEstado = await pool.query(
+        "UPDATE espacio_estacionamiento SET estado=$1 WHERE id_espacio = $2",
+        ["Disponible", id_espacio_int]
+      );
+
+      const reservaEliminada = DeleteReserva.rows[0];
+      return res.status(201).json({
+        mensaje: "Reserva Eliminada exitosamente",
+        reserva: reservaEliminada,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ error: "No se encontró reserva para este usuario" });
+    }
+  } catch (error) {
+    console.error("Error al eliminar la reserva:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+exports.selectReserva = async (req, res) => {
+  const id_usuario = global.usuarioId;
+
+  if (!id_usuario) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    const resultReserva = await pool.query(
+      "SELECT r.id_edificio, r.id_reserva, e.nombre_edificio," +
+        " r.id_espacio, r.id_usuario, r.patente, r.hora_entrada_reserva, r.hora_salida_reserva " +
+        "FROM reservas r " +
+        "JOIN edificios e ON r.id_edificio = e.id_edificio " +
+        "WHERE r.id_usuario = $1",
+      [id_usuario]
+    );
+
+    if (resultReserva.rows.length > 0) {
+      const reserva = resultReserva.rows[0];
+      res.status(200).json({ reserva });
+    } else {
+      return res
+        .status(404)
+        .json({ error: "No se encontró una reserva para este usuario" });
+    }
+  } catch (error) {
+    console.error("Error al seleccion}ar la reserva:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+exports.actualizarReserva = async (req, res) => {
+  const { patente, id_espacio } = req.body;
+  const id_usuario = global.usuarioId;
+
+  // Convertir id_espacio a entero
+  const id_espacio_int = parseInt(id_espacio, 10); // Base 10
+
+  if (!id_usuario) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    // Verificar si existe la reserva y obtener la hora de salida actual
+    const resultReserva = await pool.query(
+      "SELECT hora_salida_reserva FROM reservas WHERE id_usuario = $1 AND patente = $2 AND id_espacio = $3",
+      [id_usuario, patente, id_espacio_int]
+    );
+
+    if (resultReserva.rows.length > 0) {
+      const { hora_salida_reserva } = resultReserva.rows[0];
+
+      // Aumentar la hora de salida en una hora
+      const horaSalidaActual = new Date(hora_salida_reserva);
+      horaSalidaActual.setHours(horaSalidaActual.getHours() + 1); // Aumentar en una hora
+
+      // Actualizar la reserva con la nueva hora de salida
+      const updateReserva = await pool.query(
+        "UPDATE reservas SET hora_salida_reserva = $1 WHERE id_usuario = $2 AND patente = $3 AND id_espacio = $4 RETURNING *",
+        [horaSalidaActual, id_usuario, patente, id_espacio_int]
+      );
+
+      if (updateReserva.rows.length > 0) {
+        const reservaActualizada = updateReserva.rows[0];
+        res.status(201).json({
+          mensaje: "Reserva aumentada exitosamente",
+          nueva_hora_salida: reservaActualizada.hora_salida_reserva.toISOString(), // Devuelve la nueva hora de salida en formato ISO8601
+        });
+      } else {
+        res.status(404).json({ error: "No se encontró reserva para este usuario" });
+      }
+    } else {
+      res.status(404).json({ error: "No se encontró reserva para este usuario" });
+    }
+  } catch (error) {
+    console.error("Error al aumentar la reserva:", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };

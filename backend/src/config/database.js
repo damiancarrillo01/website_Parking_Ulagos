@@ -18,6 +18,17 @@ const pool = new Pool({
     port: 5432,
 });  
 
+pool.connect((err, client, done) => {
+    if (err) throw err;
+    client.query('SET timezone = \'America/Santiago\'', (err) => {
+      done();
+      if (err) {
+        console.error('Error setting timezone', err.stack);
+      } else {
+        console.log('Timezone set to America/Santiago');
+      }
+    });
+  });
 const connect = async () => {
     try {
         const client = await pool.connect();

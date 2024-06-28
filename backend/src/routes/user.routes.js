@@ -9,7 +9,10 @@ router.post('/iniciosesion', userController.inicioSesionUsuario);
 router.post('/sedes',userController.sedes);
 router.post('/principal', userController.registroAuto);
 router.post('/reserva',userController.reserva);
+router.post('/reservaEliminar',userController.eliminarReserva);
+router.post('/reservaActualizar',userController.actualizarReserva);
 
 //GET
-router.get('/vehiculos',userController.vehiculos)
+router.get('/vehiculos',userController.vehiculos);
+router.get('/selectReserva',userController.selectReserva)
 module.exports = router;
