@@ -67,25 +67,30 @@ exports.inicioSesionUsuario = async (req, res) => {
         res.status(500).send('Error procesando los datos');
     }
 };
-exports.sedes = async(req,res) => {
-    const idboton =req.body
-    const id_usuario = req.session.usuarioId; 
-    console.log(idboton)
+exports.sedes = async (req, res) => {
+    const  idboton = req.body; // Obtener el idboton del cuerpo de la solicitud
+    const id_usuario = req.session.usuarioId;
+
+    console.log('ID de Botón:', idboton);
     console.log('ID de Usuario en sedes:', id_usuario);
+
     if (!id_usuario) {
         return res.status(401).send('Usuario no autenticado');
     }
 
     try {
-        // Realiza cualquier lógica adicional si es necesario
+        // Lógica adicional si es necesario
 
-        // Responder con un JSON que indique al frontend que redirija
-        res.status(200).json({ redirectUrl: '/principal.html' });
+        let redirectUrl = '/principal1.html'; // Variable para almacenar el URL de redirección basado en idboton
+        
+
+        // Responder con un JSON que indique al frontend el idboton y el redirectUrl
+        res.status(200).json({ idboton, redirectUrl });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
     }
-}
+};
 exports.registroAuto = async (req, res) => {
     const { patente, TipoVehiculo, color, modelo, tamano } = req.body;
     const id_usuario = req.session.usuarioId;
