@@ -225,7 +225,7 @@ exports.reserva = async (req, res) => {
     );
 
     if (resultUsu.rows.length > 0) {
-      return res.status(121).json({ error: "Ya tienes una reserva" });
+      return res.status(121).json({ mensaje: "Ya tienes una reserva" });
     } else {
       const id_edificio = await pool.query(
         "SELECT id_edificio FROM edificios WHERE nombre_edificio = $1",
