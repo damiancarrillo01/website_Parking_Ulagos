@@ -112,23 +112,23 @@
 
 <script>
     function selectSede(buttonId) {
-        console.log('ID del botón seleccionado:', buttonId);
-        $.ajax({
-            type: 'POST',
-            url: "/usuarios/sedes",
-            data: JSON.stringify({ buttonId: buttonId }),
-            contentType: 'application/json',
-            success: function(response) {
-                console.log('Datos enviados exitosamente');
-                if (response.redirectUrl) {
-                    window.location.href = response.redirectUrl;
-                }
-            },
-            error: function(error) {
-                console.error('Error al enviar los datos: ', error);
+    console.log('ID del botón seleccionado:', buttonId);
+    $.ajax({
+        type: 'POST',
+        url: "/usuarios/sedes",
+        data: JSON.stringify({ buttonId: buttonId }),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Datos enviados exitosamente');
+            if (response.redirectUrl) {
+                window.location.href = `${response.redirectUrl}?idboton=${buttonId}`;
             }
-        });
-    }
+        },
+        error: function(error) {
+            console.error('Error al enviar los datos: ', error);
+        }
+    });
+}
 </script>
 
 </body>

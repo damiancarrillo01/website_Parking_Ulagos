@@ -68,10 +68,10 @@ exports.inicioSesionUsuario = async (req, res) => {
     }
 };
 exports.sedes = async (req, res) => {
-    const  idboton = req.body; // Obtener el idboton del cuerpo de la solicitud
+    const { buttonId } = req.body; // Obtener el idboton del cuerpo de la solicitud
     const id_usuario = req.session.usuarioId;
 
-    console.log('ID de Botón:', idboton);
+    console.log('ID de Botón:', buttonId);
     console.log('ID de Usuario en sedes:', id_usuario);
 
     if (!id_usuario) {
@@ -80,12 +80,10 @@ exports.sedes = async (req, res) => {
 
     try {
         // Lógica adicional si es necesario
-
-        let redirectUrl = '/principal1.html'; // Variable para almacenar el URL de redirección basado en idboton
+        let redirectUrl = '/principal1.html'; // Variable para almacenar el URL de redirección basado en buttonId
         
-
-        // Responder con un JSON que indique al frontend el idboton y el redirectUrl
-        res.status(200).json({ idboton, redirectUrl });
+        // Responder con un JSON que indique al frontend el buttonId y el redirectUrl
+        res.status(200).json({ buttonId, redirectUrl });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error procesando los datos');
