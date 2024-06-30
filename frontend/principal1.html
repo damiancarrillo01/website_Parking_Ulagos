@@ -194,73 +194,72 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            idboton: params.get('idboton')
+        };
+    }
 
+    const { idboton } = getQueryParams();
+    console.log(`idboton: ${idboton}`);
+
+    // Use the idboton in your logic
+    if (idboton) {
+        // Logic based on idboton
+        console.log(`ID del botón en principal1.html: ${idboton}`);
+    }
 
     document.getElementById('edificioButton').addEventListener('click', function() {
-        var idbotonJSON = localStorage.getItem('idboton');
-        console.log(idbotonJSON);
+    if (idboton === 'btnMeyer') {
+        Swal.fire({
+            title: 'Selecciona Edificio',
+            html: `
+                <button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                mostrarMapa('principal.html'); // Function to load the map for "Ed. Principal"
+            }
+        });
+    } else if (idboton === 'btnChuyaca') {
+        Swal.fire({
+            title: 'Selecciona Edificio',
+            html: `
+                <button id="centralButton" class="swal2-confirm swal2-styled">Central</button>
+                <button id="itrButton" class="swal2-confirm swal2-styled">ITR</button>
+                <button id="aulasVirtualesButton" class="swal2-confirm swal2-styled">Aulas Virtuales</button>
+                <button id="saludButton" class="swal2-confirm swal2-styled">Salud</button>
+                <button id="gimnasio1Button" class="swal2-confirm swal2-styled">Gimnasio 1</button>
+            `,
+            showCancelButton: true,
+            showConfirmButton: false
+        });
 
-        // Convertir el JSON a objeto JavaScript
-        var idbotonObj = JSON.parse(idbotonJSON);
-        console.log(idbotonObj);
+        // Añadir event listeners a los botones dentro del Swal
+        document.getElementById('centralButton').addEventListener('click', function() {
+            mostrarMapa('central.html'); // Function to load the map for "Central"
+        });
+        document.getElementById('itrButton').addEventListener('click', function() {
+            mostrarMapa('mapAV.html'); // Function to load the map for "ITR"
+        });
+        document.getElementById('aulasVirtualesButton').addEventListener('click', function() {
+            mostrarMapa('aulas_virtuales.html'); // Function to load the map for "Aulas Virtuales"
+        });
+        document.getElementById('saludButton').addEventListener('click', function() {
+            mostrarMapa('salud.html'); // Function to load the map for "Salud"
+        });
+        document.getElementById('gimnasio1Button').addEventListener('click', function() {
+            mostrarMapa('gimnasio_1.html'); // Function to load the map for "Gimnasio 1"
+        });
+    } else {
+        Swal.fire('Error', 'No se ha seleccionado ninguna sede.', 'error');
+    }
+});
 
-        // Obtener el valor del ID de botón del objeto
-        var idboton = idbotonObj.buttonId;
-        console.log(idboton);
-
-        console.log(idboton);
-        if (idboton === 'btnMeyer') {
-            Swal.fire({
-                title: 'Selecciona Edificio',
-                html: `
-                    <button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    mostrarMapa('principal.html'); // Function to load the map for "Ed. Principal"
-                }
-            });
-        } else if (idboton === 'btnChuyaca') {
-            Swal.fire({
-                title: 'Selecciona Edificio',
-                html: `
-                    <button id="centralButton" class="swal2-confirm swal2-styled">Central</button>
-                    <button id="itrButton" class="swal2-confirm swal2-styled">ITR</button>
-                    <button id="aulasVirtualesButton" class="swal2-confirm swal2-styled">Aulas Virtuales</button>
-                    <button id="saludButton" class="swal2-confirm swal2-styled">Salud</button>
-                    <button id="gimnasio1Button" class="swal2-confirm swal2-styled">Gimnasio 1</button>
-                `,
-                showCancelButton: true,
-                showConfirmButton: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Acciones específicas para cada edificio
-                }
-            });
-
-            // Añadir event listeners a los botones dentro del Swal
-            document.getElementById('centralButton').addEventListener('click', function() {
-                mostrarMapa('central.html'); // Function to load the map for "Central"
-            });
-            document.getElementById('itrButton').addEventListener('click', function() {
-                mostrarMapa('mapAV.html'); // Function to load the map for "ITR"
-            });
-            document.getElementById('aulasVirtualesButton').addEventListener('click', function() {
-                mostrarMapa('aulas_virtuales.html'); // Function to load the map for "Aulas Virtuales"
-            });
-            document.getElementById('saludButton').addEventListener('click', function() {
-                mostrarMapa('salud.html'); // Function to load the map for "Salud"
-            });
-            document.getElementById('gimnasio1Button').addEventListener('click', function() {
-                mostrarMapa('gimnasio_1.html'); // Function to load the map for "Gimnasio 1"
-            });
-        } else {
-            Swal.fire('Error', 'No se ha seleccionado ninguna sede.', 'error');
-        }
-    });
 
     function mostrarMapa(mapa) {
         // Cargar el mapa correspondiente al edificio seleccionado
