@@ -33,7 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0px;
+            padding: 5px 0px;
         }
         .header .menu-icon, .header .location-icon {
             font-size: 24px;
@@ -52,7 +52,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin: 20px 0;
+            margin: 10px 0;
         }
         .button-container button {
             padding: 10px;
@@ -70,7 +70,7 @@
             display: inline-block;
             margin-top: 20px;
             width: 1400px;
-            height: 503px;
+            height: 200px;
             background-color: #e0e0e0;
             position: relative;
         }
@@ -174,11 +174,6 @@
     <button id="vehiculoButton">Vehículo</button>
     <button id="edificioButton">Edificio</button>
 </div>
-
-<div id="mapContainer">
-    <!-- Aquí se cargará el mapa del edificio seleccionado -->
-</div>
-
 <div class="status-bar">
     <div class="status-item">
         <div class="status-color status-available"></div>
@@ -189,8 +184,10 @@
         <span>Reservado</span>
     </div>
 </div>
+<div id="mapContainer">
+    <!-- Aquí se cargará el mapa del edificio seleccionado -->
+</div>
 
-<button class="reserve-button" onclick="location.href='confirmar.html'">Reservar</button>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -220,10 +217,9 @@
             showCancelButton: true,
             confirmButtonText: 'Confirmar',
             cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                mostrarMapa('principal.html'); // Function to load the map for "Ed. Principal"
-            }
+        })
+        document.getElementById('principalButton').addEventListener('click', function() {
+            mostrarMapa('principal.html'); // Function to load the map for "Central"
         });
     } else if (idboton === 'btnChuyaca') {
         Swal.fire({
@@ -247,7 +243,7 @@
             mostrarMapa('mapAV.html'); // Function to load the map for "ITR"
         });
         document.getElementById('aulasVirtualesButton').addEventListener('click', function() {
-            mostrarMapa('aulas_virtuales.html'); // Function to load the map for "Aulas Virtuales"
+            mostrarMapa('mapAV.html'); // Function to load the map for "Aulas Virtuales"
         });
         document.getElementById('saludButton').addEventListener('click', function() {
             mostrarMapa('salud.html'); // Function to load the map for "Salud"

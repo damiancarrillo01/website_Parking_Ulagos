@@ -70,17 +70,19 @@
             display: inline-block;
             margin-top: 20px;
             width: 1400px;
-            height: 503px;
+            height: 500px;
             background-color: #e0e0e0;
             position: relative;
+            overflow: auto;
         }
-        .parking-spot, .disabled-spot {
+        .parking-spot {
             position: absolute;
             width: 30px;
             height: 30px;
             border: 1px solid blue;
             cursor: pointer;
         }
+        
         .parking-spot {
             background-color: rgba(0, 0, 255, 0.3);
         }
@@ -88,6 +90,12 @@
             background-color: rgba(128, 128, 128, 0.5);
             cursor: not-allowed;
         }
+        #disabled4,#disabled5,#disabled6,#disabled7,#disabled8 {
+            background-color: white;
+            cursor: not-allowed;
+            border: 1px white;
+        }
+        
         /* Positions for parking spots */
         #spot1 { top: 410px; left: 20px; }
         #spot2 { top: 410px; left: 60px; }
@@ -146,6 +154,19 @@
         #disabled1 { top: 40px; left: 30px; width: 400px; height: 220px; }
         #disabled2 { top: 40px; left: 450px; width: 490px; height: 220px; }
         #disabled3 { top: 40px; left: 970px; width: 400px; height: 220px; }
+        #disabled4 { top: 330px; left: 10px; width: 1410px; height: 70px; }
+        #disabled5{ top: 400px; left: 570px; width: 230px; height: 150px;}
+        #disabled6{ top: 430px; left: 1050px; width: 400px; height: 70px;  transform: rotate(-30deg);}
+        #disabled7{ top: 40px; left: 1410px; width: 60px; height: 640px;}
+        #disabled8{top: 200px; left: 1050px; width: 100px; height: 700px; transform: rotate(-80deg);}
+        #disabled1 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
         #disabled2 span{
             display: block;
             text-align: center;
@@ -162,6 +183,8 @@
             font-size: 16px;
             line-height: 190px;
         }
+
+        
         .reserve-button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -212,7 +235,6 @@
 <body>
 
 <div class="container">
-    <div class="map">
         <div class="parking-spot" id="spot1" onclick="reservar(1)"><span></span></div>
         <div class="parking-spot" id="spot2" onclick="reservar(2)"><span></span></div>
         <div class="parking-spot" id="spot3" onclick="reservar(3)"><span></span></div>
@@ -263,12 +285,15 @@
         
 
 
-        <div class="disabled-spot" id="disabled1"></div>
+        <div class="disabled-spot" id="disabled1"><span>Pasillo E</span></div>
         <div class="disabled-spot" id="disabled2"><span>CENTRAL</span></div>
         <div class="disabled-spot" id="disabled3"><span>BIBLIOTECA</span></div>
-    </div>
+        <div class="disabled-spot" id="disabled4"></div>
+        <div class="disabled-spot" id="disabled5"></div>
+        <div class="disabled-spot" id="disabled6"></div>
+        <div class="disabled-spot" id="disabled7"></div>
+        <div class="disabled-spot" id="disabled8"></div>
 </div>
-<button class="reserve-button" onclick="location.href='confirmar.html'">Reservar</button>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    
