@@ -203,9 +203,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Obtener la hora seleccionada del localStorage
-      const horaEntradaSeleccionada = localStorage.getItem("horaEntradaSeleccionada");
-      const horaSalidaSeleccionada = localStorage.getItem("horaSalidaSeleccionada");
+      // Obtener la hora seleccionada del localStorage
+      const horaEntradaSeleccionada = localStorage.getItem(
+        "horaEntradaSeleccionada"
+      );
+      const horaSalidaSeleccionada = localStorage.getItem(
+        "horaSalidaSeleccionada"
+      );
       const vehiculoSeleccionado = localStorage.getItem("vehiculoSeleccionada");
       const edificioSeleccionado = localStorage.getItem("edificioSeleccionado");
       const selectedSede = localStorage.getItem("selectedSede");
@@ -731,11 +735,17 @@
             });
           } else {
             // Mostrar mensaje de éxito si la reserva se guarda correctamente
+            // Mostrar mensaje de éxito si la reserva se guarda correctamente
             Swal.fire({
               title: "Reserva confirmada",
               text: "Tu reserva ha sido confirmada exitosamente.",
               icon: "success",
               confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Redirigir a reservaCompleta.html
+                window.location.href = "reservaCompleta.html";
+              }
             });
           }
         } catch (error) {
