@@ -252,7 +252,7 @@ exports.reserva = async (req, res) => {
           hora_entrada_parts[1]
         )
       );
-      hora_entrada_utc.setHours(hora_entrada_utc.getHours() - 4);
+      hora_entrada_utc.setHours(hora_entrada_utc.getHours() + 4);
       const hora_entrada_completa = hora_entrada_utc
         .toISOString()
         .slice(0, 19)
@@ -267,7 +267,7 @@ exports.reserva = async (req, res) => {
           hora_salida_parts[1]
         )
       );
-      hora_salida_utc.setHours(hora_salida_utc.getHours() - 4);
+      hora_salida_utc.setHours(hora_salida_utc.getHours() + 4);
       const hora_salida_completa = hora_salida_utc
         .toISOString()
         .slice(0, 19)
