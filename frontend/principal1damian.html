@@ -203,9 +203,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Obtener la hora seleccionada del localStorage
-      const horaEntradaSeleccionada = localStorage.getItem("horaEntradaSeleccionada");
-      const horaSalidaSeleccionada = localStorage.getItem("horaSalidaSeleccionada");
+      // Obtener la hora seleccionada del localStorage
+      const horaEntradaSeleccionada = localStorage.getItem(
+        "horaEntradaSeleccionada"
+      );
+      const horaSalidaSeleccionada = localStorage.getItem(
+        "horaSalidaSeleccionada"
+      );
       const vehiculoSeleccionado = localStorage.getItem("vehiculoSeleccionada");
       const edificioSeleccionado = localStorage.getItem("edificioSeleccionado");
       const selectedSede = localStorage.getItem("selectedSede");
@@ -514,39 +518,45 @@
       // Funcionalidad Boton Hora Cierre
       //////////////////////////////////////////////////////////////////////
       // Funcionalidad Boton Edificio Inicio
-      document.getElementById("edificioButton").addEventListener("click", function () {
-    if (idboton === "btnMeyer") {
-        Swal.fire({
-            title: "Selecciona Edificio",
-            html: `
+      document
+        .getElementById("edificioButton")
+        .addEventListener("click", function () {
+          if (idboton === "btnMeyer") {
+            Swal.fire({
+              title: "Selecciona Edificio",
+              html: `
                 <button id="principalButton" class="swal2-confirm swal2-styled">Principal</button>
             `,
-            showCancelButton: true,
-            confirmButtonText: "Confirmar",
-            cancelButtonText: "Cancelar",
-        }).then((result) => {
-            if (result.isConfirmed) {
+              showCancelButton: true,
+              confirmButtonText: "Confirmar",
+              cancelButtonText: "Cancelar",
+            }).then((result) => {
+              if (result.isConfirmed) {
                 let edificioSeleccionado = "";
-                const principalButton = document.getElementById("principalButton");
-                if (principalButton && principalButton.classList.contains("swal2-styled")) {
-                    edificioSeleccionado = "Principal";
+                const principalButton =
+                  document.getElementById("principalButton");
+                if (
+                  principalButton &&
+                  principalButton.classList.contains("swal2-styled")
+                ) {
+                  edificioSeleccionado = "Principal";
                 } else {
-                    edificioSeleccionado = "No se seleccionó ningún edificio";
+                  edificioSeleccionado = "No se seleccionó ningún edificio";
                 }
                 console.log("Edificio seleccionado:", edificioSeleccionado);
 
                 // Mostrar el mapa según el edificio seleccionado
                 if (edificioSeleccionado === "Principal") {
-                    mostrarMapa("principalMeyer.html");
+                  mostrarMapa("principalMeyer.html");
                 }
 
                 return edificioSeleccionado; // Retornar el valor seleccionado
-            }
-        });
-    } else if (idboton === "btnChuyaca") {
-        Swal.fire({
-            title: "Selecciona Edificio",
-            html: `
+              }
+            });
+          } else if (idboton === "btnChuyaca") {
+            Swal.fire({
+              title: "Selecciona Edificio",
+              html: `
                 <div style="text-align: left;">
                     <h3>Edificios</h3>
                     <button class="swal2-confirm swal2-styled" id="centralButton" data-value="Central">Central</button>
@@ -556,56 +566,67 @@
                     <button class="swal2-confirm swal2-styled" id="gimnasio1Button" data-value="Gimnasio 1">Gimnasio 1</button>
                 </div>
             `,
-            showCancelButton: true,
-            confirmButtonText: "Confirmar Edificio",
-            cancelButtonText: "Cancelar",
-            preConfirm: () => {
-                const selectedButton = document.querySelector(".swal2-confirm.swal2-styled.selected");
+              showCancelButton: true,
+              confirmButtonText: "Confirmar Edificio",
+              cancelButtonText: "Cancelar",
+              preConfirm: () => {
+                const selectedButton = document.querySelector(
+                  ".swal2-confirm.swal2-styled.selected"
+                );
                 if (!selectedButton) {
-                    Swal.showValidationMessage("Por favor, selecciona un edificio.");
-                    return false;
+                  Swal.showValidationMessage(
+                    "Por favor, selecciona un edificio."
+                  );
+                  return false;
                 }
                 return selectedButton.getAttribute("data-value");
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
                 console.log("Edificio seleccionado:", result.value);
 
                 // Mostrar el mapa según el edificio seleccionado
                 switch (result.value) {
-                    case "Central":
-                        mostrarMapa("central.html");
-                        break;
-                    case "ITR":
-                    case "Aulas Virtuales":
-                        mostrarMapa("mapAV.html");
-                        break;
-                    case "Salud":
-                        mostrarMapa("salud.html");
-                        break;
-                    case "Gimnasio 1":
-                        mostrarMapa("gimnasio_1.html");
-                        break;
-                    default:
-                        Swal.fire("Error", "Edificio seleccionado no reconocido.", "error");
+                  case "Central":
+                    mostrarMapa("central.html");
+                    break;
+                  case "ITR":
+                  case "Aulas Virtuales":
+                    mostrarMapa("mapAV.html");
+                    break;
+                  case "Salud":
+                    mostrarMapa("salud.html");
+                    break;
+                  case "Gimnasio 1":
+                    mostrarMapa("gimnasio_1.html");
+                    break;
+                  default:
+                    Swal.fire(
+                      "Error",
+                      "Edificio seleccionado no reconocido.",
+                      "error"
+                    );
                 }
 
                 return result.value; // Retornar el valor seleccionado
-            }
-        });
-
-        // Añadir event listeners para marcar botón seleccionado
-        document.querySelectorAll(".swal2-confirm.swal2-styled").forEach((button) => {
-            button.addEventListener("click", function () {
-                document.querySelectorAll(".swal2-confirm.swal2-styled").forEach((btn) => btn.classList.remove("selected"));
-                this.classList.add("selected");
+              }
             });
-        });
-    } else {
-        Swal.fire("Error", "No se ha seleccionado ninguna sede.", "error");
-    }
-});
 
+            // Añadir event listeners para marcar botón seleccionado
+            document
+              .querySelectorAll(".swal2-confirm.swal2-styled")
+              .forEach((button) => {
+                button.addEventListener("click", function () {
+                  document
+                    .querySelectorAll(".swal2-confirm.swal2-styled")
+                    .forEach((btn) => btn.classList.remove("selected"));
+                  this.classList.add("selected");
+                });
+              });
+          } else {
+            Swal.fire("Error", "No se ha seleccionado ninguna sede.", "error");
+          }
+        });
 
       function mostrarMapa(mapa) {
         // Cargar el mapa correspondiente al edificio seleccionado
@@ -714,6 +735,11 @@
               text: "Tu reserva ha sido confirmada exitosamente.",
               icon: "success",
               confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Redirigir a reservaCompleta.html
+                window.location.href = "reservaCompleta.html";
+              }
             });
           }
         } catch (error) {
