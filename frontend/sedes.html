@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seleccionar Sede</title>
     <!-- Enlace a Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- CSS de Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Script de Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <!-- Enlace a SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -103,10 +112,23 @@
 
 <script>
     function selectSede(buttonId) {
-        console.log('ID del botón seleccionado:', buttonId);
-        localStorage.setItem('selectedSede', buttonId);
-        window.location.href = 'principal.html?buttonId=' + buttonId;
-    }
+    console.log('ID del botón seleccionado:', buttonId);
+    $.ajax({
+        type: 'POST',
+        url: "/usuarios/sedes",
+        data: JSON.stringify({ buttonId: buttonId }),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Datos enviados exitosamente');
+            if (response.redirectUrl) {
+                window.location.href = `${response.redirectUrl}?idboton=${buttonId}`;
+            }
+        },
+        error: function(error) {
+            console.error('Error al enviar los datos: ', error);
+        }
+    });
+}
 </script>
 
 </body>

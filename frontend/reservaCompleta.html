@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reserva de Estacionamiento</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: left;
+        margin: 10px 0;
+      }
+      .info p {
+        margin: 5px 0;
+      }
+      button {
+        background-color: #3085d6;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px 5px;
+      }
+      button:hover {
+        background-color: #0022aa;
+      }
+      .swal2-popup .swal2-actions button {
+        margin: 5px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Reserva Completa</h1>
+      <div class="info" id="info">
+        <p><strong>Edificio:</strong> <span id="edificio">---</span></p>
+        <p><strong>Vehículo:</strong> <span id="vehiculo">---</span></p>
+        <p>
+          <strong>Estacionamiento:</strong>
+          <span id="estacionamiento">---</span>
+        </p>
+        <p>
+          <strong>Hora Entrada de Reserva:</strong>
+          <span id="horaEntrada">---</span>
+        </p>
+        <p>
+          <strong>Hora Salida de Reserva:</strong>
+          <span id="horaSalida">---</span>
+        </p>
+      </div>
+      <button
+        id="finalizaRe"
+        class="swal2-confirm swal2-styled"
+        style="width: 100%; margin-bottom: 20px"
+      >
+        Finalizar Reserva
+      </button>
+      <button
+        id="aumentarRe"
+        class="swal2-confirm swal2-styled"
+        style="width: 100%; margin-bottom: 20px"
+      >
+        Aumentar Reserva
+      </button>
+    </div>
+
+    <script>
+      // Función para sumar 4 horas a una fecha y formatearla
+      function ajustarHora(fecha) {
+        let date = new Date(fecha);
+        date.setHours(date.getHours() + 4);
+        return date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      // Función para actualizar el contenido de la página
+      function actualizarContenido(data) {
+        document.getElementById("edificio").innerText = data.nombre_edificio;
+        document.getElementById("vehiculo").innerText = data.patente;
+        document.getElementById("estacionamiento").innerText = data.id_espacio;
+        document.getElementById("horaEntrada").innerText = ajustarHora(
+          data.hora_entrada_reserva
+        );
+        document.getElementById("horaSalida").innerText = ajustarHora(
+          data.hora_salida_reserva
+        );
+      }
+
+      // Petición para obtener los datos de la reserva
+      fetch("/usuarios/selectReserva")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.reserva) {
+            actualizarContenido(data.reserva);
+          } else {
+            console.error("Error:", data.error);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+
+      document
+        .getElementById("finalizaRe")
+        .addEventListener("click", function () {
+          Swal.fire({
+            title: "¿Seguro que quieres eliminar tu reserva?",
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Petición para eliminar la reserva
+              fetch("/usuarios/reservaEliminar", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  patente: document.getElementById("vehiculo").innerText,
+                  id_espacio:
+                    document.getElementById("estacionamiento").innerText,
+                }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.mensaje) {
+                    Swal.fire({
+                      title: "Reserva eliminada",
+                      text: data.mensaje,
+                      icon: "success",
+                      confirmButtonText: "OK",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        // Redirigir a la página correspondiente
+                        window.location.href = "principal1damian.html";
+                      }
+                    });
+                  } else {
+                    console.error("Error:", data.error);
+                  }
+                })
+                .catch((error) => console.error("Error:", error));
+            }
+          });
+        });
+
+      document
+        .getElementById("aumentarRe")
+        .addEventListener("click", function () {
+          Swal.fire({
+            title: "Aumento de Reserva",
+            text: "El aumento de la reserva solo se puede usar una vez y solo se extenderá durante 60 minutos más de la fecha de término registrada.",
+            icon: "info",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Petición para aumentar la reserva
+              fetch("/usuarios/reservaActualizar", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  patente: document.getElementById("vehiculo").innerText,
+                  id_espacio:
+                    document.getElementById("estacionamiento").innerText,
+                }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.mensaje) {
+                    Swal.fire({
+                      title: "Reserva aumentada",
+                      text: data.mensaje,
+                      icon: "success",
+                      confirmButtonText: "OK",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        // Redirigir a la página correspondiente
+                        //window.location.href = "principal.html";
+                      }
+                    });
+                  } else {
+                    console.error("Error:", data.error);
+                  }
+                })
+                .catch((error) => console.error("Error:", error));
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

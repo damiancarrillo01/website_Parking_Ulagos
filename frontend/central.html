@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Estacionamiento</title>
+    <!-- CSS de Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Script de Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace a SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            background-color: #003DA6;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0px;
+        }
+        .header .menu-icon, .header .location-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .header h1 .location-icon {
+            margin-right: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .button-container button {
+            padding: 10px;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #013DA0;
+            background-color: #87CEEB;
+        }
+        .button-container button:hover {
+            background-color: #cce0ff;
+        }
+        .container {
+            display: inline-block;
+            margin-top: 20px;
+            width: 1400px;
+            height: 500px;
+            background-color: #e0e0e0;
+            position: relative;
+            overflow: auto;
+        }
+        .parking-spot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid blue;
+            cursor: pointer;
+        }
+        
+        .parking-spot {
+            background-color: rgba(0, 0, 255, 0.3);
+        }
+        .disabled-spot {
+            background-color: rgba(128, 128, 128, 0.5);
+            cursor: not-allowed;
+        }
+        #disabled4,#disabled5,#disabled6,#disabled7,#disabled8 {
+            background-color: white;
+            cursor: not-allowed;
+            border: 1px white;
+        }
+        
+        /* Positions for parking spots */
+        #spot1 { top: 410px; left: 20px; }
+        #spot2 { top: 410px; left: 60px; }
+        #spot3 { top: 410px; left: 100px; }
+        #spot4 { top: 410px; left: 140px; }
+        #spot5 { top: 410px; left: 180px; }
+        #spot6 { top: 410px; left: 220px; }
+        #spot7 { top: 410px; left: 260px; }
+        #spot8 { top: 410px; left: 300px; }
+        #spot9 { top: 410px; left: 340px; }
+        #spot10 { top: 410px; left: 380px; }
+        #spot11 { top: 410px; left: 420px; }
+        #spot12 { top: 410px; left: 460px; }
+        #spot13 { top: 410px; left: 500px; }
+
+
+        #spot14 { top: 290px; left: 20px; }
+        #spot15 { top: 290px; left: 60px; }
+        #spot16 { top: 290px; left: 100px; }
+        #spot17 { top: 290px; left: 140px; }
+        #spot18 { top: 290px; left: 180px; }
+        #spot19 { top: 290px; left: 220px; }
+        #spot20 { top: 290px; left: 260px; }
+        #spot21 { top: 290px; left: 300px; }
+        #spot22 { top: 290px; left: 340px; }
+        #spot23 { top: 290px; left: 380px; }
+        #spot24 { top: 290px; left: 420px; }
+        #spot25 { top: 290px; left: 460px; }
+        #spot26 { top: 290px; left: 500px; }
+
+
+        #spot27 { top: 410px; left: 840px; }
+        #spot28 { top: 410px; left: 880px; }
+        #spot29 { top: 410px; left: 920px; }
+        #spot30 { top: 410px; left: 960px; }
+        #spot31 { top: 410px; left: 1000px; }
+        #spot32 { top: 410px; left: 1040px; }
+        #spot33 { top: 410px; left: 1080px; }
+        #spot34 { top: 410px; left: 1120px; }
+        
+
+        #spot35 { top: 290px; left: 840px; }
+        #spot36 { top: 290px; left: 880px; }
+        #spot37 { top: 290px; left: 920px; }
+        #spot38 { top: 290px; left: 960px; }
+        #spot39 { top: 290px; left: 1000px; }
+        #spot40 { top: 290px; left: 1040px; }
+        #spot41 { top: 290px; left: 1080px; }
+        #spot42 { top: 290px; left: 1120px; }
+        #spot43 { top: 290px; left: 1160px; }
+        #spot44 { top: 290px; left: 1200px; }
+        #spot45 { top: 290px; left: 1240px; }
+        #spot46 { top: 290px; left: 1280px; }
+        #spot47 { top: 290px; left: 1320px; }
+
+        #disabled1 { top: 40px; left: 30px; width: 400px; height: 220px; }
+        #disabled2 { top: 40px; left: 450px; width: 490px; height: 220px; }
+        #disabled3 { top: 40px; left: 970px; width: 400px; height: 220px; }
+        #disabled4 { top: 330px; left: 10px; width: 1410px; height: 70px; }
+        #disabled5{ top: 400px; left: 570px; width: 230px; height: 150px;}
+        #disabled6{ top: 430px; left: 1050px; width: 400px; height: 70px;  transform: rotate(-30deg);}
+        #disabled7{ top: 40px; left: 1410px; width: 60px; height: 640px;}
+        #disabled8{top: 200px; left: 1050px; width: 100px; height: 700px; transform: rotate(-80deg);}
+        #disabled1 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+        #disabled2 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+        #disabled3 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+
+        
+        .reserve-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        .reserve-button:hover {
+            background-color: #004494;
+        }
+        .seleccion-button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            background-color: #0056b3;
+        }
+        .digital-clock {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 20px;
+        }
+        .digital-clock input {
+            width: 3em;
+            text-align: center;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .swal2-popup .swal2-html-container {
+            padding: 20px;
+        }
+
+        .swal2-popup .swal2-actions button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+        <div class="parking-spot" id="spot1" onclick="reservar(1)"><span></span></div>
+        <div class="parking-spot" id="spot2" onclick="reservar(2)"><span></span></div>
+        <div class="parking-spot" id="spot3" onclick="reservar(3)"><span></span></div>
+        <div class="parking-spot" id="spot4" onclick="reservar(4)"><span></span></div>
+        <div class="parking-spot" id="spot5" onclick="reservar(5)"><span></span></div>
+        <div class="parking-spot" id="spot6" onclick="reservar(6)"><span></span></div>
+        <div class="parking-spot" id="spot7" onclick="reservar(7)"><span></span></div>
+        <div class="parking-spot" id="spot8" onclick="reservar(8)"><span></span></div>
+        <div class="parking-spot" id="spot9" onclick="reservar(9)"><span></span></div>
+        <div class="parking-spot" id="spot10" onclick="reservar(10)"><span></span></div>
+        <div class="parking-spot" id="spot11" onclick="reservar(11)"><span></span></div>
+        <div class="parking-spot" id="spot12" onclick="reservar(12)"><span></span></div>
+        <div class="parking-spot" id="spot13" onclick="reservar(13)"><span></span></div>
+        <div class="parking-spot" id="spot14" onclick="reservar(14)"><span></span></div>
+        <div class="parking-spot" id="spot15" onclick="reservar(15)"><span></span></div>
+        <div class="parking-spot" id="spot16" onclick="reservar(16)"><span></span></div>
+        <div class="parking-spot" id="spot17" onclick="reservar(17)"><span></span></div>
+        <div class="parking-spot" id="spot18" onclick="reservar(18)"><span></span></div>
+        <div class="parking-spot" id="spot19" onclick="reservar(19)"><span></span></div>
+        <div class="parking-spot" id="spot20" onclick="reservar(20)"><span></span></div>
+        <div class="parking-spot" id="spot21" onclick="reservar(21)"><span></span></div>
+        <div class="parking-spot" id="spot22" onclick="reservar(22)"><span></span></div>
+        <div class="parking-spot" id="spot23" onclick="reservar(23)"><span></span></div>
+        <div class="parking-spot" id="spot24" onclick="reservar(24)"><span></span></div>
+        <div class="parking-spot" id="spot25" onclick="reservar(25)"><span></span></div>
+        <div class="parking-spot" id="spot26" onclick="reservar(26)"><span></span></div>
+        <div class="parking-spot" id="spot27" onclick="reservar(27)"><span></span></div>
+        <div class="parking-spot" id="spot28" onclick="reservar(28)"><span></span></div>
+        <div class="parking-spot" id="spot29" onclick="reservar(29)"><span></span></div>
+        <div class="parking-spot" id="spot30" onclick="reservar(30)"><span></span></div>
+        <div class="parking-spot" id="spot31" onclick="reservar(31)"><span></span></div>
+        <div class="parking-spot" id="spot32" onclick="reservar(32)"><span></span></div>
+        <div class="parking-spot" id="spot33" onclick="reservar(33)"><span></span></div>
+        <div class="parking-spot" id="spot34" onclick="reservar(34)"><span></span></div>
+        <div class="parking-spot" id="spot35" onclick="reservar(35)"><span></span></div>
+        <div class="parking-spot" id="spot36" onclick="reservar(36)"><span></span></div>
+        <div class="parking-spot" id="spot37" onclick="reservar(37)"><span></span></div>
+        <div class="parking-spot" id="spot38" onclick="reservar(38)"><span></span></div>
+        <div class="parking-spot" id="spot39" onclick="reservar(39)"><span></span></div>
+        <div class="parking-spot" id="spot40" onclick="reservar(40)"><span></span></div>
+        <div class="parking-spot" id="spot41" onclick="reservar(41)"><span></span></div>
+        <div class="parking-spot" id="spot42" onclick="reservar(42)"><span></span></div>
+        <div class="parking-spot" id="spot43" onclick="reservar(43)"><span></span></div>
+        <div class="parking-spot" id="spot44" onclick="reservar(44)"><span></span></div>
+        <div class="parking-spot" id="spot45" onclick="reservar(45)"><span></span></div>
+        <div class="parking-spot" id="spot46" onclick="reservar(46)"><span></span></div>
+        <div class="parking-spot" id="spot47" onclick="reservar(47)"><span></span></div>
+        
+
+
+        <div class="disabled-spot" id="disabled1"><span>Pasillo E</span></div>
+        <div class="disabled-spot" id="disabled2"><span>CENTRAL</span></div>
+        <div class="disabled-spot" id="disabled3"><span>BIBLIOTECA</span></div>
+        <div class="disabled-spot" id="disabled4"></div>
+        <div class="disabled-spot" id="disabled5"></div>
+        <div class="disabled-spot" id="disabled6"></div>
+        <div class="disabled-spot" id="disabled7"></div>
+        <div class="disabled-spot" id="disabled8"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+   
+</script>
+</body>
+</html>

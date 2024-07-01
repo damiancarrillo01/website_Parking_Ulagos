@@ -111,21 +111,23 @@ exports.inicioSesionUsuario = async (req, res) => {
     res.status(500).send("Error procesando los datos");
   }
 };
-
 exports.sedes = async (req, res) => {
-  const idboton = req.body;
+  const { buttonId } = req.body; // Obtener el idboton del cuerpo de la solicitud
   const id_usuario = global.usuarioId;
-  console.log(idboton);
+  
+  console.log("ID de Botón:", buttonId);
   console.log("ID de Usuario en sedes:", id_usuario);
+
   if (!id_usuario) {
     return res.status(401).send("Usuario no autenticado");
   }
 
   try {
-    // Realiza cualquier lógica adicional si es necesario
+    // Lógica adicional si es necesario
+    let redirectUrl = "/principal1damian.html"; // Variable para almacenar el URL de redirección basado en buttonId
 
-    // Responder con un JSON que indique al frontend que redirija
-    res.status(200).json({ redirectUrl: "/principal.html" });
+    // Responder con un JSON que indique al frontend el buttonId y el redirectUrl
+    res.status(200).json({ buttonId, redirectUrl });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error procesando los datos");
@@ -376,7 +378,6 @@ exports.selectReserva = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
-
 exports.actualizarReserva = async (req, res) => {
   const { patente, id_espacio } = req.body;
   const id_usuario = global.usuarioId;
@@ -391,20 +392,27 @@ exports.actualizarReserva = async (req, res) => {
   try {
     // Verificar si existe la reserva y obtener la hora de salida actual
     const resultReserva = await pool.query(
-      "SELECT hora_salida_reserva FROM reservas WHERE id_usuario = $1 AND patente = $2 AND id_espacio = $3",
+      "SELECT hora_salida_reserva, aumentada FROM reservas WHERE id_usuario = $1 AND patente = $2 AND id_espacio = $3",
       [id_usuario, patente, id_espacio_int]
     );
 
     if (resultReserva.rows.length > 0) {
-      const { hora_salida_reserva } = resultReserva.rows[0];
+      const { hora_salida_reserva, aumentada } = resultReserva.rows[0];
+
+      // Verificar si la reserva ya ha sido aumentada
+      if (aumentada) {
+        return res
+          .status(400)
+          .json({ error: "La reserva ya ha sido aumentada anteriormente" });
+      }
 
       // Aumentar la hora de salida en una hora
       const horaSalidaActual = new Date(hora_salida_reserva);
       horaSalidaActual.setHours(horaSalidaActual.getHours() + 1); // Aumentar en una hora
 
-      // Actualizar la reserva con la nueva hora de salida
+      // Actualizar la reserva con la nueva hora de salida y marcar como aumentada
       const updateReserva = await pool.query(
-        "UPDATE reservas SET hora_salida_reserva = $1 WHERE id_usuario = $2 AND patente = $3 AND id_espacio = $4 RETURNING *",
+        "UPDATE reservas SET hora_salida_reserva = $1, aumentada = true WHERE id_usuario = $2 AND patente = $3 AND id_espacio = $4 RETURNING *",
         [horaSalidaActual, id_usuario, patente, id_espacio_int]
       );
 
@@ -412,13 +420,18 @@ exports.actualizarReserva = async (req, res) => {
         const reservaActualizada = updateReserva.rows[0];
         res.status(201).json({
           mensaje: "Reserva aumentada exitosamente",
-          nueva_hora_salida: reservaActualizada.hora_salida_reserva.toISOString(), // Devuelve la nueva hora de salida en formato ISO8601
+          nueva_hora_salida:
+            reservaActualizada.hora_salida_reserva.toISOString(), // Devuelve la nueva hora de salida en formato ISO8601
         });
       } else {
-        res.status(404).json({ error: "No se encontró reserva para este usuario" });
+        res
+          .status(404)
+          .json({ error: "No se encontró reserva para este usuario" });
       }
     } else {
-      res.status(404).json({ error: "No se encontró reserva para este usuario" });
+      res
+        .status(404)
+        .json({ error: "No se encontró reserva para este usuario" });
     }
   } catch (error) {
     console.error("Error al aumentar la reserva:", error);
