@@ -19,7 +19,7 @@ router.post('/eliminarReservaGuardia',userController.eliminarReservaGuardia);
 router.get('/vehiculos',userController.vehiculos);
 router.get('/selectReserva',userController.selectReserva);
 router.get('/selectGuardia',userController.selectGuardia);
-
+router.get('/selectEstacionamientoEstado',userController.selectEstacionamientoEstado);
 //admin
 router.get('/admin', userController.admin);
 router.post('/adminUpdateSede', userController.adminUpdateSede);

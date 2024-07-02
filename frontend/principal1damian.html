@@ -713,7 +713,7 @@
           cancelButtonText: "Cancelar",
         }).then((result) => {
           if (result.isConfirmed) {
-            confirmarReserva(); // Llamar a la función para confirmar la reserva
+            confirmarReserva(numero); // Llamar a la función para confirmar la reserva
           }
         });
       }
@@ -721,7 +721,7 @@
       // Funcionalidad Boton Edificio Cierre
 
       // Función para enviar los datos a la API
-      async function confirmarReserva() {
+      async function confirmarReserva(numero) {
         try {
           const response = await fetch("/usuarios/reserva", {
             method: "POST",
@@ -732,7 +732,7 @@
             body: JSON.stringify({
               edificio: edificioSeleccionado,
               patente: vehiculoSeleccionado,
-              id_espacio: "1",
+              id_espacio: numero,
               hora_entrada: horaEntradaSeleccionada,
               hora_salida: horaSalidaSeleccionada,
             }),
