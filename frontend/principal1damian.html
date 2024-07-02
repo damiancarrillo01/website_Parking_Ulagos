@@ -299,6 +299,26 @@
       document
         .getElementById("vehiculoButton")
         .addEventListener("click", function () {
+          // Lista de colores comunes de vehículos
+          const colores = [
+            "Blanco",
+            "Negro",
+            "Plata",
+            "Gris",
+            "Azul",
+            "Rojo",
+            "Verde",
+            "Amarillo",
+            "Naranja",
+            "Marrón",
+          ];
+
+          // Generar opciones para el select
+          let opcionesColor = "";
+          colores.forEach((color) => {
+            opcionesColor += `<option value="${color}">${color}</option>`;
+          });
+
           Swal.fire({
             title: "Selecciona o registra tu vehículo",
             html: `
@@ -319,8 +339,8 @@
                 <option value="camioneta">Camioneta</option>
                 <option value="moto">Moto</option>
               </select>
-              <label for="color">Color:</label>
-              <input type="text" id="color" class="swal2-input" placeholder="Ingresa el color">
+               <label for="color">Color:</label>
+               <select id="color" class="swal2-select">${opcionesColor}</select>
               <label for="modelo">Modelo:</label>
               <input type="text" id="modelo" class="swal2-input" placeholder="Ingresa el modelo">
               <label for="tamaño">Tamaño:</label>
@@ -518,6 +538,7 @@
       // Funcionalidad Boton Hora Cierre
       //////////////////////////////////////////////////////////////////////
       // Funcionalidad Boton Edificio Inicio
+
       document
         .getElementById("edificioButton")
         .addEventListener("click", function () {

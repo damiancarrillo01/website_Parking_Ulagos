@@ -8,7 +8,7 @@
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-        body {
+        body { 
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             padding: 20px;
@@ -91,48 +91,140 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Gestión de Estacionamientos</h1>
-
-    <div class="field">
-        <label for="sede" style="font-size: 88%;">Sede:</label>
-        <select id="sede">
-            <option value="sede1">Sede 1</option>
-            <option value="sede2">Sede 2</option>
-        </select>
-        <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar" id ="deletebutton" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+    <div class="container">
+        <h1>Gestión de Estacionamientos</h1>
+    
+        <form action="/admin" method="GET"></form>
+    
+        <div class="field">
+            <label for="sede" style="font-size: 88%;">Sede:</label>
+            <select id="sede" onchange="mostrarEdificiosPorSede();">
+            </select>
+            <button class="actualizar" id ="sedebutton" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar" id ="deletebutton" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="field">
+            <label for="edificio" style="font-size: 88%;">Edificio:</label>
+            <select id="edificio" onchange="mostrarEstacionamientosPorEdificio();">
+            </select>
+            <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar" id ="deletebutton2" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="field">
+            <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
+            <select id="estacionamiento">
+            </select>
+            <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
+            <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
+            <button class="eliminar"  id ="deletebutton3" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
+        </div>
+    
+        <div class="button-container">
+            <button>Siguiente</button>
+        </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- DATOS DE BASE DE DATOS EN OPCIONES -- INICIO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Se recolectan los datos de la base de datos
+                const response = await fetch('usuarios/admin'); // Ajusta la URL si es necesario
+                const data = await response.json();
+    
+                // Secciones donde deben ir los datos
+                const sedesContainer = document.getElementById('sede');
+                const edificiosContainer = document.getElementById('edificio');
+                const estacionamientoContainer = document.getElementById('estacionamiento');
+    
+                // Mostrar las sedes
+                data.datos_sedes.forEach((sedes, index) => {
+                    const sede = document.createElement('option');
+                    sede.setAttribute('value', sedes.id_sede);
+                    sede.textContent = `${sedes.nombre_sede}`;
+                    sedesContainer.appendChild(sede);
+    
+                    // Seleccionar la primera sede por defecto
+                    if (index === 0) {
+                        sedesContainer.value = sedes.id_sede;
+                    }
+                });
+    
+                // Datos de Edificios y Estacionamientos para ser usados posteriormente
+                window.datosEdificios = data.datos_edificios;
+                window.datosEstacionamientos = data.datos_estacionamietos;
+    
+                // Mostrar edificios de la primera sede por defecto
+                mostrarEdificiosPorSede(true);
+    
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    
+        // Función para obtener sede seleccionada y mostrar edificios correspondientes
+        function mostrarEdificiosPorSede(isInitialLoad = false) {
+            const edificiosContainer = document.getElementById('edificio');
+            const sedeSeleccionada = document.getElementById('sede').value;
+    
+            // Limpiar las opciones existentes
+            edificiosContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar los edificios de la sede seleccionada
+            const edificiosFiltrados = window.datosEdificios.filter(edificios => edificios.id_sede_edificio == sedeSeleccionada);
+            edificiosFiltrados.forEach((edificios, index) => {
+                const edificio = document.createElement('option');
+                edificio.setAttribute('value', edificios.id_edificio);
+                edificio.textContent = edificios.nombre_edificio;
+                edificiosContainer.appendChild(edificio);
+    
+                // Seleccionar el primer edificio por defecto si es la carga inicial
+                if (isInitialLoad && index === 0) {
+                    edificiosContainer.value = edificios.id_edificio;
+                }
+            });
+    
+            // Limpiar los estacionamientos al cambiar de sede
+            const estacionamientoContainer = document.getElementById('estacionamiento');
+            estacionamientoContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar estacionamientos del primer edificio por defecto
+            if (isInitialLoad) {
+                mostrarEstacionamientosPorEdificio(true);
+            }
+        }
+    
+        // Función para obtener edificio seleccionado y mostrar estacionamientos correspondientes
+        function mostrarEstacionamientosPorEdificio(isInitialLoad = false) {
+            const estacionamientoContainer = document.getElementById('estacionamiento');
+            const edificioSeleccionado = document.getElementById('edificio').value;
+    
+            // Limpiar las opciones existentes
+            estacionamientoContainer.innerHTML = '<option value=""></option>';
+    
+            // Mostrar los estacionamientos del edificio seleccionado
+            const estacionamientosFiltrados = window.datosEstacionamientos.filter(estacionamientos => estacionamientos.id_edificio_estacionamiento == edificioSeleccionado);
+            estacionamientosFiltrados.forEach((estacionamientos, index) => {
+                const estacionamiento = document.createElement('option');
+                estacionamiento.setAttribute('value', estacionamientos.id_espacio);
+                estacionamiento.textContent = `Estacionamiento ${estacionamientos.id_espacio}`;
+                estacionamientoContainer.appendChild(estacionamiento);
+    
+                // Seleccionar el primer estacionamiento por defecto si es la carga inicial
+                if (isInitialLoad && index === 0) {
+                    estacionamientoContainer.value = estacionamientos.id_espacio;
+                }
+            });
+        }
+    </script>
+    <!-- DATOS DE BASE DE DATOS EN OPCIONES -- FIN -->    
 
-    <div class="field">
-        <label for="edificio" style="font-size: 88%;">Edificio:</label>
-        <select id="edificio">
-            <option value="edificio1" >Edificio 1</option>
-            <option value="edificio2">Edificio 2</option>
-        </select>
-        <button class="actualizar" id ="sedebutton2" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton2" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar" id ="deletebutton2" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
-    </div>
-
-    <div class="field">
-        <label for="estacionamiento" style="font-size: 88%;">Estacionamiento:</label>
-        <select id="estacionamiento">
-            <option value="estacionamiento1">Estacionamiento 1</option>
-            <option value="estacionamiento2">Estacionamiento 2</option>
-        </select>
-        <button class="actualizar" id ="sedebutton3" onclick="showUpdateModal(this.id)"><i class="fas fa-sync-alt"></i></button>
-        <button class="agregar" id ="addbutton3" onclick="showaddModal(this.id)"><i class="fas fa-plus"></i></button>
-        <button class="eliminar"  id ="deletebutton3" onclick="showdeleteModal(this.id)"><i class="fas fa-trash"></i></button>
-    </div>
-
-    <div class="button-container">
-        <button>Siguiente</button>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
     function showUpdateModal(buttonId) {
         if(buttonId=="sedebutton"){
@@ -154,13 +246,24 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateSede = document.getElementById('sede').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    console.log(`updateField: ${updateField}, newData: ${newData}, securityToken: ${securityToken}, updateSede: ${updateSede}`);
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateSede: updateSede }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateSede } = result.value;
+                        fetch('/usuarios/adminUpdateSede', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateSede: updateSede })
+                    });
+                //if (result.isConfirmed) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -189,13 +292,23 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateEdificio = document.getElementById('edificio').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    console.log(`updateField: ${updateField}, newData: ${newData}, securityToken: ${securityToken}, updateEdificio: ${updateEdificio}`);
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateEdificio: updateEdificio }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateEdificio } = result.value;
+                        fetch('/usuarios/adminUpdateEdificio', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateEdificio: updateEdificio })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -224,13 +337,22 @@
                     const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
+                    const updateEstacionamiento = document.getElementById('estacionamiento').value;
                     if (!updateField || !newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { updateField: updateField, newData: newData, securityToken: securityToken, updateEstacionamiento: updateEstacionamiento }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateField, newData, securityToken, updateEstacionamiento } = result.value;
+                        fetch('/usuarios/adminUpdateEstacionamiento', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateField: updateField, newData: newData, securityToken: securityToken, updateEstacionamiento: updateEstacionamiento })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -252,17 +374,25 @@
                 showCancelButton: true,
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
-                preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
+                preConfirm: () => { 
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    console.log(`newData: ${newData}, securityToken: ${securityToken}`);
+                    if (!newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { newData: newData, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { newData, securityToken } = result.value;
+                        fetch('/usuarios/adminCreateSede', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ newData: newData, securityToken: securityToken })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -283,16 +413,24 @@
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
                 preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    const updateSede = document.getElementById('sede').value;
+                    if (!newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { newData: newData, securityToken: securityToken, updateSede: updateSede }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { newData, securityToken, updateSede } = result.value;
+                        fetch('/usuarios/adminCreateEdificio', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ newData: newData, securityToken: securityToken, updateSede: updateSede })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -313,16 +451,24 @@
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
                 preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
                     const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    const updateEdificio = document.getElementById('edificio').value;
+                    if (!newData || !securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { newData: newData, securityToken: securityToken, updateEdificio: updateEdificio }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { newData, securityToken, updateEdificio } = result.value;
+                        fetch('/usuarios/adminCreateEstacionamiento', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ newData: newData, securityToken: securityToken, updateEdificio: updateEdificio })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -346,16 +492,25 @@
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
                 preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
-                    const newData = Swal.getPopup().querySelector('#newData').value
-                    const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    const securityToken = Swal.getPopup().querySelector('#securityToken').value;
+                    const updateSede = document.getElementById('sede').value;
+                    //const updateEdificio = document.getElementById('edificio').value;
+                    //const updateEstacionamiento = document.getElementById('estacionamiento').value;
+                    if (!securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { updateSede: updateSede, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateSede, securityToken } = result.value;
+                        fetch('/usuarios/adminDeleteSede', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateSede: updateSede, securityToken: securityToken })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -376,16 +531,24 @@
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
                 preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
-                    const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    const updateEdificio = document.getElementById('edificio').value;
+                    //const updateEstacionamiento = document.getElementById('estacionamiento').value;
+                    if (!securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { updateEdificio: updateEdificio, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateEdificio, securityToken } = result.value;
+                        fetch('/usuarios/adminDeleteEdificio', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateEdificio: updateEdificio, securityToken: securityToken })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
@@ -406,16 +569,23 @@
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Retroceder',
                 preConfirm: () => {
-                    const updateField = Swal.getPopup().querySelector('#updateField').value
-                    const newData = Swal.getPopup().querySelector('#newData').value
                     const securityToken = Swal.getPopup().querySelector('#securityToken').value
-                    if (!updateField || !newData || !securityToken) {
+                    const updateEstacionamiento = document.getElementById('estacionamiento').value;
+                    if (!securityToken) {
                         Swal.showValidationMessage(`Por favor, complete todos los campos`)
                     }
-                    return { updateField: updateField, newData: newData, securityToken: securityToken }
+                    return { updateEstacionamiento: updateEstacionamiento, securityToken: securityToken }
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const { updateEstacionamiento, securityToken } = result.value;
+                        fetch('/usuarios/adminDeleteEstacionamiento', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ updateEstacionamiento: updateEstacionamiento, securityToken: securityToken })
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Datos actualizados con éxito',
