@@ -206,6 +206,7 @@ exports.reserva = async (req, res) => {
   console.log("hora entrada : ", hora_entrada);
   console.log("hora salida : ", hora_salida);
   console.log("Espacio : ", id_espacio);
+  console.log("Pantente: ",patente);
 
   // Convertir id_espacio a entero
   const id_espacio_int = parseInt(id_espacio, 10); // Base 10
@@ -252,7 +253,7 @@ exports.reserva = async (req, res) => {
           hora_entrada_parts[1]
         )
       );
-      hora_entrada_utc.setHours(hora_entrada_utc.getHours() + 4);
+      hora_entrada_utc.setHours(hora_entrada_utc.getHours() - 4);
       const hora_entrada_completa = hora_entrada_utc
         .toISOString()
         .slice(0, 19)
@@ -267,14 +268,11 @@ exports.reserva = async (req, res) => {
           hora_salida_parts[1]
         )
       );
-      hora_salida_utc.setHours(hora_salida_utc.getHours() + 4);
+      hora_salida_utc.setHours(hora_salida_utc.getHours() - 4);
       const hora_salida_completa = hora_salida_utc
         .toISOString()
         .slice(0, 19)
         .replace("T", " ");
-
-      // Ahora hora_entrada_completa y hora_salida_completa deberían estar en formato ISO8601 compatible
-      // para insertar en SQL sin problemas de zona horaria.
 
       const result = await pool.query(
         "INSERT INTO reservas (id_edificio, id_espacio, id_usuario, patente, hora_entrada_reserva, hora_salida_reserva) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",

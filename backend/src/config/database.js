@@ -1,4 +1,4 @@
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 
 // Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
@@ -11,38 +11,38 @@ const pool = new Pool({
 
 /*
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'PUMdb',
-    password: 'hola1234',
-    port: 5432,
-});  
+  user: "postgres",
+  host: "localhost",
+  database: "PUMdb",
+  password: "hola1234",
+  port: 5432,
+});
 */
 pool.connect((err, client, done) => {
-    if (err) throw err;
-    client.query('SET timezone = \'America/Santiago\'', (err) => {
-      done();
-      if (err) {
-        console.error('Error setting timezone', err.stack);
-      } else {
-        console.log('Timezone set to America/Santiago');
-      }
-    });
-  });
-const connect = async () => {
-    try {
-        const client = await pool.connect();
-        console.log('Base de datos conectada');
-        client.release(); 
-    } catch (err) {
-        console.error('Error conectando a la base de datos', err.stack);
-        throw err; 
+  if (err) throw err;
+  client.query("SET timezone = 'America/Santiago'", (err) => {
+    done();
+    if (err) {
+      console.error("Error setting timezone", err.stack);
+    } else {
+      console.log("Timezone set to America/Santiago");
     }
+  });
+});
+const connect = async () => {
+  try {
+    const client = await pool.connect();
+    console.log("Base de datos conectada");
+    client.release();
+  } catch (err) {
+    console.error("Error conectando a la base de datos", err.stack);
+    throw err;
+  }
 };
 
 module.exports = {
-    connect,
-    pool,
+  connect,
+  pool,
 };
 
-console.log('database.js ejecutado');
+console.log("database.js ejecutado");
