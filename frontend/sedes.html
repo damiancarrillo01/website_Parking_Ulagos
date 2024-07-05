@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <!-- Script de Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <!-- Enlace a SweetAlert -->
@@ -111,24 +110,36 @@
 </div>
 
 <script>
-    function selectSede(buttonId) {
-    console.log('ID del botón seleccionado:', buttonId);
-    $.ajax({
-        type: 'POST',
-        url: "/usuarios/sedes",
-        data: JSON.stringify({ buttonId: buttonId }),
-        contentType: 'application/json',
-        success: function(response) {
-            console.log('Datos enviados exitosamente');
-            if (response.redirectUrl) {
-                window.location.href = `${response.redirectUrl}?idboton=${buttonId}`;
-            }
-        },
-        error: function(error) {
-            console.error('Error al enviar los datos: ', error);
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener el id de usuario desde localStorage
+        const usuarioId = localStorage.getItem("usuarioId");
+
+        if (usuarioId) {
+            console.log("ID de Usuario:", usuarioId);
+            // Aquí puedes usar el usuarioId para realizar otras acciones necesarias
+        } else {
+            console.log("ID de Usuario no encontrado");
         }
     });
-}
+
+    function selectSede(buttonId) {
+        console.log('ID del botón seleccionado:', buttonId);
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/sedes",
+            data: JSON.stringify({ buttonId: buttonId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
+                if (response.redirectUrl) {
+                    window.location.href = `${response.redirectUrl}?idboton=${buttonId}`;
+                }
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
+    }
 </script>
 
 </body>

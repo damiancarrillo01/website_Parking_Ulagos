@@ -70,21 +70,19 @@ exports.inicioSesionUsuario = async (req, res) => {
   try {
     let result;
     let tipoUsuario;
+    let usuarioId;
 
     // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
-    if (
-      correo.endsWith("@alumnos.ulagos.cl") ||
-      correo.endsWith("@ulagos.cl")
-    ) {
+    if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl")) {
       result = await pool.query(
         "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
       if (result.rows.length > 0) {
-        global.usuarioId = result.rows[0].id_usuario;
+        usuarioId = result.rows[0].id_usuario;
         tipoUsuario = result.rows[0].tipo_usuario;
       }
-    }
+    } 
     // Consulta para guardias
     else {
       result = await pool.query(
@@ -92,17 +90,17 @@ exports.inicioSesionUsuario = async (req, res) => {
         [correo, contraseña]
       );
       if (result.rows.length > 0) {
-        global.usuarioId = result.rows[0].id_guardia;
+        usuarioId = result.rows[0].id_guardia;
         tipoUsuario = "guardia";
       }
     }
 
     if (result.rows.length > 0) {
-      console.log("ID de Usuario:", global.usuarioId);
+      console.log("ID de Usuario:", usuarioId);
       console.log("Tipo de Usuario:", tipoUsuario);
 
       // Redirigir según el tipo de usuario
-      res.json({ tipo_usuario: tipoUsuario, redirectUrl: "/sedes.html" });
+      res.json({ tipo_usuario: tipoUsuario, usuarioId, redirectUrl: "/sedes.html" });
     } else {
       res.status(400).send("Este usuario no existe");
     }
@@ -111,17 +109,11 @@ exports.inicioSesionUsuario = async (req, res) => {
     res.status(500).send("Error procesando los datos");
   }
 };
+
 exports.sedes = async (req, res) => {
   const { buttonId } = req.body; // Obtener el idboton del cuerpo de la solicitud
-  const id_usuario = global.usuarioId;
-
+  
   console.log("ID de Botón:", buttonId);
-  console.log("ID de Usuario en sedes:", id_usuario);
-
-  if (!id_usuario) {
-    return res.status(401).send("Usuario no autenticado");
-  }
-
   try {
     // Lógica adicional si es necesario
     let redirectUrl = "/principal1damian.html"; // Variable para almacenar el URL de redirección basado en buttonId
@@ -134,9 +126,8 @@ exports.sedes = async (req, res) => {
   }
 };
 exports.registroAuto = async (req, res) => {
-  const { patente, tipo_vehiculo, color, modelo, tamaño } = req.body;
-  const id_usuario = global.usuarioId;
-  console.log("usuarioid", id_usuario);
+  const { patente, tipo_vehiculo, color, modelo, tamaño , usuarioId} = req.body;
+  console.log("usuarioid", usuarioId);
   console.log("patente:", patente);
   console.log("tipo_vehiculo:", tipo_vehiculo);
   console.log("color:", color);
@@ -148,7 +139,7 @@ exports.registroAuto = async (req, res) => {
     return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
-  if (!id_usuario) {
+  if (!usuarioId) {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
@@ -163,7 +154,7 @@ exports.registroAuto = async (req, res) => {
 
     const poseer = await pool.query(
       "INSERT INTO poseer_vehiculo (id_usuario,patente) VALUES ($1,$2) RETURNING *",
-      [id_usuario, patente]
+      [usuarioId, patente]
     );
     res.status(201).json({
       mensaje: "Automóvil registrado exitosamente",
@@ -176,10 +167,11 @@ exports.registroAuto = async (req, res) => {
 };
 
 exports.vehiculos = async (req, res) => {
-  const id_usuario = global.usuarioId; // Obtén el ID del usuario de la sesión
-  console.log(id_usuario);
+  const { usuarioId } = req.query;
+
+  console.log(usuarioId);
   // Verifica si el usuario está autenticado
-  if (!id_usuario) {
+  if (!usuarioId) {
     return res.status(401).send("Usuario no autenticado");
   }
 
@@ -187,7 +179,7 @@ exports.vehiculos = async (req, res) => {
     // Consulta para obtener los vehículos del usuario
     const result = await pool.query(
       "SELECT p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v JOIN poseer_vehiculo p ON p.patente = v.patente WHERE p.id_usuario = $1",
-      [id_usuario]
+      [usuarioId]
     );
 
     console.log(result.rows); // Muestra los resultados en la consola para depuración
@@ -198,10 +190,9 @@ exports.vehiculos = async (req, res) => {
   }
 };
 exports.reserva = async (req, res) => {
-  const { edificio, patente, id_espacio, hora_entrada, hora_salida } = req.body;
-  const id_usuario = global.usuarioId;
+  const { edificio, patente, id_espacio, hora_entrada, hora_salida,usuarioId } = req.body;
 
-  console.log("usuarioid : ", id_usuario);
+  console.log("usuarioid : ", usuarioId);
   console.log("Edificio : ", edificio);
   console.log("hora entrada : ", hora_entrada);
   console.log("hora salida : ", hora_salida);
@@ -216,7 +207,7 @@ exports.reserva = async (req, res) => {
     return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
-  if (!id_usuario) {
+  if (!usuarioId) {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
@@ -224,7 +215,7 @@ exports.reserva = async (req, res) => {
     // Select para verificar si ya existe una reserva
     const resultUsu = await pool.query(
       "SELECT id_usuario FROM reservas WHERE id_usuario = $1",
-      [id_usuario]
+      [usuarioId]
     );
 
     if (resultUsu.rows.length > 0) {
@@ -273,13 +264,13 @@ exports.reserva = async (req, res) => {
         .toISOString()
         .slice(0, 19)
         .replace("T", " ");
-
+      console.log('tu horasalida completa es',hora_salida_completa)
       const result = await pool.query(
         "INSERT INTO reservas (id_edificio, id_espacio, id_usuario, patente, hora_entrada_reserva, hora_salida_reserva) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
         [
           id_edificio.rows[0].id_edificio,
           id_espacio_int,
-          id_usuario,
+          usuarioId,
           patente,
           hora_entrada_completa,
           hora_salida_completa,
@@ -302,14 +293,74 @@ exports.reserva = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
-exports.eliminarReserva = async (req, res) => {
-  const { patente, id_espacio } = req.body;
-  const id_usuario = global.usuarioId;
+
+let aumentada = 0; // Inicialización fuera del ámbito de la función
+
+exports.actualizarReserva = async (req, res) => {
+  const { patente, id_espacio, usuarioId } = req.body;
+  console.log(usuarioId);
 
   // Convertir id_espacio a entero
   const id_espacio_int = parseInt(id_espacio, 10); // Base 10
 
-  if (!id_usuario) {
+  if (!usuarioId) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    // Verificar si existe la reserva y obtener la hora de salida actual
+    const resultReserva = await pool.query(
+      "SELECT hora_salida_reserva FROM reservas WHERE id_usuario = $1 AND patente = $2 AND id_espacio = $3",
+      [usuarioId, patente, id_espacio_int]
+    );
+
+    if (resultReserva.rows.length > 0) {
+      const { hora_salida_reserva } = resultReserva.rows[0];
+
+      // Verificar si la reserva ya ha sido aumentada
+      if (aumentada === 1) {
+        return res
+          .status(400)
+          .json({ error: "La reserva ya ha sido aumentada anteriormente" });
+      }
+
+      // Aumentar la hora de salida en una hora
+      const horaSalidaActual = new Date(hora_salida_reserva);
+      horaSalidaActual.setHours(horaSalidaActual.getHours() + 1); // Aumentar en una hora
+      aumentada = 1; // Incrementar aumentada a 1
+
+      // Actualizar la reserva con la nueva hora de salida y marcar como aumentada
+      const updateReserva = await pool.query(
+        "UPDATE reservas SET hora_salida_reserva = $1 WHERE id_usuario = $2 AND patente = $3 AND id_espacio = $4 RETURNING *",
+        [horaSalidaActual, usuarioId, patente, id_espacio_int]
+      );
+
+      if (updateReserva.rows.length > 0) {
+        const reservaActualizada = updateReserva.rows[0];
+        res.status(201).json({
+          mensaje: "Reserva aumentada exitosamente",
+          nueva_hora_salida:
+            reservaActualizada.hora_salida_reserva.toISOString(), // Devuelve la nueva hora de salida en formato ISO8601
+        });
+      } else {
+        res.status(404).json({ error: "No se encontró reserva para este usuario" });
+      }
+    } else {
+      res.status(404).json({ error: "No se encontró reserva para este usuario" });
+    }
+  } catch (error) {
+    console.error("Error al aumentar la reserva:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+exports.eliminarReserva = async (req, res) => {
+  const { patente, id_espacio,usuarioId } = req.body;
+  console.log(usuarioId)
+  // Convertir id_espacio a entero
+  const id_espacio_int = parseInt(id_espacio, 10); // Base 10
+
+  if (!usuarioId) {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
@@ -317,13 +368,13 @@ exports.eliminarReserva = async (req, res) => {
     // Select para verificar si ya existe una reserva
     const resultUsu = await pool.query(
       "SELECT id_usuario FROM reservas WHERE id_usuario = $1",
-      [id_usuario]
+      [usuarioId]
     );
 
     if (resultUsu.rows.length > 0) {
       const DeleteReserva = await pool.query(
         "DELETE FROM  reservas WHERE id_usuario = $1 and patente= $2",
-        [id_usuario, patente]
+        [usuarioId, patente]
       );
       const updateEstado = await pool.query(
         "UPDATE espacio_estacionamiento SET estado=$1 WHERE id_espacio = $2",
@@ -331,9 +382,11 @@ exports.eliminarReserva = async (req, res) => {
       );
 
       const reservaEliminada = DeleteReserva.rows[0];
+      aumentada = 0
       return res.status(201).json({
         mensaje: "Reserva Eliminada exitosamente",
         reserva: reservaEliminada,
+
       });
     } else {
       return res
@@ -347,9 +400,11 @@ exports.eliminarReserva = async (req, res) => {
 };
 
 exports.selectReserva = async (req, res) => {
-  const id_usuario = global.usuarioId;
+  const { usuarioId } = req.query;
 
-  if (!id_usuario) {
+  console.log(usuarioId);
+
+  if (!usuarioId) {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
@@ -360,7 +415,7 @@ exports.selectReserva = async (req, res) => {
         "FROM reservas r " +
         "JOIN edificios e ON r.id_edificio = e.id_edificio " +
         "WHERE r.id_usuario = $1",
-      [id_usuario]
+      [usuarioId]
     );
 
     if (resultReserva.rows.length > 0) {
@@ -376,66 +431,9 @@ exports.selectReserva = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
-exports.actualizarReserva = async (req, res) => {
-  const { patente, id_espacio } = req.body;
-  const id_usuario = global.usuarioId;
 
-  // Convertir id_espacio a entero
-  const id_espacio_int = parseInt(id_espacio, 10); // Base 10
 
-  if (!id_usuario) {
-    return res.status(400).json({ error: "Usuario no autenticado" });
-  }
 
-  try {
-    // Verificar si existe la reserva y obtener la hora de salida actual
-    const resultReserva = await pool.query(
-      "SELECT hora_salida_reserva, aumentada FROM reservas WHERE id_usuario = $1 AND patente = $2 AND id_espacio = $3",
-      [id_usuario, patente, id_espacio_int]
-    );
-
-    if (resultReserva.rows.length > 0) {
-      const { hora_salida_reserva, aumentada } = resultReserva.rows[0];
-
-      // Verificar si la reserva ya ha sido aumentada
-      if (aumentada) {
-        return res
-          .status(400)
-          .json({ error: "La reserva ya ha sido aumentada anteriormente" });
-      }
-
-      // Aumentar la hora de salida en una hora
-      const horaSalidaActual = new Date(hora_salida_reserva);
-      horaSalidaActual.setHours(horaSalidaActual.getHours() + 1); // Aumentar en una hora
-
-      // Actualizar la reserva con la nueva hora de salida y marcar como aumentada
-      const updateReserva = await pool.query(
-        "UPDATE reservas SET hora_salida_reserva = $1, aumentada = true WHERE id_usuario = $2 AND patente = $3 AND id_espacio = $4 RETURNING *",
-        [horaSalidaActual, id_usuario, patente, id_espacio_int]
-      );
-
-      if (updateReserva.rows.length > 0) {
-        const reservaActualizada = updateReserva.rows[0];
-        res.status(201).json({
-          mensaje: "Reserva aumentada exitosamente",
-          nueva_hora_salida:
-            reservaActualizada.hora_salida_reserva.toISOString(), // Devuelve la nueva hora de salida en formato ISO8601
-        });
-      } else {
-        res
-          .status(404)
-          .json({ error: "No se encontró reserva para este usuario" });
-      }
-    } else {
-      res
-        .status(404)
-        .json({ error: "No se encontró reserva para este usuario" });
-    }
-  } catch (error) {
-    console.error("Error al aumentar la reserva:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-};
 exports.selectGuardia = async (req, res) => {
   const id_usuario = global.usuarioId;
 
@@ -964,5 +962,28 @@ exports.selectEstacionamientoEstado = async (req, res) => {
   } catch (err) {
     console.error("Error al obtener estacionamientos:", err);
     res.status(500).send("Error al obtener los estacionamientos");
+  }
+};
+
+exports.reporteGuardiaSelect = async (req, res) => {
+  const id_usuario = global.usuarioId;
+  if (!id_usuario) {
+    return res.status(400).json({ error: "Usuario no autenticado" });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT reporte from reportes R join poseer_vehiculo PV on R.patente=PV.patente where id_usuario=$1 ",
+      [id_usuario]
+    );
+
+    const reporteEncontrado = result.rows[0];
+    res.status(201).json({
+      mensaje: "Reporte encontrado",
+      reserva: reporteEncontrado,
+    });
+  } catch (error) {
+    console.error("Error al encontrar el reporte:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };

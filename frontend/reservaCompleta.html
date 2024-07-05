@@ -90,6 +90,7 @@
     </div>
 
     <script>
+      const usuarioId = localStorage.getItem("usuarioId");
       // Función para sumar 4 horas a una fecha y formatearla
       function ajustarHora(fecha) {
         let date = new Date(fecha);
@@ -114,7 +115,7 @@
       }
 
       // Petición para obtener los datos de la reserva
-      fetch("/usuarios/selectReserva")
+      fetch(`/usuarios/selectReserva?usuarioId=${usuarioId}`)
         .then((response) => response.json())
         .then((data) => {
           if (data.reserva) {
@@ -125,9 +126,7 @@
         })
         .catch((error) => console.error("Error:", error));
 
-      document
-        .getElementById("finalizaRe")
-        .addEventListener("click", function () {
+      document.getElementById("finalizaRe").addEventListener("click", function () {
           Swal.fire({
             title: "¿Seguro que quieres eliminar tu reserva?",
             text: "Esta acción no se puede deshacer.",
@@ -145,8 +144,8 @@
                 },
                 body: JSON.stringify({
                   patente: document.getElementById("vehiculo").innerText,
-                  id_espacio:
-                    document.getElementById("estacionamiento").innerText,
+                  id_espacio: document.getElementById("estacionamiento").innerText,
+                  usuarioId:usuarioId,
                 }),
               })
                 .then((response) => response.json())
@@ -190,8 +189,8 @@
                 },
                 body: JSON.stringify({
                   patente: document.getElementById("vehiculo").innerText,
-                  id_espacio:
-                    document.getElementById("estacionamiento").innerText,
+                  id_espacio:document.getElementById("estacionamiento").innerText,
+                  usuarioId:usuarioId,
                 }),
               })
                 .then((response) => response.json())
@@ -206,6 +205,7 @@
                       if (result.isConfirmed) {
                         // Redirigir a la página correspondiente
                         //window.location.href = "principal.html";
+                        window.location.reload();
                       }
                     });
                   } else {

@@ -203,6 +203,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+      const usuarioId = localStorage.getItem("usuarioId");
+      console.log('principal1 id:',usuarioId)
       // Obtener la hora seleccionada del localStorage
       const horaEntradaSeleccionada = localStorage.getItem(
         "horaEntradaSeleccionada"
@@ -230,9 +232,7 @@
       }
 
       // Funcionalidad Boton Hora Inicio
-      document
-        .getElementById("horaButton")
-        .addEventListener("click", function () {
+      document.getElementById("horaButton").addEventListener("click", function () {
           Swal.fire({
             title: "Selecciona la hora de reserva",
             html: `
@@ -251,34 +251,17 @@
             confirmButtonText: "Confirmar Hora de Reserva",
             cancelButtonText: "Cancelar",
             preConfirm: () => {
-              const horaEntrada =
-                document.getElementById("horaEntradaInput").value;
-              const minutoEntrada =
-                document.getElementById("minutoEntradaInput").value;
-              const horaSalida =
-                document.getElementById("horaSalidaInput").value;
-              const minutoSalida =
-                document.getElementById("minutoSalidaInput").value;
-              if (
-                horaEntrada === "" ||
-                minutoEntrada === "" ||
-                horaSalida === "" ||
-                minutoSalida === ""
-              ) {
-                Swal.showValidationMessage(
-                  "Por favor, ingresa una hora y minutos válidos."
-                );
+              const horaEntrada =document.getElementById("horaEntradaInput").value;
+              const minutoEntrada = document.getElementById("minutoEntradaInput").value;
+              const horaSalida = document.getElementById("horaSalidaInput").value;
+              const minutoSalida =document.getElementById("minutoSalidaInput").value;
+              if ( horaEntrada === "" ||minutoEntrada === "" ||horaSalida === "" ||minutoSalida === "") {
+                Swal.showValidationMessage( "Por favor, ingresa una hora y minutos válidos.");
                 return false;
               }
               return {
-                entrada: `${horaEntrada.padStart(
-                  2,
-                  "0"
-                )}:${minutoEntrada.padStart(2, "0")}`,
-                salida: `${horaSalida.padStart(2, "0")}:${minutoSalida.padStart(
-                  2,
-                  "0"
-                )}`,
+                entrada: `${horaEntrada.padStart(2,"0")}:${minutoEntrada.padStart(2, "0")}`,
+                salida: `${horaSalida.padStart(2, "0")}:${minutoSalida.padStart( 2, "0")}`,
               };
             },
           }).then((result) => {
@@ -287,14 +270,10 @@
               console.log("Hora de entrada:", entrada);
               console.log("Hora de salida:", salida);
               // Guardar la hora de entrada seleccionada en localStorage
-              localStorage.setItem(
-                "horaEntradaSeleccionada",
-                JSON.stringify(entrada)
+              localStorage.setItem("horaEntradaSeleccionada",JSON.stringify(entrada)
               );
               // Guardar la hora de salida seleccionada en localStorage
-              localStorage.setItem(
-                "horaSalidaSeleccionada",
-                JSON.stringify(salida)
+              localStorage.setItem("horaSalidaSeleccionada",JSON.stringify(salida)
               );
             }
           });
@@ -303,23 +282,11 @@
       // Funcionalidad Boton Hora Cierre
       //////////////////////////////////////////////////////////////////////
       // Funcionalidad Boton Vehiculo Inicio
-      document
-        .getElementById("vehiculoButton")
-        .addEventListener("click", function () {
+      document.getElementById("vehiculoButton").addEventListener("click", function () {
           // Lista de colores comunes de vehículos
-          const colores = [
-            "Blanco",
-            "Negro",
-            "Plata",
-            "Gris",
-            "Azul",
-            "Rojo",
-            "Verde",
-            "Amarillo",
-            "Naranja",
-            "Marrón",
+          const colores = ["Blanco","Negro", "Plata", "Gris", "Azul","Rojo", "Verde", "Amarillo","Naranja","Marrón",
           ];
-
+          
           // Generar opciones para el select
           let opcionesColor = "";
           colores.forEach((color) => {
@@ -368,22 +335,16 @@
             confirmButtonText: "Confirmar",
             cancelButtonText: "Cancelar",
             didOpen: () => {
-              document
-                .getElementById("registrarVehiculoButton")
-                .addEventListener("click", function (e) {
+              document.getElementById("registrarVehiculoButton").addEventListener("click", function (e) {
                   e.preventDefault();
-                  const formRegistrarVehiculo = document.getElementById(
-                    "formRegistrarVehiculo"
-                  );
-                  formRegistrarVehiculo.style.display =
-                    formRegistrarVehiculo.style.display === "none"
-                      ? "flex"
-                      : "none";
+                  const formRegistrarVehiculo = document.getElementById("formRegistrarVehiculo" );
+                  formRegistrarVehiculo.style.display = formRegistrarVehiculo.style.display === "none"? "flex": "none";
                 });
 
               async function obtenerVehiculos() {
+                const usuarioId = parseInt(localStorage.getItem("usuarioId"));
                 try {
-                  const response = await fetch("/usuarios/vehiculos", {
+                  const response = await fetch(`/usuarios/vehiculos?usuarioId=${usuarioId}`, {
                     method: "GET",
                     headers: {
                       "Content-Type": "application/json",
@@ -403,8 +364,7 @@
               }
 
               function agregarVehiculosAlSelect(vehiculos) {
-                const vehiculoSelect =
-                  document.getElementById("vehiculoSelect");
+                const vehiculoSelect =document.getElementById("vehiculoSelect");
                 vehiculoSelect.innerHTML = "";
 
                 vehiculos.forEach((vehiculo) => {
@@ -417,13 +377,10 @@
 
               obtenerVehiculos();
 
-              document
-                .getElementById("confirmarDatosButton")
-                .addEventListener("click", function (e) {
+              document.getElementById("confirmarDatosButton").addEventListener("click", function (e) {
                   e.preventDefault();
                   const patente = document.getElementById("patente").value;
-                  const tipo_vehiculo =
-                    document.getElementById("tipo_vehiculo").value;
+                  const tipo_vehiculo = document.getElementById("tipo_vehiculo").value;
                   const color = document.getElementById("color").value;
                   const modelo = document.getElementById("modelo").value;
                   const tamaño = document.getElementById("tamaño").value;
@@ -434,16 +391,8 @@
                   console.log("modelo:", modelo);
                   console.log("tamaño:", tamaño);
 
-                  if (
-                    patente === "" ||
-                    tipo_vehiculo === "" ||
-                    color === "" ||
-                    modelo === "" ||
-                    tamaño === ""
-                  ) {
-                    Swal.showValidationMessage(
-                      "Por favor, completa todos los campos del formulario de registro."
-                    );
+                  if (patente === "" ||tipo_vehiculo === "" ||color === "" ||modelo === "" ||tamaño === "") {
+                    Swal.showValidationMessage("Por favor, completa todos los campos del formulario de registro.");
                     return false;
                   } else {
                     fetch("/usuarios/principal", {
@@ -451,6 +400,7 @@
                       headers: {
                         "Content-Type": "application/json",
                         "X-CSRFToken": "{{ csrf_token }}",
+                        usuarioId:usuarioId,
                       },
                       body: JSON.stringify({
                         patente: patente,
@@ -458,6 +408,7 @@
                         color: color,
                         modelo: modelo,
                         tamaño: tamaño,
+                        usuarioId:usuarioId
                       }),
                     })
                       .then((response) => {
@@ -474,70 +425,38 @@
                           }, 2000);
                         } else {
                           console.error("Error al enviar los datos");
-                          Swal.fire(
-                            "Error al enviar datos al servidor",
-                            "",
-                            "error"
-                          );
+                          Swal.fire("Error al enviar datos al servidor", "","error");
                         }
                       })
                       .catch((error) => {
                         console.error("Error en la solicitud:", error);
-                        Swal.fire(
-                          "Error al enviar datos al servidor",
-                          "",
-                          "error"
-                        );
+                        Swal.fire( "Error al enviar datos al servidor", "", "error");
                       });
                   }
                 });
             },
             preConfirm: () => {
               const patente = document.getElementById("patente").value;
-              const tipo_vehiculo =
-                document.getElementById("tipo_vehiculo").value;
+              const tipo_vehiculo =document.getElementById("tipo_vehiculo").value;
               const color = document.getElementById("color").value;
               const modelo = document.getElementById("modelo").value;
               const tamaño = document.getElementById("tamaño").value;
 
               if (
-                document.getElementById("formRegistrarVehiculo").style
-                  .display === "flex" &&
-                (patente === "" ||
-                  tipo_vehiculo === "" ||
-                  color === "" ||
-                  modelo === "" ||
-                  tamaño === "")
-              ) {
-                Swal.showValidationMessage(
-                  "Por favor, completa todos los campos del formulario de registro."
-                );
+                document.getElementById("formRegistrarVehiculo").style.display === "flex" &&(patente === "" ||tipo_vehiculo === "" ||color === "" ||modelo === "" ||tamaño === "")) {
+                Swal.showValidationMessage("Por favor, completa todos los campos del formulario de registro.");
                 return false;
               }
               return {
                 vehiculo: document.getElementById("vehiculoSelect").value,
-                registro: {
-                  patente,
-                  tipo_vehiculo,
-                  color,
-                  modelo,
-                  tamaño,
-                },
+                registro: {patente,tipo_vehiculo,color,modelo,tamaño,},
               };
             },
           }).then((result) => {
             if (result.isConfirmed) {
-              console.log(
-                "Vehículo seleccionado o registrado:",
-                result.value.vehiculo
-              );
+              console.log("Vehículo seleccionado o registrado:",result.value.vehiculo);
 
-              localStorage.setItem(
-                "vehiculoSeleccionado",
-                result.value
-                  ? result.value.vehiculo
-                  : "No hay vehículo seleccionado"
-              );
+              localStorage.setItem("vehiculoSeleccionado",result.value? result.value.vehiculo: "No hay vehículo seleccionado");
             }
           });
         });
@@ -546,9 +465,7 @@
       //////////////////////////////////////////////////////////////////////
       // Funcionalidad Boton Edificio Inicio
 
-      document
-        .getElementById("edificioButton")
-        .addEventListener("click", function () {
+      document.getElementById("edificioButton").addEventListener("click", function () {
           if (idboton === "btnMeyer") {
             Swal.fire({
               title: "Selecciona Edificio",
@@ -563,19 +480,13 @@
                 let edificioSeleccionado = "";
                 const principalButton =
                   document.getElementById("principalButton");
-                if (
-                  principalButton &&
-                  principalButton.classList.contains("swal2-styled")
-                ) {
+                if ( principalButton && principalButton.classList.contains("swal2-styled")) {
                   edificioSeleccionado = "Principal";
                 } else {
                   edificioSeleccionado = "No se seleccionó ningún edificio";
                 }
                 // Guardar el nombre del edificio seleccionado en localStorage
-                localStorage.setItem(
-                  "edificioSeleccionado",
-                  edificioSeleccionado
-                );
+                localStorage.setItem("edificioSeleccionado", edificioSeleccionado);
 
                 console.log("Edificio seleccionado:", edificioSeleccionado);
 
@@ -602,13 +513,9 @@
               confirmButtonText: "Confirmar Edificio",
               cancelButtonText: "Cancelar",
               preConfirm: () => {
-                const selectedButton = document.querySelector(
-                  ".swal2-confirm.swal2-styled.selected"
-                );
+                const selectedButton = document.querySelector(".swal2-confirm.swal2-styled.selected");
                 if (!selectedButton) {
-                  Swal.showValidationMessage(
-                    "Por favor, selecciona un edificio."
-                  );
+                  Swal.showValidationMessage("Por favor, selecciona un edificio.");
                   return false;
                 }
                 return selectedButton.getAttribute("data-value");
@@ -648,13 +555,9 @@
             });
 
             // Añadir event listeners para marcar botón seleccionado
-            document
-              .querySelectorAll(".swal2-confirm.swal2-styled")
-              .forEach((button) => {
+            document.querySelectorAll(".swal2-confirm.swal2-styled").forEach((button) => {
                 button.addEventListener("click", function () {
-                  document
-                    .querySelectorAll(".swal2-confirm.swal2-styled")
-                    .forEach((btn) => btn.classList.remove("selected"));
+                  document.querySelectorAll(".swal2-confirm.swal2-styled").forEach((btn) => btn.classList.remove("selected"));
                   this.classList.add("selected");
                 });
               });
@@ -670,12 +573,6 @@
           initializeMap();
         });
       }
-
-      $(document).ready(function () {
-        // Inicialización de Select2 para el selector de edificios, si es necesario
-        // $('#edificioSelect').select2();
-        // Lógica adicional que puedas necesitar al cargar la página
-      });
 
       function initializeMap() {
         // Tu lógica de inicialización del mapa aquí, por ejemplo:
@@ -700,12 +597,10 @@
       // Función de ejemplo para reservar un estacionamiento
       function reservar(numero) {
         // Leer datos almacenados
-        var horaEntrada = JSON.parse(
-          localStorage.getItem("horaEntradaSeleccionada")
-        );
-        var horaSalida = JSON.parse(
-          localStorage.getItem("horaSalidaSeleccionada")
-        );
+        var horaEntrada = JSON.parse(localStorage.getItem("horaEntradaSeleccionada"));
+        var horaSalida = JSON.parse( localStorage.getItem("horaSalidaSeleccionada"));
+
+        console.log('la resp hora de entrada',horaEntrada)
         // Recuperar el nombre del edificio seleccionado desde localStorage
         var edificio = localStorage.getItem("edificioSeleccionado");
         var vehiculo = localStorage.getItem("vehiculoSeleccionado");
@@ -714,16 +609,10 @@
           html: `
 
       <p><strong>Edificio:</strong> ${edificio || "No seleccionado"}</p>
-      <p><strong>Vehículo:</strong> ${
-        vehiculo || "No seleccionado"
-      }</p>
+      <p><strong>Vehículo:</strong> ${vehiculo || "No seleccionado"}</p>
       <p><strong>Estacionamiento:</strong> ${numero}</p>
-      <p><strong>Hora Entrada de Reserva:</strong> ${
-        horaEntrada || "No seleccionada"
-      }</p>
-      <p><strong>Hora Salida de Reserva:</strong> ${
-        horaSalida || "No seleccionada"
-      }</p>
+      <p><strong>Hora Entrada de Reserva:</strong> ${horaEntrada || "No seleccionada"}</p>
+      <p><strong>Hora Salida de Reserva:</strong> ${horaSalida || "No seleccionada"}</p>
     `,
           showCancelButton: true,
           confirmButtonText: "Confirmar",
@@ -739,19 +628,24 @@
 
       // Función para enviar los datos a la API
       async function confirmarReserva(numero) {
+        var horaEntrada = JSON.parse(localStorage.getItem("horaEntradaSeleccionada"));
+        var horaSalida = JSON.parse( localStorage.getItem("horaSalidaSeleccionada"));
+
         try {
           const response = await fetch("/usuarios/reserva", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "X-CSRFToken": "{{ csrf_token }}", // Asegúrate de que csrfToken esté definido
+              usuarioId:usuarioId,
             },
             body: JSON.stringify({
               edificio: edificioSeleccionado,
               patente: vehiculoSeleccionado,
               id_espacio: numero,
-              hora_entrada: horaEntradaSeleccionada,
-              hora_salida: horaSalidaSeleccionada,
+              hora_entrada: horaEntrada,
+              hora_salida: horaSalida,
+              usuarioId:usuarioId,
             }),
           });
 
@@ -772,7 +666,6 @@
               confirmButtonText: "OK",
             });
           } else {
-            // Mostrar mensaje de éxito si la reserva se guarda correctamente
             // Mostrar mensaje de éxito si la reserva se guarda correctamente
             Swal.fire({
               title: "Reserva confirmada",

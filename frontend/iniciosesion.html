@@ -94,31 +94,6 @@
             text-decoration: underline;
         }
     </style>
-    <script>
-        async function iniciarSesion(event) {
-            event.preventDefault();
-
-            const correo = document.getElementById('correo').value;
-            const contraseña = document.getElementById('contraseña').value;
-
-            const response = await fetch('/usuarios/iniciosesion', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ correo, contraseña })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Tipo de Usuario:', data.tipo_usuario);
-                // Redirigir a la URL proporcionada en el JSON
-                window.location.href = data.redirectUrl;
-            } else {
-                console.error('Error en la autenticación');
-            }
-        }
-    </script>
 </head>
 <body>
 
@@ -128,7 +103,7 @@
     </div>
     <div class="content-section">
         <h1>Iniciar Sesión</h1>
-        <form onsubmit="iniciarSesion(event)">
+        <form id="loginForm">
             <input type="email" id="correo" name="correo" placeholder="Correo institucional" required>
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
             <button type="submit">Iniciar Sesión</button>
@@ -139,6 +114,41 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
 
+        const correo = document.getElementById("correo").value;
+        const contraseña = document.getElementById("contraseña").value;
+
+        try {
+            const response = await fetch("/usuarios/iniciosesion", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ correo, contraseña })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                alert(errorText);
+                return;
+            }
+
+            const data = await response.json();
+            const { tipo_usuario, usuarioId, redirectUrl } = data;
+
+            // Guardar el id de usuario en localStorage
+            localStorage.setItem("usuarioId", usuarioId);
+
+            // Redirigir a la URL especificada
+            window.location.href = redirectUrl;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error procesando los datos");
+        }
+    });
+</script>
 </body>
 </html>
