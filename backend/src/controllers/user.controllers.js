@@ -959,7 +959,7 @@ exports.selectEstacionamientoEstado = async (req, res) => {
       "SELECT id_espacio, estado, id_edificio FROM espacio_estacionamiento;"
     );
 
-    console.log("resultado de consulta en controller:",result.rows); // Muestra los resultados en la consola para depuración
+    //console.log("resultado de consulta en controller:",result.rows); // Muestra los resultados en la consola para depuración
     res.json(result.rows); // Envía los vehículos como respuesta JSON
   } catch (err) {
     console.error("Error al obtener estacionamientos:", err);
