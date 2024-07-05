@@ -286,9 +286,16 @@
               const { entrada, salida } = result.value;
               console.log("Hora de entrada:", entrada);
               console.log("Hora de salida:", salida);
-              // Guardar la hora seleccionada en localStorage
-              localStorage.setItem("horaEntradaSeleccionada", entrada);
-              localStorage.setItem("horaSalidaSeleccionada", salida);
+              // Guardar la hora de entrada seleccionada en localStorage
+              localStorage.setItem(
+                "horaEntradaSeleccionada",
+                JSON.stringify(entrada)
+              );
+              // Guardar la hora de salida seleccionada en localStorage
+              localStorage.setItem(
+                "horaSalidaSeleccionada",
+                JSON.stringify(salida)
+              );
             }
           });
         });
@@ -526,7 +533,7 @@
               );
 
               localStorage.setItem(
-                "vehiculoSeleccionada",
+                "vehiculoSeleccionado",
                 result.value
                   ? result.value.vehiculo
                   : "No hay vehículo seleccionado"
@@ -564,10 +571,12 @@
                 } else {
                   edificioSeleccionado = "No se seleccionó ningún edificio";
                 }
+                // Guardar el nombre del edificio seleccionado en localStorage
                 localStorage.setItem(
                   "edificioSeleccionado",
                   edificioSeleccionado
                 );
+
                 console.log("Edificio seleccionado:", edificioSeleccionado);
 
                 // Mostrar el mapa según el edificio seleccionado
@@ -690,22 +699,30 @@
 
       // Función de ejemplo para reservar un estacionamiento
       function reservar(numero) {
+        // Leer datos almacenados
+        var horaEntrada = JSON.parse(
+          localStorage.getItem("horaEntradaSeleccionada")
+        );
+        var horaSalida = JSON.parse(
+          localStorage.getItem("horaSalidaSeleccionada")
+        );
+        // Recuperar el nombre del edificio seleccionado desde localStorage
+        var edificio = localStorage.getItem("edificioSeleccionado");
+        var vehiculo = localStorage.getItem("vehiculoSeleccionado");
         Swal.fire({
           title: "Confirmar Reserva",
           html: `
 
-      <p><strong>Edificio:</strong> ${
-        edificioSeleccionado || "No seleccionado"
-      }</p>
+      <p><strong>Edificio:</strong> ${edificio || "No seleccionado"}</p>
       <p><strong>Vehículo:</strong> ${
-        vehiculoSeleccionado || "No seleccionado"
+        vehiculo || "No seleccionado"
       }</p>
       <p><strong>Estacionamiento:</strong> ${numero}</p>
       <p><strong>Hora Entrada de Reserva:</strong> ${
-        horaEntradaSeleccionada || "No seleccionada"
+        horaEntrada || "No seleccionada"
       }</p>
       <p><strong>Hora Salida de Reserva:</strong> ${
-        horaSalidaSeleccionada || "No seleccionada"
+        horaSalida || "No seleccionada"
       }</p>
     `,
           showCancelButton: true,
