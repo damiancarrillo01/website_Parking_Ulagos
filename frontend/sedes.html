@@ -5,9 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seleccionar Sede</title>
     <!-- Enlace a Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- CSS de Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Script de Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <!-- Enlace a SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -77,36 +87,336 @@
         .location button:hover {
             background-color: #e6f0ff;
         }
+        .button-menu {
+            margin-top: 7px;
+            padding: 7px;
+            border: 2px solid #0056b3;
+            background-color: #0056b3;
+            color: #ffffff;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Estilos CSS para el menú lateral */
+        #menu-lateral {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        position: absolute;
+        top: 0;
+        margin-top: 60px;
+        left: -400px; /* Esconder en la parte izquierda */
+        width: 200px;
+        height: 400px;
+        background-color: #f9fbff;
+        color: #000000;
+        transition: left 0.3s;
+        z-index: 10000; 
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2px solid #0056b3;
+        }
+
+        #tittleplus {
+        display: flex;
+        align-items: center;
+        }
+
+        #tittleplus h4, h4 {
+        font-weight: 100;
+        margin-bottom: 8px;
+        font-size: 15px;
+        }
+
+        #tittleplus ul, ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        }
+
+        #tittleplus ul li, ul li {
+        margin: 0;
+        }
+
+        #tittleplus ul li a, a {
+        text-decoration: none;
+        }
+
+        #top-menu {
+        background-color: #C2C6CC;
+        width: 1470px;
+        height: 60px;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        }
+
+        #top-menu ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        #top-menu ul li {
+        margin: 0 10px;
+        }
+
+        #top-menu ul li a {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #064469;
+        color: #fff;
+        border-radius: 20px;
+        transition: background-color 0.3s;
+        display: inline-block;
+        }
+
+        #top-menu ul li a:hover {
+        background-color: #C2C6CC;
+        color: #064469;
+        text-decoration: underline;
+        }
+
+        #logonav {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
+        }
+
+        .material-icons.user-icon {
+        font-size: 40px;
+        color: #fff;
+        border-radius: 10px;
+        margin-right: 50px;
+        display: flex;
+        align-items: center;
+        background-color: #064469;
+        }
+
+        /* Estilos para el menú hamburguesa */
+        #menu-toggle {
+        font-size: 24px;
+        cursor: pointer;
+        display: none;
+        color: #fff;
+        margin-right: 10px;
+        }
+
+        #usuario-info {
+        padding: 10px;
+        text-align: center;
+        background-color: #222;
+        background-color: #d3d3d3; /* Nuevo color de fondo */
+        border-radius: 8px; /* Opcional: para esquinas redondeadas */
+        }
+
+        ul {
+        list-style: none;
+        padding: 0;
+        }
+
+        li {
+        padding: 10px;
+        }
+
+        a {
+        color: #fff;
+        text-decoration: none;
+        }
+
+        .menu-lateral.show {
+        left: 0 !important;
+        }
+
+        .material-icons.user-icon {
+        cursor: pointer;
+        }
+
+        #buttonClose ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        #buttonClose ul li {
+        margin: 0 10px;
+        }
+
+        #buttonClose ul li a {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #064469;
+        color: #fff;
+        border-radius: 20px;
+        transition: background-color 0.3s;
+        display: inline-block;
+        }
+
+        #buttonClose ul li a:hover {
+        background-color: #C2C6CC;
+        color: #064469;
+        text-decoration: underline;
+        }
+
+        #iconNom {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        }
+
+        .material-icons.user-icon {
+        cursor: pointer;
+        }
+        
+        /* Estilos CSS para el menú lateral */
     </style>
 </head>
 <body>
 
-<div class="header">
-    <i class="fas fa-bars menu-icon"></i>
-    <h1><i class="fas fa-map-marker-alt location-icon"></i> SEDE</h1>
-    <span></span>
-</div>
-
-<div class="container">
-    <h2>Selecciona una Sede</h2>
-    <div class="locations">
-        <div class="location">
-            <img src="chuyaca.png" alt="Chuyaca">
-            <button id="btnChuyaca" onclick="selectSede(this.id)">Chuyaca</button>
-        </div>
-        <div class="location">
-            <img src="meyer.png" alt="Meyer">
-            <button id="btnMeyer" onclick="selectSede(this.id)">Meyer</button>
+    <div class="header">
+        <i class="fas fa-bars menu-icon" id="menu-usuario"></i>
+        <h1><i class="fas fa-map-marker-alt location-icon"></i> SEDE</h1>
+        <span></span>
+    </div>
+    
+    <!-- MENU LATERAL -->
+    <div id="menu-lateral" class="menu-lateral">
+        <div id="usuario-info" class="usuario-info">Usuario ID: <span id="usuario-id"></span></div>
+        <div id="usuario-info" class="usuario-info">Correo: <span id="usuario-correo"></span></div>
+        <div>TEXTO</div>
+        <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
+        <button class="button-menu" id="misReportes" onclick="selectReservasReportes(this.id)">Mis Reportes</button>
+    </div> 
+    
+    <!-- Selección Sede -->
+    <div class="container">
+        <h2>Selecciona una Sede</h2>
+        <div class="locations">
+            <div class="location">
+                <img src="chuyaca.png" alt="Chuyaca">
+                <button id="btnChuyaca" onclick="selectSede(this.id)">Chuyaca</button>
+            </div>
+            <div class="location">
+                <img src="meyer.png" alt="Meyer">
+                <button id="btnMeyer" onclick="selectSede(this.id)">Meyer</button>
+            </div>
         </div>
     </div>
-</div>
+    
 
 <script>
+    // Menú de usuarios
+    document.addEventListener('DOMContentLoaded', function () {
+    const menuUsuario = document.getElementById('menu-usuario');
+    const menuLateral = document.getElementById('menu-lateral');
+
+    menuUsuario.addEventListener('click', () => {
+        menuLateral.classList.toggle('show');
+    });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener el id de usuario desde localStorage
+        const usuarioId = localStorage.getItem("usuarioId");
+        const correo = localStorage.getItem("correo")
+        if (usuarioId) {
+            console.log("ID de Usuario:", usuarioId);
+            // Aquí puedes usar el usuarioId para realizar otras acciones necesarias
+            document.getElementById("usuario-id").innerText = usuarioId;
+            document.getElementById("usuario-correo").innerText = correo;
+        } else {
+            console.log("ID de Usuario no encontrado");
+        }
+
+        if (correo) {
+            console.log("correo:", correo);
+            
+        } else {
+            console.log("correo no encontrado");
+        }
+    });
+
     function selectSede(buttonId) {
         console.log('ID del botón seleccionado:', buttonId);
-        localStorage.setItem('selectedSede', buttonId);
-        window.location.href = 'principal.html?buttonId=' + buttonId;
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/sedes",
+            data: JSON.stringify({ buttonId: buttonId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
+                if (response.redirectUrl) {
+                    window.location.href = `${response.redirectUrl}?idboton=${buttonId}`;
+                }
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
     }
+
+    function selectReservasReportes(buttonId) {
+        const usuarioId = localStorage.getItem("usuarioId");
+        console.log("selectReservasReportes - usuarioId",usuarioId);
+        console.log('ID del botón seleccionado:', buttonId);
+        if(buttonId=="misReservas"){
+            $.ajax({
+                type: 'POST',
+                url: "/usuarios/selectReservas",
+                data: JSON.stringify({ usuarioId: usuarioId }),
+                contentType: 'application/json',
+                success: function(response) {
+                    console.log('Datos enviados exitosamente');
+                    Swal.fire({
+                        title: 'Reservas',
+                        html: `
+                            <div>Patente: ${response[0].patente}; Espacio: ${response[0].id_espacio}; Edificio: ${response[0].nombre_edificio}; Sede: ${response[0].nombre_sede}</div>
+                        `,
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirmar',
+                        cancelButtonText: 'Retroceder',
+                    })
+                },
+                error: function(error) {
+                    console.error('Error al enviar los datos: ', error);
+                }
+            });
+        } else if(buttonId=="misReportes"){
+            $.ajax({
+                type: 'POST',
+                url: "/usuarios/selectReportes",
+                data: JSON.stringify({ usuarioId: usuarioId }),
+                contentType: 'application/json',
+                success: function(response) {
+                    console.log('Datos enviados exitosamente');
+                    Swal.fire({
+                        title: 'Reservas',
+                        html: `
+                            <div>Reporte: ${response[0].reporte}; Espacio: ${response[0].id_espacio}</div>
+                        `,
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirmar',
+                        cancelButtonText: 'Retroceder',
+                    })
+                },
+                error: function(error) {
+                    console.error('Error al enviar los datos: ', error);
+                }
+            });
+        } else {
+            console.log("Ningún Botón Seleccionado");
+        }
+    }
+
 </script>
 
 </body>
