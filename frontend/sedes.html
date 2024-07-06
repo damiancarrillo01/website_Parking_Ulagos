@@ -472,7 +472,7 @@
                             <p>Sede: ${reserva.nombre_sede}</p>
                             <p>Hora de entrada: ${formatDate(reserva.hora_entrada_reserva)}</p>
                             <p>Hora de salida: ${formatDate(reserva.hora_salida_reserva)}</p>
-                            <button class="reservation-button" onclick="deleteReservation(${reserva.id_reserva}, '${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
+                            <button class="reservation-button" onclick="deleteReservation('${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
                         </div>
                         <div class="reservation-footer">
                             <i class="fas fa-chevron-down"></i>
