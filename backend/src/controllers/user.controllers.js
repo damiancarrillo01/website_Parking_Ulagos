@@ -74,12 +74,13 @@ exports.inicioSesionUsuario = async (req, res) => {
     // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
     if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl")) {
       result = await pool.query(
-        "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
+        "SELECT id_usuario,CONCAT(nombre, ' ', apellido) AS nombre_completo, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
       if (result.rows.length > 0) {
         usuarioId = result.rows[0].id_usuario;
         tipoUsuario = result.rows[0].tipo_usuario;
+        nombre = result.rows[0].nombre_completo;
       }
     } 
     // Consulta para guardias
@@ -99,7 +100,7 @@ exports.inicioSesionUsuario = async (req, res) => {
       console.log("Tipo de Usuario:", tipoUsuario);
 
       // Redirigir según el tipo de usuario
-      res.json({ tipo_usuario: tipoUsuario, usuarioId, redirectUrl: "/sedes.html" });
+      res.json({ tipo_usuario: tipoUsuario,nombre, usuarioId, redirectUrl: "/sedes.html" });
     } else {
       res.status(400).send("Este usuario no existe");
     }
@@ -356,6 +357,8 @@ exports.actualizarReserva = async (req, res) => {
 exports.eliminarReserva = async (req, res) => {
   const { patente, id_espacio,usuarioId } = req.body;
   console.log(usuarioId)
+  console.log(patente)
+  console.log(id_espacio)
   // Convertir id_espacio a entero
   const id_espacio_int = parseInt(id_espacio, 10); // Base 10
 
@@ -984,5 +987,41 @@ exports.reporteGuardiaSelect = async (req, res) => {
   } catch (error) {
     console.error("Error al encontrar el reporte:", error);
     res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+exports.selectReservas = async (req, res) => {
+  const { usuarioId } = req.body; // Obtener el idboton del cuerpo de la solicitud
+  console.log("ID de Usuario:", usuarioId);
+  try {
+    // Consulta para obtener los vehículos del usuario
+    const result = await pool.query(
+      "SELECT reservas.patente, reservas.id_espacio,reservas.hora_entrada_reserva,reservas.hora_salida_reserva, edificios.nombre_edificio, sedes.nombre_sede FROM usuarios, reservas, edificios, sedes WHERE usuarios.id_usuario=$1 AND usuarios.id_usuario=reservas.id_usuario AND reservas.id_edificio=edificios.id_edificio AND sedes.id_sede=edificios.id_sede;",
+      [usuarioId]
+    );
+
+    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
+    res.json(result.rows); // Envía los vehículos como respuesta JSON
+  } catch (err) {
+    console.error("Error al obtener estacionamientos:", err);
+    res.status(500).send("Error al obtener los estacionamientos");
+  }
+};
+
+exports.selectReportes = async (req, res) => {
+  const { usuarioId } = req.body; // Obtener el idboton del cuerpo de la solicitud
+  console.log("ID de Usuario:", usuarioId);
+  try {
+    // Consulta para obtener los vehículos del usuario
+    const result = await pool.query(
+      "SELECT reportes.reporte,reportes.id_espacio FROM reportes, reservas WHERE reservas.id_usuario=$1 AND reservas.patente=reportes.patente;",
+      [usuarioId]
+    );
+
+    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
+    res.json(result.rows); // Envía los vehículos como respuesta JSON
+  } catch (err) {
+    console.error("Error al obtener estacionamientos:", err);
+    res.status(500).send("Error al obtener los estacionamientos");
   }
 };

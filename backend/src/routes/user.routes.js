@@ -32,5 +32,6 @@ router.post('/adminCreateEstacionamiento', userController.adminCreateEstacionami
 router.post('/adminDeleteSede', userController.adminDeleteSede);
 router.post('/adminDeleteEdificio', userController.adminDeleteEdificio);
 router.post('/adminDeleteEstacionamiento', userController.adminDeleteEstacionamiento);
-
+router.post('/selectReservas',userController.selectReservas);
+router.post('/selectReportes',userController.selectReportes);
 module.exports = router;

@@ -137,11 +137,12 @@
             }
 
             const data = await response.json();
-            const { tipo_usuario, usuarioId, redirectUrl } = data;
+            const { tipo_usuario, usuarioId,nombre, redirectUrl } = data;
 
             // Guardar el id de usuario en localStorage
             localStorage.setItem("usuarioId", usuarioId);
             localStorage.setItem('correo', correo);
+            localStorage.setItem('nombre',nombre);
             // Redirigir a la URL especificada
             window.location.href = redirectUrl;
         } catch (error) {
