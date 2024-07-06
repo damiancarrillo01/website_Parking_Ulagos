@@ -2,15 +2,15 @@ const { Pool } = require("pg");
 
 
 // Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
-
+/*
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
     }
   });
+*/
 
-/*
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
@@ -18,7 +18,7 @@ const pool = new Pool({
   password: "5473",
   port: 5432,
 });
-*/
+
 pool.connect((err, client, done) => {
   if (err) throw err;
   client.query("SET timezone = 'America/Santiago'", (err) => {

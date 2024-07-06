@@ -71,7 +71,6 @@ exports.inicioSesionUsuario = async (req, res) => {
     let result;
     let tipoUsuario;
     let usuarioId;
-
     // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
     if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl")) {
       result = await pool.query(
