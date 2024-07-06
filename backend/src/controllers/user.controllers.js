@@ -997,11 +997,11 @@ exports.selectReservas = async (req, res) => {
       [usuarioId]
     );
 
-    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
+    console.log("resultado de consulta en selectReservas:",result.rows); // Muestra los resultados en la consola para depuración
     res.json(result.rows); // Envía los vehículos como respuesta JSON
   } catch (err) {
-    console.error("Error al obtener estacionamientos:", err);
-    res.status(500).send("Error al obtener los estacionamientos");
+    console.error("Error al obtener reservas:", err);
+    res.status(500).send("Error al obtener las reservas");
   }
 };
 
@@ -1015,11 +1015,11 @@ exports.selectReportes = async (req, res) => {
       [usuarioId]
     );
 
-    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
+    console.log("resultado de consulta en selectReportes:",result.rows); // Muestra los resultados en la consola para depuración
     res.json(result.rows); // Envía los vehículos como respuesta JSON
   } catch (err) {
-    console.error("Error al obtener estacionamientos:", err);
-    res.status(500).send("Error al obtener los estacionamientos");
+    console.error("Error al obtener reportes:", err);
+    res.status(500).send("Error al obtener los reportes");
   }
 };
 
