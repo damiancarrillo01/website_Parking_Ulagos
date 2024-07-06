@@ -74,12 +74,13 @@ exports.inicioSesionUsuario = async (req, res) => {
     // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
     if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl")) {
       result = await pool.query(
-        "SELECT id_usuario, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
+        "SELECT id_usuario,CONCAT(nombre, ' ', apellido) AS nombre_completo, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
         [correo, contraseña]
       );
       if (result.rows.length > 0) {
         usuarioId = result.rows[0].id_usuario;
         tipoUsuario = result.rows[0].tipo_usuario;
+        nombre = result.rows[0].nombre_completo;
       }
     } 
     // Consulta para guardias
@@ -99,7 +100,7 @@ exports.inicioSesionUsuario = async (req, res) => {
       console.log("Tipo de Usuario:", tipoUsuario);
 
       // Redirigir según el tipo de usuario
-      res.json({ tipo_usuario: tipoUsuario, usuarioId, redirectUrl: "/sedes.html" });
+      res.json({ tipo_usuario: tipoUsuario,nombre, usuarioId, redirectUrl: "/sedes.html" });
     } else {
       res.status(400).send("Este usuario no existe");
     }
@@ -356,6 +357,8 @@ exports.actualizarReserva = async (req, res) => {
 exports.eliminarReserva = async (req, res) => {
   const { patente, id_espacio,usuarioId } = req.body;
   console.log(usuarioId)
+  console.log(patente)
+  console.log(id_espacio)
   // Convertir id_espacio a entero
   const id_espacio_int = parseInt(id_espacio, 10); // Base 10
 
@@ -1022,31 +1025,3 @@ exports.selectReportes = async (req, res) => {
     res.status(500).send("Error al obtener los estacionamientos");
   }
 };
-
-/*exports.deleteReserva = async (req, res) => {
-  const { updateEstacionamiento, securityToken } = req.body;
-
-  console.log("updateEstacionamiento:", updateEstacionamiento);
-  console.log("securityToken:", securityToken);
-
-  try {
-    // Borra espacio de estacionamiento en cuestión en reservas
-    const result1 = await pool.query(
-      "DELETE FROM reservas WHERE id_espacio=$1;",
-      [updateEstacionamiento]
-    );
-
-    // Borra espacio de estacionamiento en cuestión
-    const result2 = await pool.query(
-      "DELETE FROM espacio_estacionamiento WHERE id_espacio=$1;",
-      [updateEstacionamiento]
-    );
-
-    //res.send('Datos recibidos y procesados con éxito');
-    console.log("En adminDeleteEstacionamiento");
-    res.redirect("/admin1.html");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error procesando los datos");
-  }
-};*/

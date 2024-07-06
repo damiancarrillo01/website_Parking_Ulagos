@@ -14,8 +14,6 @@ router.post('/reservaActualizar',userController.actualizarReserva);
 router.post('/reporteGuardia',userController.reporteGuardia);
 router.post('/reservaGuardia',userController.reservaGuardia);
 router.post('/eliminarReservaGuardia',userController.eliminarReservaGuardia);
-router.post('/selectReservas',userController.selectReservas);
-router.post('/selectReportes',userController.selectReportes);
 
 //GET
 router.get('/vehiculos',userController.vehiculos);
@@ -23,7 +21,6 @@ router.get('/selectReserva',userController.selectReserva);
 router.get('/selectGuardia',userController.selectGuardia);
 router.get('/selectEstacionamientoEstado',userController.selectEstacionamientoEstado);
 router.get('/reporteGuardiaSelect',userController.reporteGuardiaSelect);
-
 //admin
 router.get('/admin', userController.admin);
 router.post('/adminUpdateSede', userController.adminUpdateSede);
@@ -35,5 +32,6 @@ router.post('/adminCreateEstacionamiento', userController.adminCreateEstacionami
 router.post('/adminDeleteSede', userController.adminDeleteSede);
 router.post('/adminDeleteEdificio', userController.adminDeleteEdificio);
 router.post('/adminDeleteEstacionamiento', userController.adminDeleteEstacionamiento);
-
+router.post('/selectReservas',userController.selectReservas);
+router.post('/selectReportes',userController.selectReportes);
 module.exports = router;

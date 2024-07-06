@@ -340,6 +340,17 @@
             background-color: #e6f0ff;
         }
 
+        .reservation-pp {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+
         .hidden {
         display: none;
     }
@@ -451,16 +462,23 @@
                 // Construir el HTML del modal con los datos de la reserva
                 const reservaHTML = response.map(reserva => `
                     <div class="reservation-container">
-                        <div class="reservation-p">
-                            <p class="reservation-pp">Patente: ${reserva.patente}</p>
-                            <p class="reservation-pp">Espacio: ${reserva.id_espacio}</p>
-                        </div>
+                            <div class="reservation-container">
+                                <p class="reservation-pp"><strong>Patente:</strong> ${reserva.patente}</p>
+                                <hr>
+                                <p class="reservation-pp"><strong>Espacio:</strong> ${reserva.id_espacio}</p>
+                            </div>
                         <div class="reservation-details" style="display:none;">
-                            <p>Edificio: ${reserva.nombre_edificio}</p>
-                            <p>Sede: ${reserva.nombre_sede}</p>
-                            <p>Hora de entrada: ${formatDate(reserva.hora_entrada_reserva)}</p>
-                            <p>Hora de salida: ${formatDate(reserva.hora_salida_reserva)}</p>
-                            <button class="reservation-button" onclick="deleteReservation(${reserva.id_reserva}, '${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
+                            <div class="reservation-container">
+                                <p><strong>Edificio:</strong> ${reserva.nombre_edificio}</p>
+                                <hr>
+                                <p><strong>Sede:</strong> ${reserva.nombre_sede}</p>
+                                <hr>
+                                <p><strong>Hora de entrada:</strong> ${formatDate(reserva.hora_entrada_reserva)}</p>
+                                <hr>
+                                <p><strong>Hora de salida:</strong> ${formatDate(reserva.hora_salida_reserva)}</p>
+                                <hr>
+                                <button class="reservation-button" onclick="deleteReservation(${reserva.id_reserva}, '${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
+                            </div>
                         </div>
                         <div class="reservation-footer">
                             <i class="fas fa-chevron-down"></i>
@@ -506,8 +524,11 @@
                 // Construir el HTML del modal con los datos del reporte
                 const reporteHTML = `
                     <div class="reporte-info">
-                        <div><strong>Reporte:</strong> ${response[0].reporte}</div>
-                        <div><strong>Espacio:</strong> ${response[0].id_espacio}</div>
+                        <div class="reservation-container">
+                            <div><strong>Reporte:</strong> ${response[0].reporte}</div>
+                            <hr>
+                            <div><strong>Espacio:</strong> ${response[0].id_espacio}</div>
+                        </div>
                     </div>
                 `;
                 
