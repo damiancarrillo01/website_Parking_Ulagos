@@ -343,6 +343,17 @@
         .hidden {
         display: none;
     }
+
+    .button-menu#cierresesion {
+        background-color: #ff4d4d; 
+        color: #fff;
+        border-color: #ff4d4d;
+        margin-top: 200px;
+    }
+    .button-menu#cierresesion:hover {
+        background-color: #ff1a1a; 
+        border-color: #ff1a1a;
+    }
         /* Estilos CSS para el menú lateral */
     </style>
 </head>
@@ -364,6 +375,7 @@
         <li><strong>Correo:</strong> <span id="usuario-correo"></span></li>
         <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
         <button class="button-menu" id="misReportes" onclick="selectReservasReportes(this.id)">Mis Reportes</button>
+        <button class="button-menu" id="cierresesion" onclick="cerrarSesion()">Cerrar sesión</button>
     </div> 
     
     <!-- Selección Sede -->
@@ -544,7 +556,6 @@ function deleteReservation(patente, idEspacio) {
         cancelButtonText: "Cancelar",
     }).then((result) => {
         if (result.isConfirmed) {
-            // Petición para eliminar la reserva
             fetch("/usuarios/reservaEliminar", {
                 method: "POST",
                 headers: {
@@ -596,6 +607,31 @@ function deleteReservation(patente, idEspacio) {
             }
         });
     }
+
+    function cerrarSesion() {
+        Swal.fire({
+            title: "¿Seguro que deseas cerrar sesión?",
+            text: "Todos los datos se eliminarán y serás redirigido a la página de inicio de sesión.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cerrar sesión",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                localStorage.clear();
+                
+                
+                window.location.href = "iniciosesion.html";
+
+            }
+        });
+    }
+
+    history.pushState(null, null, window.location.href);
+                window.onpopstate = function () {
+                    history.go(1);
+                };
 </script>
 
 </body>

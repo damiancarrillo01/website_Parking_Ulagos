@@ -633,6 +633,7 @@
         var horaEntrada = JSON.parse(localStorage.getItem("horaEntradaSeleccionada"));
         var horaSalida = JSON.parse( localStorage.getItem("horaSalidaSeleccionada"));
         var vehiculo = localStorage.getItem("vehiculoSeleccionado");
+        var edificio = localStorage.getItem("edificioSeleccionado");
         try {
           const response = await fetch("/usuarios/reserva", {
             method: "POST",
@@ -642,7 +643,7 @@
               usuarioId:usuarioId,
             },
             body: JSON.stringify({
-              edificio: edificioSeleccionado,
+              edificio: edificio,
               patente: vehiculo,
               id_espacio: numero,
               hora_entrada: horaEntrada,

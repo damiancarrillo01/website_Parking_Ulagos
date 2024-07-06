@@ -150,6 +150,10 @@
             alert("Error procesando los datos");
         }
     });
+    history.pushState(null, null, window.location.href);
+                window.onpopstate = function () {
+                    history.go(1);
+                };
 </script>
 </body>
 </html>
