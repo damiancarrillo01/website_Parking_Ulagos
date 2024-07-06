@@ -87,196 +87,232 @@
         .location button:hover {
             background-color: #e6f0ff;
         }
-        .button-menu {
-            margin-top: 7px;
-            padding: 7px;
-            border: 2px solid #0056b3;
-            background-color: #0056b3;
-            color: #ffffff;
-            font-size: 15px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
 
         /* Estilos CSS para el menú lateral */
         #menu-lateral {
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        position: absolute;
-        top: 0;
-        margin-top: 60px;
-        left: -400px; /* Esconder en la parte izquierda */
-        width: 200px;
-        height: 400px;
-        background-color: #f9fbff;
-        color: #000000;
-        transition: left 0.3s;
-        z-index: 10000; 
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border: 2px solid #0056b3;
+            position: absolute;
+            top: 45px;
+            left: -450px;
+            width: 350px; /* Aumentar el ancho */
+            height: 90%; /* Ajustar la altura según necesites */
+            background-color: #f9fbff;
+            color: #000;
+            transition: left 0.3s;
+            z-index: 10000;
+            padding: 20px; /* Aumentar el padding para más espacio interno */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #0056b3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Agregar sombra para efecto de elevación */
+            border-radius: 10px; /* Redondear bordes */
+        }
+        #menu-lateral li {
+            list-style-type: none; /* Quitar los puntos de lista */
+            margin: 10px 0; /* Ajusta el margen si es necesario */
+        }
+        /* Estilos para los botones del menú lateral */
+        .button-menu {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
         }
 
+        .button-menu:hover {
+            background-color: #e6f0ff;
+            color: #003a80;
+        }
+
+        /* Otros estilos previos */
         #tittleplus {
-        display: flex;
-        align-items: center;
+            display: flex;
+            align-items: center;
         }
 
         #tittleplus h4, h4 {
-        font-weight: 100;
-        margin-bottom: 8px;
-        font-size: 15px;
+            font-weight: 100;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
         #tittleplus ul, ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
         #tittleplus ul li, ul li {
-        margin: 0;
+            margin: 0;
         }
 
         #tittleplus ul li a, a {
-        text-decoration: none;
+            text-decoration: none;
         }
 
         #top-menu {
-        background-color: #C2C6CC;
-        width: 1470px;
-        height: 60px;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 10px;
+            background-color: #C2C6CC;
+            width: 1470px;
+            height: 60px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
         }
 
         #top-menu ul {
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #top-menu ul li {
-        margin: 0 10px;
+            margin: 0 10px;
         }
 
         #top-menu ul li a {
-        text-decoration: none;
-        padding: 10px 20px;
-        background-color: #064469;
-        color: #fff;
-        border-radius: 20px;
-        transition: background-color 0.3s;
-        display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #064469;
+            color: #fff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            display: inline-block;
         }
 
         #top-menu ul li a:hover {
-        background-color: #C2C6CC;
-        color: #064469;
-        text-decoration: underline;
+            background-color: #C2C6CC;
+            color: #064469;
+            text-decoration: underline;
         }
 
         #logonav {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-        display: flex;
-        align-items: center;
-        margin-left: 15px;
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
         }
 
         .material-icons.user-icon {
-        font-size: 40px;
-        color: #fff;
-        border-radius: 10px;
-        margin-right: 50px;
-        display: flex;
-        align-items: center;
-        background-color: #064469;
+            font-size: 40px;
+            color: #fff;
+            border-radius: 10px;
+            margin-right: 50px;
+            display: flex;
+            align-items: center;
+            background-color: #064469;
         }
 
         /* Estilos para el menú hamburguesa */
         #menu-toggle {
-        font-size: 24px;
-        cursor: pointer;
-        display: none;
-        color: #fff;
-        margin-right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            color: #fff;
+            margin-right: 10px;
         }
 
         #usuario-info {
-        padding: 10px;
-        text-align: center;
-        background-color: #222;
-        background-color: #d3d3d3; /* Nuevo color de fondo */
-        border-radius: 8px; /* Opcional: para esquinas redondeadas */
+            padding: 10px;
+            text-align: center;
+            background-color: #222;
+            background-color: #d3d3d3; /* Nuevo color de fondo */
+            border-radius: 8px; /* Opcional: para esquinas redondeadas */
         }
 
         ul {
-        list-style: none;
-        padding: 0;
+            list-style: none;
+            padding: 0;
         }
 
         li {
-        padding: 10px;
+            padding: 10px;
         }
 
         a {
-        color: #fff;
-        text-decoration: none;
+            color: #fff;
+            text-decoration: none;
         }
 
         .menu-lateral.show {
-        left: 0 !important;
+            left: 0 !important;
         }
 
         .material-icons.user-icon {
-        cursor: pointer;
+            cursor: pointer;
         }
 
         #buttonClose ul {
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #buttonClose ul li {
-        margin: 0 10px;
+            margin: 0 10px;
         }
 
         #buttonClose ul li a {
-        text-decoration: none;
-        padding: 10px 20px;
-        background-color: #064469;
-        color: #fff;
-        border-radius: 20px;
-        transition: background-color 0.3s;
-        display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #064469;
+            color: #fff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            display: inline-block;
         }
 
         #buttonClose ul li a:hover {
-        background-color: #C2C6CC;
-        color: #064469;
-        text-decoration: underline;
+            background-color: #C2C6CC;
+            color: #064469;
+            text-decoration: underline;
         }
 
         #iconNom {
-        width: 50%;
-        display: flex;
-        align-items: center;
+            width: 50%;
+            display: flex;
+            align-items: center;
         }
 
         .material-icons.user-icon {
-        cursor: pointer;
+            cursor: pointer;
         }
-        
+
+        .user-icon-large {
+            font-size: 50px; /* Tamaño del ícono */
+            color: #0056b3; /* Color del ícono */
+            margin-bottom: 10px; /* Espacio entre el ícono y el ID de usuario */
+        }
+        .reservation-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .reservation-button {
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .reservation-button:hover {
+            background-color: #e6f0ff;
+        }
         /* Estilos CSS para el menú lateral */
     </style>
 </head>
@@ -290,9 +326,12 @@
     
     <!-- MENU LATERAL -->
     <div id="menu-lateral" class="menu-lateral">
-        <div id="usuario-info" class="usuario-info">Usuario ID: <span id="usuario-id"></span></div>
-        <div id="usuario-info" class="usuario-info">Correo: <span id="usuario-correo"></span></div>
-        <div>TEXTO</div>
+        <li>
+            <i class="fas fa-user user-icon-large"></i> <!-- Añadir el ícono aquí -->
+        </li>
+        <li><strong>Usuario ID:</strong> <span id="usuario-id"></span></li>
+        <li><strong>Nombre:</strong> <span id="usuario-nombre"></span></li>
+        <li><strong>Correo:</strong> <span id="usuario-correo"></span></li>
         <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
         <button class="button-menu" id="misReportes" onclick="selectReservasReportes(this.id)">Mis Reportes</button>
     </div> 
@@ -327,12 +366,14 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Obtener el id de usuario desde localStorage
         const usuarioId = localStorage.getItem("usuarioId");
-        const correo = localStorage.getItem("correo")
+        const correo = localStorage.getItem("correo");
+        const nombre = localStorage.getItem("nombre");
         if (usuarioId) {
             console.log("ID de Usuario:", usuarioId);
             // Aquí puedes usar el usuarioId para realizar otras acciones necesarias
             document.getElementById("usuario-id").innerText = usuarioId;
             document.getElementById("usuario-correo").innerText = correo;
+            document.getElementById("usuario-nombre").innerText = nombre;
         } else {
             console.log("ID de Usuario no encontrado");
         }
@@ -343,8 +384,165 @@
         } else {
             console.log("correo no encontrado");
         }
+        if (nombre) {
+            console.log("correo:", nombre);
+            
+        } else {
+            console.log("nombre no encontrado");
+        }
     });
+    function selectReservasReportes(buttonId) {
+    const usuarioId = localStorage.getItem("usuarioId");
+    console.log("selectReservasReportes - usuarioId", usuarioId);
+    console.log('ID del botón seleccionado:', buttonId);
+    
+    if (buttonId === "misReservas") {
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/selectReservas",
+            data: JSON.stringify({ usuarioId: usuarioId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
 
+                // Función para formatear fecha y hora sumando 4 horas
+                function formatDate(dateString) {
+                    const date = new Date(dateString);
+                    date.setHours(date.getHours() + 4); // Sumar 4 horas
+                    const day = ("0" + date.getDate()).slice(-2);
+                    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+                    const year = date.getFullYear();
+                    const hours = ("0" + date.getHours()).slice(-2);
+                    const minutes = ("0" + date.getMinutes()).slice(-2);
+                    const seconds = ("0" + date.getSeconds()).slice(-2);
+                    return ` ${hours}:${minutes}:${seconds}`;
+                }
+
+                // Construir el HTML del modal con los datos de la reserva
+                const reservaHTML = `
+                    <div class="reservation-container">
+                        <div class="reservation-header">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="reservation-p">
+                            <p class="reservation-pp">Patente: ${response[0].patente}</p>
+                            <p class="reservation-pp">Espacio: ${response[0].id_espacio}</p>
+                        </div>
+                        <div class="reservation-details" style="display:none;">
+                            <p>Edificio: ${response[0].nombre_edificio}</p>
+                            <p>Sede: ${response[0].nombre_sede}</p>
+                            <p>Hora de entrada: ${formatDate(response[0].hora_entrada_reserva)}</p>
+                            <p>Hora de salida: ${formatDate(response[0].hora_salida_reserva)}</p>
+                            <button class="reservation-button" onclick="deleteReservation(${response[0].id_reserva})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+
+                Swal.fire({
+                    title: 'Reservas',
+                    html: reservaHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Retroceder',
+                    customClass: {
+                        confirmButton: 'button-confirm-class',
+                        cancelButton: 'button-cancel-class',
+                        popup: 'modal-class' // Clase para el modal
+                    }
+                });
+
+                // Toggle visibility of reservation details
+                document.querySelector('.reservation-header').addEventListener('click', function() {
+                    const details = document.querySelector('.reservation-details');
+                    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                });
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
+    } else if (buttonId === "misReportes") {
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/selectReportes",
+            data: JSON.stringify({ usuarioId: usuarioId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
+                // Construir el HTML del modal con los datos del reporte
+                const reporteHTML = `
+                    <div class="reporte-info">
+                        <div><strong>Reporte:</strong> ${response[0].reporte}</div>
+                        <div><strong>Espacio:</strong> ${response[0].id_espacio}</div>
+                    </div>
+                `;
+                
+                Swal.fire({
+                    title: 'Reportes',
+                    html: reporteHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Retroceder',
+                    customClass: {
+                        confirmButton: 'button-confirm-class',
+                        cancelButton: 'button-cancel-class',
+                        popup: 'modal-class' // Clase para el modal
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
+    } else {
+        console.log("Ningún Botón Seleccionado");
+    }
+}
+function deleteReservation(patente, idEspacio) {
+    const usuarioId = localStorage.getItem("usuarioId");
+    Swal.fire({
+        title: "¿Seguro que quieres eliminar tu reserva?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Petición para eliminar la reserva
+            fetch("/usuarios/reservaEliminar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    patente: patente,
+                    id_espacio: idEspacio,
+                    usuarioId: usuarioId,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.mensaje) {
+                    Swal.fire({
+                        title: "Reserva eliminada",
+                        text: data.mensaje,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirigir a la página correspondiente
+                            window.location.href = "principal1damian.html";
+                        }
+                    });
+                } else {
+                    console.error("Error:", data.error);
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+    });
+}
     function selectSede(buttonId) {
         console.log('ID del botón seleccionado:', buttonId);
         $.ajax({
@@ -363,60 +561,6 @@
             }
         });
     }
-
-    function selectReservasReportes(buttonId) {
-        const usuarioId = localStorage.getItem("usuarioId");
-        console.log("selectReservasReportes - usuarioId",usuarioId);
-        console.log('ID del botón seleccionado:', buttonId);
-        if(buttonId=="misReservas"){
-            $.ajax({
-                type: 'POST',
-                url: "/usuarios/selectReservas",
-                data: JSON.stringify({ usuarioId: usuarioId }),
-                contentType: 'application/json',
-                success: function(response) {
-                    console.log('Datos enviados exitosamente');
-                    Swal.fire({
-                        title: 'Reservas',
-                        html: `
-                            <div>Patente: ${response[0].patente}; Espacio: ${response[0].id_espacio}; Edificio: ${response[0].nombre_edificio}; Sede: ${response[0].nombre_sede}</div>
-                        `,
-                        showCancelButton: true,
-                        confirmButtonText: 'Confirmar',
-                        cancelButtonText: 'Retroceder',
-                    })
-                },
-                error: function(error) {
-                    console.error('Error al enviar los datos: ', error);
-                }
-            });
-        } else if(buttonId=="misReportes"){
-            $.ajax({
-                type: 'POST',
-                url: "/usuarios/selectReportes",
-                data: JSON.stringify({ usuarioId: usuarioId }),
-                contentType: 'application/json',
-                success: function(response) {
-                    console.log('Datos enviados exitosamente');
-                    Swal.fire({
-                        title: 'Reportes',
-                        html: `
-                            <div>Reporte: ${response[0].reporte}; Espacio: ${response[0].id_espacio}</div>
-                        `,
-                        showCancelButton: true,
-                        confirmButtonText: 'Confirmar',
-                        cancelButtonText: 'Retroceder',
-                    })
-                },
-                error: function(error) {
-                    console.error('Error al enviar los datos: ', error);
-                }
-            });
-        } else {
-            console.log("Ningún Botón Seleccionado");
-        }
-    }
-
 </script>
 
 </body>

@@ -993,15 +993,15 @@ exports.selectReservas = async (req, res) => {
   try {
     // Consulta para obtener los vehículos del usuario
     const result = await pool.query(
-      "SELECT reservas.patente, reservas.id_espacio, edificios.nombre_edificio, sedes.nombre_sede FROM usuarios, reservas, edificios, sedes WHERE usuarios.id_usuario=$1 AND usuarios.id_usuario=reservas.id_usuario AND reservas.id_edificio=edificios.id_edificio AND sedes.id_sede=edificios.id_sede;",
+      "SELECT reservas.patente, reservas.id_espacio,reservas.hora_entrada_reserva,reservas.hora_salida_reserva, edificios.nombre_edificio, sedes.nombre_sede FROM usuarios, reservas, edificios, sedes WHERE usuarios.id_usuario=$1 AND usuarios.id_usuario=reservas.id_usuario AND reservas.id_edificio=edificios.id_edificio AND sedes.id_sede=edificios.id_sede;",
       [usuarioId]
     );
 
-    console.log("resultado de consulta en selectReservas:",result.rows); // Muestra los resultados en la consola para depuración
+    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
     res.json(result.rows); // Envía los vehículos como respuesta JSON
   } catch (err) {
-    console.error("Error al obtener reservas:", err);
-    res.status(500).send("Error al obtener las reservas");
+    console.error("Error al obtener estacionamientos:", err);
+    res.status(500).send("Error al obtener los estacionamientos");
   }
 };
 
@@ -1015,11 +1015,11 @@ exports.selectReportes = async (req, res) => {
       [usuarioId]
     );
 
-    console.log("resultado de consulta en selectReportes:",result.rows); // Muestra los resultados en la consola para depuración
+    console.log("resultado de consulta en selectReservasReportes:",result.rows); // Muestra los resultados en la consola para depuración
     res.json(result.rows); // Envía los vehículos como respuesta JSON
   } catch (err) {
-    console.error("Error al obtener reportes:", err);
-    res.status(500).send("Error al obtener los reportes");
+    console.error("Error al obtener estacionamientos:", err);
+    res.status(500).send("Error al obtener los estacionamientos");
   }
 };
 
