@@ -52,6 +52,12 @@
             margin: 20px;
             text-align: center;
         }
+        .reservation-container {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            margin: 50px;
+            text-align: center;
+        }
         .container h2 {
             font-size: 24px;
             color: #0056b3;
@@ -421,9 +427,6 @@
                 // Construir el HTML del modal con los datos de la reserva
                 const reservaHTML = `
                     <div class="reservation-container">
-                        <div class="reservation-header">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
                         <div class="reservation-p">
                             <p class="reservation-pp">Patente: ${response[0].patente}</p>
                             <p class="reservation-pp">Espacio: ${response[0].id_espacio}</p>
@@ -434,6 +437,9 @@
                             <p>Hora de entrada: ${formatDate(response[0].hora_entrada_reserva)}</p>
                             <p>Hora de salida: ${formatDate(response[0].hora_salida_reserva)}</p>
                             <button class="reservation-button" onclick="deleteReservation(${response[0].id_reserva})">Eliminar</button>
+                        </div>
+                        <div class="reservation-header">
+                            <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                 `;
