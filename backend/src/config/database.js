@@ -2,6 +2,7 @@ const { Pool } = require("pg");
 
 
 // Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {

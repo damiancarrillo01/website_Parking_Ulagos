@@ -227,6 +227,9 @@
         .swal2-popup .swal2-actions button {
             margin: 5px;
         }
+        .reserved-spot {
+            background-color: rgba(255, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -293,7 +296,40 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   
+   //Funcionalidad cambio color 
+   console.log("EN SCRIPT DE PRINCIPALMEYER");
+
+fetch('/usuarios/selectEstacionamientoEstado')
+    .then(response => {
+        console.log('Respuesta recibida del servidor:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos parseados del servidor:', data);
+
+        localStorage.setItem('estacionamientos', JSON.stringify(data));
+        console.log('Datos almacenados en localStorage:', JSON.parse(localStorage.getItem('estacionamientos')));
+
+        // Cambiar los colores de los estacionamientos reservados después de guardar los datos
+        const estacionamientos = JSON.parse(localStorage.getItem('estacionamientos')) || [];
+        console.log('Estacionamientos desde localStorage:', estacionamientos);
+        estacionamientos.forEach(estacionamiento => {
+            if (estacionamiento.estado === 'Reservado') {
+                const spotElement = document.getElementById(`spot${estacionamiento.id_espacio}`);
+                if (spotElement) {
+                    console.log(`Cambiando color de spot${estacionamiento.id_espacio} a reservado`);
+                    spotElement.classList.add('reserved-spot');
+                } else {
+                    console.error(`Elemento spot${estacionamiento.id_espacio} no encontrado`);
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error al obtener los estacionamientos:', error));
+    //cierre Funcionalidad cambio color
 </script>
 </body>
 </html>

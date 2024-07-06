@@ -170,6 +170,7 @@
       .status-reserved {
         background-color: rgba(255, 0, 0, 0.3);
       }
+    
     </style>
   </head>
   <body>
@@ -626,11 +627,12 @@
 
       // Funcionalidad Boton Edificio Cierre
 
+      
       // Función para enviar los datos a la API
       async function confirmarReserva(numero) {
         var horaEntrada = JSON.parse(localStorage.getItem("horaEntradaSeleccionada"));
         var horaSalida = JSON.parse( localStorage.getItem("horaSalidaSeleccionada"));
-
+        var vehiculo = localStorage.getItem("vehiculoSeleccionado");
         try {
           const response = await fetch("/usuarios/reserva", {
             method: "POST",
@@ -641,7 +643,7 @@
             },
             body: JSON.stringify({
               edificio: edificioSeleccionado,
-              patente: vehiculoSeleccionado,
+              patente: vehiculo,
               id_espacio: numero,
               hora_entrada: horaEntrada,
               hora_salida: horaSalida,
