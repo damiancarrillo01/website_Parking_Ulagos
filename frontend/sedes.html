@@ -477,7 +477,7 @@
                                 <hr>
                                 <p><strong>Hora de salida:</strong> ${formatDate(reserva.hora_salida_reserva)}</p>
                             </div>
-                            <button class="reservation-button" onclick="deleteReservation(${reserva.id_reserva}, '${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
+                            <button class="reservation-button" onclick="deleteReservation('${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
                         </div>
                         <div class="reservation-footer">
                             <i class="fas fa-chevron-down"></i>
@@ -555,6 +555,7 @@
 
 function deleteReservation(patente, idEspacio) {
     const usuarioId = localStorage.getItem("usuarioId");
+    console.log('espacio eliminar mondongo:',idEspacio);
     Swal.fire({
         title: "¿Seguro que quieres eliminar tu reserva?",
         text: "Esta acción no se puede deshacer.",
@@ -563,6 +564,7 @@ function deleteReservation(patente, idEspacio) {
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "Cancelar",
     }).then((result) => {
+        console.log('espacio eliminar mondongo:',idEspacio);
         if (result.isConfirmed) {
             // Petición para eliminar la reserva
             fetch("/usuarios/reservaEliminar", {
