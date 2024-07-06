@@ -52,12 +52,6 @@
             margin: 20px;
             text-align: center;
         }
-        .reservation-container {
-            border: 2px solid #0056b3;
-            border-radius: 8px;
-            margin: 50px;
-            text-align: center;
-        }
         .container h2 {
             font-size: 24px;
             color: #0056b3;
@@ -301,6 +295,32 @@
             color: #0056b3; /* Color del ícono */
             margin-bottom: 10px; /* Espacio entre el ícono y el ID de usuario */
         }
+        .reservation-container {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .reservation-details {
+            display: none;
+            padding: 10px;
+        }
+
+        .reservation-footer {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .reservation-footer i {
+            transition: transform 0.3s ease;
+        }
+
+        .reservation-footer i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
         .reservation-buttons {
             display: flex;
             justify-content: space-around;
@@ -319,6 +339,10 @@
         .reservation-button:hover {
             background-color: #e6f0ff;
         }
+
+        .hidden {
+        display: none;
+    }
         /* Estilos CSS para el menú lateral */
     </style>
 </head>
@@ -335,7 +359,7 @@
         <li>
             <i class="fas fa-user user-icon-large"></i> <!-- Añadir el ícono aquí -->
         </li>
-        <li><strong>Usuario ID:</strong> <span id="usuario-id"></span></li>
+        <li class="hidden"><strong>Usuario ID:</strong> <span id="usuario-id"></span></li>
         <li><strong>Nombre:</strong> <span id="usuario-nombre"></span></li>
         <li><strong>Correo:</strong> <span id="usuario-correo"></span></li>
         <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
@@ -425,24 +449,24 @@
                 }
 
                 // Construir el HTML del modal con los datos de la reserva
-                const reservaHTML = `
+                const reservaHTML = response.map(reserva => `
                     <div class="reservation-container">
                         <div class="reservation-p">
-                            <p class="reservation-pp">Patente: ${response[0].patente}</p>
-                            <p class="reservation-pp">Espacio: ${response[0].id_espacio}</p>
+                            <p class="reservation-pp">Patente: ${reserva.patente}</p>
+                            <p class="reservation-pp">Espacio: ${reserva.id_espacio}</p>
                         </div>
                         <div class="reservation-details" style="display:none;">
-                            <p>Edificio: ${response[0].nombre_edificio}</p>
-                            <p>Sede: ${response[0].nombre_sede}</p>
-                            <p>Hora de entrada: ${formatDate(response[0].hora_entrada_reserva)}</p>
-                            <p>Hora de salida: ${formatDate(response[0].hora_salida_reserva)}</p>
-                            <button class="reservation-button" onclick="deleteReservation(${response[0].id_reserva})">Eliminar</button>
+                            <p>Edificio: ${reserva.nombre_edificio}</p>
+                            <p>Sede: ${reserva.nombre_sede}</p>
+                            <p>Hora de entrada: ${formatDate(reserva.hora_entrada_reserva)}</p>
+                            <p>Hora de salida: ${formatDate(reserva.hora_salida_reserva)}</p>
+                            <button class="reservation-button" onclick="deleteReservation(${reserva.id_reserva}, '${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
                         </div>
-                        <div class="reservation-header">
+                        <div class="reservation-footer">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
-                `;
+                `).join('');
 
                 Swal.fire({
                     title: 'Reservas',
@@ -458,9 +482,13 @@
                 });
 
                 // Toggle visibility of reservation details
-                document.querySelector('.reservation-header').addEventListener('click', function() {
-                    const details = document.querySelector('.reservation-details');
-                    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                document.querySelectorAll('.reservation-footer').forEach(footer => {
+                    footer.addEventListener('click', function() {
+                        const details = this.previousElementSibling;
+                        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                        this.querySelector('i').classList.toggle('fa-chevron-down');
+                        this.querySelector('i').classList.toggle('fa-chevron-up');
+                    });
                 });
             },
             error: function(error) {
@@ -504,6 +532,7 @@
         console.log("Ningún Botón Seleccionado");
     }
 }
+
 function deleteReservation(patente, idEspacio) {
     const usuarioId = localStorage.getItem("usuarioId");
     Swal.fire({
