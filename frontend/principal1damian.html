@@ -5,26 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservar Estacionamiento</title>
     <!-- CSS de Select2 -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"
-    />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"/>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <!-- Script de Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <!-- Enlace a Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <!-- Enlace a SweetAlert -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -42,7 +31,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 5px 0px;
+        padding: 10px 0px;
       }
       .header .menu-icon,
       .header .location-icon {
@@ -57,6 +46,14 @@
       }
       .header h1 .location-icon {
         margin-right: 10px;
+      }
+      .container {
+          margin: 20px;
+          text-align: center;
+      }
+      .container h2 {
+          font-size: 24px;
+          color: #0056b3;
       }
       .button-container {
         display: flex;
@@ -99,9 +96,65 @@
         background-color: rgba(128, 128, 128, 0.5);
         cursor: not-allowed;
       }
-      /* Positions for parking spots */
-      /* Define your parking spot positions here */
+      /*inicio de agregado*/
+      #menu-lateral {
+            position: absolute;
+            top: 45px;
+            left: -450px;
+            width: 350px; /* Aumentar el ancho */
+            height: 85%; /* Ajustar la altura según necesites */
+            background-color: #f9fbff;
+            color: #000;
+            transition: left 0.3s;
+            z-index: 10000;
+            padding: 20px; /* Aumentar el padding para más espacio interno */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #0056b3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Agregar sombra para efecto de elevación */
+            border-radius: 10px; /* Redondear bordes */
+        }
+        #menu-lateral li {
+            list-style-type: none; /* Quitar los puntos de lista */
+            margin: 10px 0; /* Ajusta el margen si es necesario */
+        }
+        .button-menu {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
 
+        .button-menu:hover {
+            background-color: #e6f0ff;
+            color: #003a80;
+        }
+      .button-menu {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+        .button-menu:hover {
+            background-color: #e6f0ff;
+            color: #003a80;
+        }
+        /*fin de agregado*/
       .reserve-button {
         margin-top: 10px;
         padding: 10px 20px;
@@ -143,11 +196,9 @@
       .swal2-popup .swal2-html-container {
         padding: 20px;
       }
-
       .swal2-popup .swal2-actions button {
         margin: 5px;
       }
-
       .status-bar {
         display: flex;
         justify-content: center;
@@ -170,19 +221,261 @@
       .status-reserved {
         background-color: rgba(255, 0, 0, 0.3);
       }
-    
+      #tittleplus {
+            display: flex;
+            align-items: center;
+        }
+
+        #tittleplus h4, h4 {
+            font-weight: 100;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        #tittleplus ul, ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #tittleplus ul li, ul li {
+            margin: 0;
+        }
+
+        #tittleplus ul li a, a {
+            text-decoration: none;
+        }
+
+        #top-menu {
+            background-color: #C2C6CC;
+            width: 1470px;
+            height: 60px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        #top-menu ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #top-menu ul li {
+            margin: 0 10px;
+        }
+
+        #top-menu ul li a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #064469;
+            color: #fff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        #top-menu ul li a:hover {
+            background-color: #C2C6CC;
+            color: #064469;
+            text-decoration: underline;
+        }
+
+        #logonav {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+
+        .material-icons.user-icon {
+            font-size: 40px;
+            color: #fff;
+            border-radius: 10px;
+            margin-right: 50px;
+            display: flex;
+            align-items: center;
+            background-color: #064469;
+        }
+        #menu-toggle {
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        #usuario-info {
+            padding: 10px;
+            text-align: center;
+            background-color: #222;
+            background-color: #d3d3d3; /* Nuevo color de fondo */
+            border-radius: 8px; /* Opcional: para esquinas redondeadas */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .menu-lateral.show {
+            left: 0 !important;
+        }
+
+        .material-icons.user-icon {
+            cursor: pointer;
+        }
+
+        #buttonClose ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #buttonClose ul li {
+            margin: 0 10px;
+        }
+
+        #buttonClose ul li a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #064469;
+            color: #fff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        #buttonClose ul li a:hover {
+            background-color: #C2C6CC;
+            color: #064469;
+            text-decoration: underline;
+        }
+
+        #iconNom {
+            width: 50%;
+            display: flex;
+            align-items: center;
+        }
+
+        .material-icons.user-icon {
+            cursor: pointer;
+        }
+
+        .user-icon-large {
+            font-size: 50px; /* Tamaño del ícono */
+            color: #0056b3; /* Color del ícono */
+            margin-bottom: 10px; /* Espacio entre el ícono y el ID de usuario */
+        }
+        .reservation-container {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .reservation-details {
+            display: none;
+            padding: 10px;
+        }
+
+        .reservation-footer {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .reservation-footer i {
+            transition: transform 0.3s ease;
+        }
+
+        .reservation-footer i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
+        .reservation-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .reservation-button {
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .reservation-button:hover {
+            background-color: #e6f0ff;
+        }
+
+        .hidden {
+        display: none;
+    }
+
+    .button-menu#cierresesion {
+        background-color: #ff4d4d; 
+        color: #fff;
+        border-color: #ff4d4d;
+        margin-top: 200px;
+    }
+    .button-menu#cierresesion:hover {
+        background-color: #ff1a1a; 
+        border-color: #ff1a1a;
+    }
+    .reservation-pp {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+        /* Estilos CSS para el menú lateral */
     </style>
   </head>
   <body>
     <div class="header">
-      <i class="fas fa-bars menu-icon"></i>
+      <i class="fas fa-bars menu-icon" id="menu-usuario"></i>
       <h1>
         <i class="fas fa-map-marker-alt location-icon"></i> Reservar
         Estacionamiento
       </h1>
       <span></span>
     </div>
-
+    <!-- MENU LATERAL -->
+    <div id="menu-lateral" class="menu-lateral">
+      <li>
+          <i class="fas fa-user user-icon-large"></i> <!-- Añadir el ícono aquí -->
+      </li>
+      <li class="hidden"><strong>Usuario ID:</strong> <span id="usuario-id"></span></li>
+      <li><strong>Nombre:</strong> <span id="usuario-nombre"></span></li>
+      <li><strong>Correo:</strong> <span id="usuario-correo"></span></li>
+      <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
+      <button class="button-menu" id="misReportes" onclick="selectReservasReportes(this.id)">Mis Reportes</button>
+      <button class="button-menu" id="cierresesion" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div> 
+    
     <div class="button-container">
       <button id="horaButton">Hora</button>
       <button id="vehiculoButton">Vehículo</button>
@@ -198,12 +491,234 @@
         <span>Reservado</span>
       </div>
     </div>
-    <div id="mapContainer">
-      <!-- Aquí se cargará el mapa del edificio seleccionado -->
-    </div>
+    <div id="mapContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+      // Menú de usuarios
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuUsuario = document.getElementById('menu-usuario');
+      const menuLateral = document.getElementById('menu-lateral');
+
+      menuUsuario.addEventListener('click', () => {
+          menuLateral.classList.toggle('show');
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener el id de usuario desde localStorage
+        const usuarioId = localStorage.getItem("usuarioId");
+        const correo = localStorage.getItem("correo");
+        const nombre = localStorage.getItem("nombre");
+        if (usuarioId) {
+            console.log("ID de Usuario:", usuarioId);
+            // Aquí puedes usar el usuarioId para realizar otras acciones necesarias
+            document.getElementById("usuario-id").innerText = usuarioId;
+            document.getElementById("usuario-correo").innerText = correo;
+            document.getElementById("usuario-nombre").innerText = nombre;
+        } else {
+            console.log("ID de Usuario no encontrado");
+        }
+
+        if (correo) {
+            console.log("correo:", correo);
+            
+        } else {
+            console.log("correo no encontrado");
+        }
+        if (nombre) {
+            console.log("correo:", nombre);
+            
+        } else {
+            console.log("nombre no encontrado");
+        }
+    });
+    function selectReservasReportes(buttonId) {
+    const usuarioId = localStorage.getItem("usuarioId");
+    console.log("selectReservasReportes - usuarioId", usuarioId);
+    console.log('ID del botón seleccionado:', buttonId);
+    
+    if (buttonId === "misReservas") {
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/selectReservas",
+            data: JSON.stringify({ usuarioId: usuarioId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
+
+                // Función para formatear fecha y hora sumando 4 horas
+                function formatDate(dateString) {
+                    const date = new Date(dateString);
+                    date.setHours(date.getHours() + 4); // Sumar 4 horas
+                    const day = ("0" + date.getDate()).slice(-2);
+                    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+                    const year = date.getFullYear();
+                    const hours = ("0" + date.getHours()).slice(-2);
+                    const minutes = ("0" + date.getMinutes()).slice(-2);
+                    const seconds = ("0" + date.getSeconds()).slice(-2);
+                    return ` ${hours}:${minutes}:${seconds}`;
+                }
+
+                // Construir el HTML del modal con los datos de la reserva
+                const reservaHTML = response.map(reserva => `
+                    <div class="reservation-container">
+                            <div class="reservation-container">
+                                <p class="reservation-pp"><strong>Patente:</strong> ${reserva.patente}</p>
+                                <hr>
+                                <p class="reservation-pp"><strong>Espacio:</strong> ${reserva.id_espacio}</p>
+                            </div>
+                        <div class="reservation-details" style="display:none;">
+                            <div class="reservation-container">
+                                <p><strong>Edificio:</strong> ${reserva.nombre_edificio}</p>
+                                <hr>
+                                <p><strong>Sede:</strong> ${reserva.nombre_sede}</p>
+                                <hr>
+                                <p><strong>Hora de entrada:</strong> ${formatDate(reserva.hora_entrada_reserva)}</p>
+                                <hr>
+                                <p><strong>Hora de salida:</strong> ${formatDate(reserva.hora_salida_reserva)}</p>
+                            </div>
+                            <button class="reservation-button" onclick="deleteReservation('${reserva.patente}', '${reserva.id_espacio}')">Eliminar</button>
+                        </div>
+                        <div class="reservation-footer">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                `).join('');
+
+                Swal.fire({
+                    title: 'Reservas',
+                    html: reservaHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Retroceder',
+                    customClass: {
+                        confirmButton: 'button-confirm-class',
+                        cancelButton: 'button-cancel-class',
+                        popup: 'modal-class' // Clase para el modal
+                    }
+                });
+
+                // Toggle visibility of reservation details
+                document.querySelectorAll('.reservation-footer').forEach(footer => {
+                    footer.addEventListener('click', function() {
+                        const details = this.previousElementSibling;
+                        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                        this.querySelector('i').classList.toggle('fa-chevron-down');
+                        this.querySelector('i').classList.toggle('fa-chevron-up');
+                    });
+                });
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
+    } else if (buttonId === "misReportes") {
+        $.ajax({
+            type: 'POST',
+            url: "/usuarios/selectReportes",
+            data: JSON.stringify({ usuarioId: usuarioId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Datos enviados exitosamente');
+                // Construir el HTML del modal con los datos del reporte
+                const reporteHTML = `
+                    <div class="reporte-info">
+                        <div class="reservation-container">
+                            <div><strong>Reporte:</strong> ${response[0].reporte}</div>
+                            <hr>
+                            <div><strong>Espacio:</strong> ${response[0].id_espacio}</div>
+                        </div>
+                    </div>
+                `;
+                
+                Swal.fire({
+                    title: 'Reportes',
+                    html: reporteHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Retroceder',
+                    customClass: {
+                        confirmButton: 'button-confirm-class',
+                        cancelButton: 'button-cancel-class',
+                        popup: 'modal-class' // Clase para el modal
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Error al enviar los datos: ', error);
+            }
+        });
+    } else {
+        console.log("Ningún Botón Seleccionado");
+    }
+}
+
+function deleteReservation(patente, idEspacio) {
+    const usuarioId = localStorage.getItem("usuarioId");
+    Swal.fire({
+        title: "¿Seguro que quieres eliminar tu reserva?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("/usuarios/reservaEliminar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    patente: patente,
+                    id_espacio: idEspacio,
+                    usuarioId: usuarioId,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.mensaje) {
+                    Swal.fire({
+                        title: "Reserva eliminada",
+                        text: data.mensaje,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirigir a la página correspondiente
+                            window.location.href = "sedes.html";
+                        }
+                    });
+                } else {
+                    console.error("Error:", data.error);
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+    });
+}
+function cerrarSesion() {
+        Swal.fire({
+            title: "¿Seguro que deseas cerrar sesión?",
+            text: "Todos los datos se eliminarán y serás redirigido a la página de inicio de sesión.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cerrar sesión",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                localStorage.clear();
+                
+                
+                window.location.href = "iniciosesion.html";
+
+            }
+        });
+    }
+
+
       const usuarioId = localStorage.getItem("usuarioId");
       console.log('principal1 id:',usuarioId)
       // Obtener la hora seleccionada del localStorage

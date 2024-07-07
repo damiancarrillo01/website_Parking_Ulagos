@@ -25,7 +25,7 @@
             border-radius: 8px;
             overflow: hidden;
             max-width: 800px;
-            height: 400px; /
+            height: 400px;
         }
         .image-section {
             flex: 1;
@@ -34,6 +34,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative; /* Agregado */
         }
         .image-section img {
             width: 100%;
@@ -64,7 +65,7 @@
             width: 100%;
         }
         .form-group input, .form-group select {
-            width: 100%;
+            width: 100%; /* Cambiado a 100% */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -111,7 +112,7 @@
             <input type="email" id="correo" name="correo" placeholder="Correo" required>
         </div>
         <div class="form-group">
-            <select id="motivo" style="width:106%;" name="motivo" required>
+            <select id="motivo" name="motivo" required>
                 <option value="" disabled selected>Motivo</option>
                 <option value="visita">Visita</option>
                 <option value="conferencia">Conferencia</option>
