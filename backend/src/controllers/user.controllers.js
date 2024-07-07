@@ -57,7 +57,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
   // Validar que los campos no estén vacíos
   if (!correo || !contraseña) {
-    return res.status(400).send("Por favor completa todos los campos.");
+    return res.status(400).json({ error: "Por favor completa todos los campos." });
   }
 
   console.log("Correo:", correo);
@@ -67,42 +67,52 @@ exports.inicioSesionUsuario = async (req, res) => {
     let result;
     let tipoUsuario;
     let usuarioId;
-    // Consulta para usuarios normales (alumnos.ulagos.cl, ulagos.cl)
-    if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl")) {
-      result = await pool.query(
-        "SELECT id_usuario,CONCAT(nombre, ' ', apellido) AS nombre_completo, correo, contraseña, tipo_usuario FROM Usuarios WHERE correo = $1 AND contraseña = $2",
-        [correo, contraseña]
-      );
-      if (result.rows.length > 0) {
-        usuarioId = result.rows[0].id_usuario;
-        tipoUsuario = result.rows[0].tipo_usuario;
-        nombre = result.rows[0].nombre_completo;
-      }
-    } 
-    // Consulta para guardias
-    else {
-      result = await pool.query(
-        "SELECT id_guardia, correo, contraseña FROM Guardias WHERE correo = $1 AND contraseña = $2",
-        [correo, contraseña]
-      );
-      if (result.rows.length > 0) {
-        usuarioId = result.rows[0].id_guardia;
-        tipoUsuario = "guardia";
-      }
+    let nombre;
+
+    // Verificar si el correo existe en la tabla Usuarios
+    result = await pool.query(
+      "SELECT id_usuario, CONCAT(nombre, ' ', apellido) AS nombre_completo, tipo_usuario FROM Usuarios WHERE correo = $1",
+      [correo]
+    );
+
+    // Si no hay resultados, el correo no existe en la tabla Usuarios
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "El usuario no existe" });
     }
 
-    if (result.rows.length > 0) {
-      console.log("ID de Usuario:", usuarioId);
-      console.log("Tipo de Usuario:", tipoUsuario);
-
-      // Redirigir según el tipo de usuario
-      res.json({ tipo_usuario: tipoUsuario,nombre, usuarioId, redirectUrl: "/sedes.html" });
+    // Si el correo existe, verificar la contraseña
+    const usuario = result.rows[0];
+    if (correo.endsWith("@guardias.ulagos.cl") || correo.endsWith("@admin.ulagos.cl")) {
+      result = await pool.query(
+        "SELECT id_guardia, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Guardias WHERE correo = $1 AND contraseña = $2",
+        [correo, contraseña]
+      );
     } else {
-      res.status(400).send("Este usuario no existe");
+      result = await pool.query(
+        "SELECT id_usuario, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Usuarios WHERE correo = $1 AND contraseña = $2",
+        [correo, contraseña]
+      );
     }
+
+    // Si no hay resultados, la contraseña es incorrecta
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Esa combinación de correo electrónico y contraseña es incorrecta." });
+    }
+
+    // Obtener los datos del usuario
+    usuarioId = usuario.id_usuario || result.rows[0].id_guardia;
+    tipoUsuario = usuario.tipo_usuario || (correo.endsWith("@guardias.ulagos.cl") ? "guardia" : "admin");
+    nombre = result.rows[0].nombre_completo;
+
+    console.log("ID de Usuario:", usuarioId);
+    console.log("Tipo de Usuario:", tipoUsuario);
+
+    // Redirigir según el tipo de usuario
+    res.json({ tipo_usuario: tipoUsuario, nombre, usuarioId, redirectUrl: "/sedes.html" });
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error procesando los datos");
+    res.status(500).json({ error: "Error procesando los datos" });
   }
 };
 
@@ -139,6 +149,13 @@ exports.registroAuto = async (req, res) => {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
+  // Validación de patente
+  const patenteRegex = /^([A-Za-z]{2}-\d{4}|[A-Za-z]{4}-\d{2})$/;
+
+  if (!patenteRegex.test(patente)) {
+    return res.status(400).json({ error: "La patente no es válida" });
+  }
+
   try {
     // Guardar la información del automóvil en la base de datos
     const result = await pool.query(
@@ -154,7 +171,7 @@ exports.registroAuto = async (req, res) => {
     );
     res.status(201).json({
       mensaje: "Automóvil registrado exitosamente",
-      auto: autoRegistrado,
+      //auto: autoRegistrado,
     });
   } catch (error) {
     console.error("Error al registrar el automóvil:", error);

@@ -38,6 +38,11 @@
         font-size: 24px;
         cursor: pointer;
       }
+
+      .menu-icon{
+            margin-left: 20px;
+        }
+
       .header h1 {
         margin: 0;
         font-size: 24px;
@@ -622,15 +627,15 @@
             success: function(response) {
                 console.log('Datos enviados exitosamente');
                 // Construir el HTML del modal con los datos del reporte
-                const reporteHTML = `
+                const reporteHTML = response.map(reporte => `
                     <div class="reporte-info">
                         <div class="reservation-container">
-                            <div><strong>Reporte:</strong> ${response[0].reporte}</div>
+                            <div><strong>Reporte:</strong> ${reporte.reporte}</div>
                             <hr>
-                            <div><strong>Espacio:</strong> ${response[0].id_espacio}</div>
+                            <div><strong>Espacio:</strong> ${reporte.id_espacio}</div>
                         </div>
                     </div>
-                `;
+                `).join('');
                 
                 Swal.fire({
                     title: 'Reportes',

@@ -113,6 +113,7 @@
             <input type="email" id="correo" name="correo" placeholder="Correo institucional" required>
             <span id="errorCorreo" class="error-message">Este correo no es institucional.</span>
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
+            <span id="errorGeneral" class="error-message"></span>
             <button type="submit">Iniciar Sesión</button>
         </form>
         <div class="links">
@@ -127,15 +128,16 @@
 
         const correo = document.getElementById("correo").value;
         const contraseña = document.getElementById("contraseña").value;
-        const correoRegex = /^[a-zA-Z0-9._%+-]+@(alumnos.ulagos.cl|ulagos.cl|guardias.ulagos.cl)$/;
+        const correoRegex = /^[a-zA-Z0-9._%+-]+@(alumnos.ulagos.cl|ulagos.cl|admin.ulagos.cl|guardias.ulagos.cl)$/;
 
         // Reset error messages
         document.getElementById('errorCorreo').style.display = 'none';
+        document.getElementById('errorGeneral').style.display = 'none';
 
         // Validar correo
         if (!correoRegex.test(correo)) {
             document.getElementById('errorCorreo').style.display = 'block';
-            event.preventDefault();
+            return;
         }
 
         try {
@@ -148,29 +150,32 @@
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                alert(errorText);
+                const errorResponse = await response.json();
+                document.getElementById('errorGeneral').innerText = errorResponse.error;
+                document.getElementById('errorGeneral').style.display = 'block';
                 return;
             }
 
             const data = await response.json();
-            const { tipo_usuario, usuarioId,nombre, redirectUrl } = data;
+            const { tipo_usuario, usuarioId, nombre, redirectUrl } = data;
 
             // Guardar el id de usuario en localStorage
             localStorage.setItem("usuarioId", usuarioId);
             localStorage.setItem('correo', correo);
-            localStorage.setItem('nombre',nombre);
+            localStorage.setItem('nombre', nombre);
             // Redirigir a la URL especificada
             window.location.href = redirectUrl;
         } catch (error) {
             console.error("Error:", error);
-            alert("Error procesando los datos");
+            document.getElementById('errorGeneral').innerText = "Error procesando los datos";
+            document.getElementById('errorGeneral').style.display = 'block';
         }
     });
+
     history.pushState(null, null, window.location.href);
-                window.onpopstate = function () {
-                    history.go(1);
-                };
+    window.onpopstate = function () {
+        history.go(1);
+    };
 </script>
 </body>
 </html>
