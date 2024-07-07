@@ -62,20 +62,26 @@
             flex-direction: column;
         }
         .content-section input {
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius:  100px;
             font-size: 16px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
         }
         .content-section button {
             padding: 10px;
             border: none;
-            border-radius: 5px;
+            border-radius:  100px;
             cursor: pointer;
             font-size: 16px;
             color: white;
-            background-color: #007bff;
+            background-color: #0056b3;
         }
         .content-section button:hover {
             background-color: #0056b3;
@@ -103,10 +109,11 @@
     </div>
     <div class="content-section">
         <h1>Iniciar Sesión</h1>
-        <form action="/usuarios/iniciosesion" method="POST">
+        <form id="loginForm">
             <input type="email" id="correo" name="correo" placeholder="Correo institucional" required>
+            <span id="errorCorreo" class="error-message">Este correo no es institucional.</span>
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
-            <button type="submit" onclick="location.href='sedes.html'">Iniciar Sesión</button>
+            <button type="submit">Iniciar Sesión</button>
         </form>
         <div class="links">
             <a href="registro.html">¿No tienes cuenta? Regístrate</a>
@@ -114,6 +121,56 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
 
+        const correo = document.getElementById("correo").value;
+        const contraseña = document.getElementById("contraseña").value;
+        const correoRegex = /^[a-zA-Z0-9._%+-]+@(alumnos.ulagos.cl|ulagos.cl|guardias.ulagos.cl)$/;
+
+        // Reset error messages
+        document.getElementById('errorCorreo').style.display = 'none';
+
+        // Validar correo
+        if (!correoRegex.test(correo)) {
+            document.getElementById('errorCorreo').style.display = 'block';
+            event.preventDefault();
+        }
+
+        try {
+            const response = await fetch("/usuarios/iniciosesion", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ correo, contraseña })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                alert(errorText);
+                return;
+            }
+
+            const data = await response.json();
+            const { tipo_usuario, usuarioId,nombre, redirectUrl } = data;
+
+            // Guardar el id de usuario en localStorage
+            localStorage.setItem("usuarioId", usuarioId);
+            localStorage.setItem('correo', correo);
+            localStorage.setItem('nombre',nombre);
+            // Redirigir a la URL especificada
+            window.location.href = redirectUrl;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error procesando los datos");
+        }
+    });
+    history.pushState(null, null, window.location.href);
+                window.onpopstate = function () {
+                    history.go(1);
+                };
+</script>
 </body>
 </html>

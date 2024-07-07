@@ -1,41 +1,43 @@
-const express = require('express');
-const { Pool } = require('pg');
-const { config } = require('dotenv');
+const { Pool } = require("pg");
 
-// Carga las variables de entorno desde el archivo .env
-config();
 
 // Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
-  }
-});
+    }
+  });
+
 /*
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres',
-  password: '5473',
+  user: "postgres",
+  host: "localhost",
+  database: "postgres",
+  password: "5473",
   port: 5432,
-});  
+});
 */
+pool.connect((err, client, done) => {
+  if (err) throw err;
+  client.query("SET timezone = 'America/Santiago'", (err) => {
+    done();
+    if (err) {
+      console.error("Error setting timezone", err.stack);
+    } else {
+      console.log("Timezone set to America/Santiago");
+    }
+  });
+});
 const connect = async () => {
-  let client;
   try {
-    client = await pool.connect();
-    console.log('Base de datos conectada');
+    const client = await pool.connect();
+    console.log("Base de datos conectada");
+    client.release();
   } catch (err) {
-    console.error('Error conectando a la base de datos', err.stack);
-    if (client) {
-      client.release();
-    }
-    throw err; // Lanzamos el error para que se pueda manejar adecuadamente en main
-  } finally {
-    if (client) {
-      client.release(); // Liberar el cliente de vuelta al pool en caso de éxito o fallo
-    }
+    console.error("Error conectando a la base de datos", err.stack);
+    throw err;
   }
 };
 
@@ -44,3 +46,5 @@ module.exports = {
   connect,
   pool,
 };
+
+console.log("database.js ejecutado");
