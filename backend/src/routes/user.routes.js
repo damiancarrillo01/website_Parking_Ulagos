@@ -21,7 +21,7 @@ router.get('/selectReserva',userController.selectReserva);
 router.get('/selectGuardia',userController.selectGuardia);
 router.get('/selectEstacionamientoEstado',userController.selectEstacionamientoEstado);
 router.get('/reporteGuardiaSelect',userController.reporteGuardiaSelect);
-//admin
+//admin 
 router.get('/admin', userController.admin);
 router.post('/adminUpdateSede', userController.adminUpdateSede);
 router.post('/adminUpdateEdificio', userController.adminUpdateEdificio);
