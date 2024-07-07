@@ -14,9 +14,9 @@ const pool = new Pool({
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
-  database: "postgres",
-  password: "5473",
-  port: 5432,
+  database: "parking_ulagos",
+  password: "12345",
+  port: 5433,
 });
 
 pool.connect((err, client, done) => {
