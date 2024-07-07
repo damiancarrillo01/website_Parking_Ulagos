@@ -143,9 +143,16 @@ exports.registroAuto = async (req, res) => {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
 
+  // Validación de patente
+  const patenteRegex = /^([A-Za-z]{2}-\d{4}|[A-Za-z]{4}-\d{2})$/;
+
+  if (!patenteRegex.test(patente)) {
+    return res.status(400).json({ error: "La patente no es válida" });
+  }
+
   try {
     // Guardar la información del automóvil en la base de datos
-    const result = await pool.query(
+    /*const result = await pool.query(
       "INSERT INTO vehiculo (Patente, Tipo_Vehiculo, Color, Modelo, Tamaño) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [patente, tipo_vehiculo, color, modelo, tamaño]
     );
@@ -155,10 +162,10 @@ exports.registroAuto = async (req, res) => {
     const poseer = await pool.query(
       "INSERT INTO poseer_vehiculo (id_usuario,patente) VALUES ($1,$2) RETURNING *",
       [usuarioId, patente]
-    );
+    );*/
     res.status(201).json({
       mensaje: "Automóvil registrado exitosamente",
-      auto: autoRegistrado,
+      //auto: autoRegistrado,
     });
   } catch (error) {
     console.error("Error al registrar el automóvil:", error);
