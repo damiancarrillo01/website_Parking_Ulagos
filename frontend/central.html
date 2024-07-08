@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Estacionamiento</title>
+    <!-- CSS de Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Script de Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace a SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            background-color: #003DA6;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0px;
+        }
+        .header .menu-icon, .header .location-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .header h1 .location-icon {
+            margin-right: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .button-container button {
+            padding: 10px;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #013DA0;
+            background-color: #87CEEB;
+        }
+        .button-container button:hover {
+            background-color: #cce0ff;
+        }
+        .container {
+            display: inline-block;
+            margin-top: 20px;
+            width: 1400px;
+            height: 500px;
+            background-color: #e0e0e0;
+            position: relative;
+            overflow: auto;
+        }
+        .parking-spot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid blue;
+            cursor: pointer;
+        }
+        
+        .parking-spot {
+            background-color: rgba(0, 0, 255, 0.3);
+        }
+        .disabled-spot {
+            background-color: rgba(128, 128, 128, 0.5);
+            cursor: not-allowed;
+        }
+        #disabled4,#disabled5,#disabled6,#disabled7,#disabled8 {
+            background-color: white;
+            cursor: not-allowed;
+            border: 1px white;
+        }
+        
+     /* Positions for parking spots */
+     #spot61 { top: 410px; left: 20px; }
+        #spot62{ top: 410px; left: 60px; }
+        #spot63{ top: 410px; left: 100px; }
+        #spot64{ top: 410px; left: 140px; }
+        #spot65{ top: 410px; left: 180px; }
+        #spot66{ top: 410px; left: 220px; }
+        #spot67{ top: 410px; left: 260px; }
+        #spot68{ top: 410px; left: 300px; }
+        #spot69{ top: 410px; left: 340px; }
+        #spot70 { top: 410px; left: 380px; }
+        #spot71 { top: 410px; left: 420px; }
+        #spot72 { top: 410px; left: 460px; }
+        #spot73 { top: 410px; left: 500px; }
+
+        #spot74{ top: 290px; left: 20px; }
+        #spot75 { top: 290px; left: 60px; }
+        #spot76 { top: 290px; left: 100px; }
+        #spot77 { top: 290px; left: 140px; }
+        #spot78 { top: 290px; left: 180px; }
+        #spot79 { top: 290px; left: 220px; }
+        #spot80 { top: 290px; left: 260px; }
+        #spot81 { top: 290px; left: 300px; }
+        #spot82 { top: 290px; left: 340px; }
+        #spot83 { top: 290px; left: 380px; }
+        #spot84 { top: 290px; left: 420px; }
+        #spot85 { top: 290px; left: 460px; }
+        #spot86 { top: 290px; left: 500px; }
+
+        #spot87 { top: 410px; left: 840px; }
+        #spot88 { top: 410px; left: 880px; }
+        #spot89 { top: 410px; left: 920px; }
+        #spot90 { top: 410px; left: 960px; }
+        #spot91 { top: 410px; left: 1000px; }
+        #spot92 { top: 410px; left: 1040px; }
+        #spot93 { top: 410px; left: 1080px; }
+        #spot94 { top: 410px; left: 1120px; }
+
+        #spot95 { top: 290px; left: 840px; }
+        #spot96 { top: 290px; left: 880px; }
+        #spot97 { top: 290px; left: 920px; }
+        #spot98 { top: 290px; left: 960px; }
+        #spot99 { top: 290px; left: 1000px; }
+        #spot100 { top: 290px; left: 1040px; }
+        #spot101 { top: 290px; left: 1080px; }
+        #spot102{ top: 290px; left: 1120px; }
+        #spot103{ top: 290px; left: 1160px; }
+        #spot104{ top: 290px; left: 1200px; }
+        #spot105{ top: 290px; left: 1240px; }
+        #spot106{ top: 290px; left: 1280px; }
+        #spot107{ top: 290px; left: 1320px; }
+
+        #disabled1 { top: 40px; left: 30px; width: 400px; height: 220px; }
+        #disabled2 { top: 40px; left: 450px; width: 490px; height: 220px; }
+        #disabled3 { top: 40px; left: 970px; width: 400px; height: 220px; }
+        #disabled4 { top: 330px; left: 10px; width: 1410px; height: 70px; }
+        #disabled5{ top: 400px; left: 570px; width: 230px; height: 150px;}
+        #disabled6{ top: 430px; left: 1050px; width: 400px; height: 70px;  transform: rotate(-30deg);}
+        #disabled7{ top: 40px; left: 1410px; width: 60px; height: 640px;}
+        #disabled8{top: 200px; left: 1050px; width: 100px; height: 700px; transform: rotate(-80deg);}
+        #disabled1 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+        #disabled2 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+        #disabled3 span{
+            display: block;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 190px;
+        }
+
+        
+        .reserve-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        .reserve-button:hover {
+            background-color: #004494;
+        }
+        .seleccion-button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            background-color: #0056b3;
+        }
+        .digital-clock {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 20px;
+        }
+        .digital-clock input {
+            width: 3em;
+            text-align: center;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .swal2-popup .swal2-html-container {
+            padding: 20px;
+        }
+
+        .swal2-popup .swal2-actions button {
+            margin: 5px;
+        }
+        .reserved-spot {
+            background-color: rgba(255, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="parking-spot" id="spot61" onclick="reservar(61)"><span></span></div>
+    <div class="parking-spot" id="spot62" onclick="reservar(62)"><span></span></div>
+    <div class="parking-spot" id="spot63" onclick="reservar(63)"><span></span></div>
+    <div class="parking-spot" id="spot64" onclick="reservar(64)"><span></span></div>
+    <div class="parking-spot" id="spot65" onclick="reservar(65)"><span></span></div>
+    <div class="parking-spot" id="spot66" onclick="reservar(66)"><span></span></div>
+    <div class="parking-spot" id="spot67" onclick="reservar(67)"><span></span></div>
+    <div class="parking-spot" id="spot68" onclick="reservar(68)"><span></span></div>
+    <div class="parking-spot" id="spot69" onclick="reservar(69)"><span></span></div>
+    <div class="parking-spot" id="spot70" onclick="reservar(70)"><span></span></div>
+    <div class="parking-spot" id="spot71" onclick="reservar(71)"><span></span></div>
+    <div class="parking-spot" id="spot72" onclick="reservar(72)"><span></span></div>
+    <div class="parking-spot" id="spot73" onclick="reservar(73)"><span></span></div>
+    <div class="parking-spot" id="spot74" onclick="reservar(74)"><span></span></div>
+    <div class="parking-spot" id="spot75" onclick="reservar(75)"><span></span></div>
+    <div class="parking-spot" id="spot76" onclick="reservar(76)"><span></span></div>
+    <div class="parking-spot" id="spot77" onclick="reservar(77)"><span></span></div>
+    <div class="parking-spot" id="spot78" onclick="reservar(78)"><span></span></div>
+    <div class="parking-spot" id="spot79" onclick="reservar(79)"><span></span></div>
+    <div class="parking-spot" id="spot80" onclick="reservar(80)"><span></span></div>
+    <div class="parking-spot" id="spot81" onclick="reservar(81)"><span></span></div>
+    <div class="parking-spot" id="spot82" onclick="reservar(82)"><span></span></div>
+    <div class="parking-spot" id="spot83" onclick="reservar(83)"><span></span></div>
+    <div class="parking-spot" id="spot84" onclick="reservar(84)"><span></span></div>
+    <div class="parking-spot" id="spot85" onclick="reservar(85)"><span></span></div>
+    <div class="parking-spot" id="spot86" onclick="reservar(86)"><span></span></div>
+    <div class="parking-spot" id="spot87" onclick="reservar(87)"><span></span></div>
+    <div class="parking-spot" id="spot88" onclick="reservar(88)"><span></span></div>
+    <div class="parking-spot" id="spot89" onclick="reservar(89)"><span></span></div>
+    <div class="parking-spot" id="spot90" onclick="reservar(90)"><span></span></div>
+    <div class="parking-spot" id="spot91" onclick="reservar(91)"><span></span></div>
+    <div class="parking-spot" id="spot92" onclick="reservar(92)"><span></span></div>
+    <div class="parking-spot" id="spot93" onclick="reservar(93)"><span></span></div>
+    <div class="parking-spot" id="spot94" onclick="reservar(94)"><span></span></div>
+    <div class="parking-spot" id="spot95" onclick="reservar(95)"><span></span></div>
+    <div class="parking-spot" id="spot96" onclick="reservar(96)"><span></span></div>
+    <div class="parking-spot" id="spot97" onclick="reservar(97)"><span></span></div>
+    <div class="parking-spot" id="spot98" onclick="reservar(98)"><span></span></div>
+    <div class="parking-spot" id="spot99" onclick="reservar(99)"><span></span></div>
+    <div class="parking-spot" id="spot100" onclick="reservar(100)"><span></span></div>
+    <div class="parking-spot" id="spot101" onclick="reservar(101)"><span></span></div>
+    <div class="parking-spot" id="spot102" onclick="reservar(102)"><span></span></div>
+    <div class="parking-spot" id="spot103" onclick="reservar(103)"><span></span></div>
+    <div class="parking-spot" id="spot104" onclick="reservar(104)"><span></span></div>
+    <div class="parking-spot" id="spot105" onclick="reservar(105)"><span></span></div>
+    <div class="parking-spot" id="spot106" onclick="reservar(106)"><span></span></div>
+    <div class="parking-spot" id="spot107" onclick="reservar(107)"><span></span></div>
+    
+
+
+    <div class="disabled-spot" id="disabled1"><span>Pasillo E</span></div>
+    <div class="disabled-spot" id="disabled2"><span>CENTRAL</span></div>
+    <div class="disabled-spot" id="disabled3"><span>BIBLIOTECA</span></div>
+    <div class="disabled-spot" id="disabled4"></div>
+    <div class="disabled-spot" id="disabled5"></div>
+    <div class="disabled-spot" id="disabled6"></div>
+    <div class="disabled-spot" id="disabled7"></div>
+    <div class="disabled-spot" id="disabled8"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+   //Funcionalidad cambio color 
+   console.log("EN SCRIPT DE PRINCIPALMEYER");
+
+fetch('/usuarios/selectEstacionamientoEstado')
+    .then(response => {
+        console.log('Respuesta recibida del servidor:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos parseados del servidor:', data);
+
+        localStorage.setItem('estacionamientos', JSON.stringify(data));
+        console.log('Datos almacenados en localStorage:', JSON.parse(localStorage.getItem('estacionamientos')));
+
+        // Cambiar los colores de los estacionamientos reservados después de guardar los datos
+        const estacionamientos = JSON.parse(localStorage.getItem('estacionamientos')) || [];
+        console.log('Estacionamientos desde localStorage:', estacionamientos);
+        estacionamientos.forEach(estacionamiento => {
+            if (estacionamiento.estado === 'Reservado') {
+                const spotElement = document.getElementById(`spot${estacionamiento.id_espacio}`);
+                if (spotElement) {
+                    console.log(`Cambiando color de spot${estacionamiento.id_espacio} a reservado`);
+                    spotElement.classList.add('reserved-spot');
+                } else {
+                    console.error(`Elemento spot${estacionamiento.id_espacio} no encontrado`);
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error al obtener los estacionamientos:', error));
+    //cierre Funcionalidad cambio color
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             max-width: 800px;
-            height: 450px; /
+            height: 500px; 
         }
         .image-section {
             flex: 1;
@@ -91,20 +91,28 @@
         .content-section .links a:hover {
             text-decoration: underline;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
     </style>
-    
 </head>
 <body>
-
 <div class="container">
     <div class="content-section">
         <h1>Crear Cuenta</h1>
-        <form id="registroForm" action="/usuarios/registro" method="POST">
+        <form id="registroForm">
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
             <input type="text" id="apellido" name="apellido" placeholder="Apellido" required>
             <input type="email" id="correo" name="correo" placeholder="Correo" required>
+            <span id="errorCorreo" class="error-message">El correo electrónico debe ser de la Universidad de Los Lagos.</span>
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
+            <span id="errorContraseña" class="error-message">Debe tener 10 caracteres, una mayúscula y un símbolo.</span>
             <input type="password" id="confirmarContraseña" name="confirmarContraseña" placeholder="Confirmar Contraseña" required>
+            <span id="errorConfirmarContraseña" class="error-message">Las contraseñas no coinciden.</span>
+            <span id="errorGeneral" class="error-message"></span>
             <button type="submit">Crear Cuenta</button>
         </form>
         <div class="links">
@@ -116,16 +124,81 @@
     </div>
 </div>
 <script>
-    document.getElementById('registroForm').addEventListener('submit', function(event) {
+    document.getElementById('registroForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const correo = document.getElementById('correo').value;
         const contraseña = document.getElementById('contraseña').value;
         const confirmarContraseña = document.getElementById('confirmarContraseña').value;
+        const correoRegex = /^[a-zA-Z0-9._%+-]+@(alumnos.ulagos.cl|ulagos.cl)$/;
         const contraseñaRegex = /^(?=.*[A-Z])(?=.*\W).{10,}$/;
 
+        // Reset error messages
+        document.getElementById('errorCorreo').style.display = 'none';
+        document.getElementById('errorContraseña').style.display = 'none';
+        document.getElementById('errorConfirmarContraseña').style.display = 'none';
+        document.getElementById('errorGeneral').style.display = 'none';
+
+        // Validar correo
+        if (!correoRegex.test(correo)) {
+            document.getElementById('errorCorreo').style.display = 'block';
+            return;
+        }
+
+        // Validar contraseña
         if (!contraseñaRegex.test(contraseña)) {
-            alert('La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres.');
-            event.preventDefault(); 
+            document.getElementById('errorContraseña').style.display = 'block';
+            return;
+        }
+
+        // Validar confirmación de contraseña
+        if (contraseña !== confirmarContraseña) {
+            document.getElementById('errorConfirmarContraseña').style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await fetch("/usuarios/registro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ nombre, apellido, correo, contraseña, confirmarContraseña })
+            });
+
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                if (errorResponse.error === "El correo ya está en uso") {
+                    document.getElementById('errorCorreo').innerText = errorResponse.error;
+                    document.getElementById('errorCorreo').style.display = 'block';
+                } else if (errorResponse.error === "Las contraseñas no coinciden") {
+                    document.getElementById('errorConfirmarContraseña').innerText = errorResponse.error;
+                    document.getElementById('errorConfirmarContraseña').style.display = 'block';
+                } else {
+                    document.getElementById('errorGeneral').innerText = errorResponse.error;
+                    document.getElementById('errorGeneral').style.display = 'block';
+                }
+                return;
+            }
+
+            // Redirigir al inicio de sesión después de la creación exitosa
+            window.location.href = "/iniciosesion.html";
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('errorGeneral').innerText = "Error procesando los datos";
+            document.getElementById('errorGeneral').style.display = 'block';
         }
     });
+
+    function removeInvalidCharacters(event) {
+        const input = event.target;
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
+    document.getElementById('nombre').addEventListener('input', removeInvalidCharacters);
+    document.getElementById('apellido').addEventListener('input', removeInvalidCharacters);
 </script>
 </body>
 </html>
