@@ -14,7 +14,8 @@ router.post('/reservaActualizar',userController.actualizarReserva);
 router.post('/reporteGuardia',userController.reporteGuardia);
 router.post('/reservaGuardia',userController.reservaGuardia);
 router.post('/eliminarReservaGuardia',userController.eliminarReservaGuardia);
-
+router.post('/cambiosvehiculo',userController.actualizarVehiculo);
+router.post('/eliminarvehiculos',userController.eliminarVehiculo);
 //GET
 router.get('/vehiculos',userController.vehiculos);
 router.get('/selectReserva',userController.selectReserva);

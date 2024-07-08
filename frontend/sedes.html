@@ -367,6 +367,26 @@
             border-top: 1px solid #ccc;
             margin: 10px 0;
         }
+        .edit-button{
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #fff;
+            color: #0056b3;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .delete-button{
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            background-color: #ff4d4d;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
         /* Estilos CSS para el menú lateral */
     </style>
 </head>
@@ -388,6 +408,7 @@
         <li><strong>Correo:</strong> <span id="usuario-correo"></span></li>
         <button class="button-menu" id="misReservas" onclick="selectReservasReportes(this.id)">Mis Reservas</button>
         <button class="button-menu" id="misReportes" onclick="selectReservasReportes(this.id)">Mis Reportes</button>
+        <button class="button-menu" id="misvehiculos" onclick="selectReservasReportes(this.id)">Mis vehiculos</button>
         <button class="button-menu" id="cierresesion" onclick="cerrarSesion()">Cerrar sesión</button>
     </div> 
     
@@ -534,7 +555,6 @@
             contentType: 'application/json',
             success: function(response) {
                 console.log('Datos enviados exitosamente');
-                // Construir el HTML del modal con los datos del reporte
                 const reporteHTML = response.map(reporte => `
                     <div class="reporte-info">
                         <div class="reservation-container">
@@ -561,11 +581,127 @@
                 console.error('Error al enviar los datos: ', error);
             }
         });
-    } else {
-        console.log("Ningún Botón Seleccionado");
+    } else if (buttonId === "misvehiculos") {
+    $.ajax({
+        type: 'GET',
+        url: `/usuarios/vehiculos?usuarioId=${usuarioId}`,
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Datos de vehículos recibidos exitosamente');
+            const vehiculosHTML = response.map(vehiculo => `
+                <div class="vehiculo-info" data-id="${vehiculo.id_vehiculo}">
+                    <p><strong>ID:</strong> <span>${vehiculo.id_vehiculo}</span></p>
+                    <p><strong>Modelo:</strong> <span class="editable" data-key="modelo">${vehiculo.modelo}</span></p>
+                    <p><strong>Color:</strong> <span class="editable" data-key="color">${vehiculo.color}</span></p>
+                    <p><strong>Patente:</strong> <span class="editable" data-key="patente">${vehiculo.patente}</span></p>
+                    <button class="edit-button" onclick="edicionveh(this)">Modificar</button>
+                    <button class="delete-button" onclick="eliminarVehiculo('${vehiculo.patente}')">Eliminar</button>
+                    <hr>
+                </div>
+            `).join('');
+
+            Swal.fire({
+                title: 'Mis Vehículos',
+                html: vehiculosHTML,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Retroceder',
+                customClass: {
+                    confirmButton: 'button-confirm-class',
+                    cancelButton: 'button-cancel-class',
+                    popup: 'modal-class'
+                }
+            });
+        },
+        error: function(error) {
+            console.error('Error al obtener los datos de los vehículos: ', error);
+        }
+    });
+} else {
+    console.log('ningún botón seleccionado');
+}
     }
+
+function edicionveh(button) {
+    const vehicleInfo = button.parentElement;
+    const spans = vehicleInfo.querySelectorAll('.editable');
+    spans.forEach(span => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = span.innerText;
+        input.setAttribute('data-key', span.getAttribute('data-key'));
+        span.parentNode.replaceChild(input, span);
+    });
+    button.innerText = 'Guardar';
+    button.onclick = function() { Guardarcambiosveh(button); };
 }
 
+function Guardarcambiosveh(button) {
+    
+    const usuarioId = localStorage.getItem("usuarioId");
+    const vehicleInfo = button.parentElement;
+    const inputs = vehicleInfo.querySelectorAll('input');
+    const updatedVehicle = {};
+
+    // Obtener el id_vehiculo del atributo data-id
+    updatedVehicle.id_vehiculo = vehicleInfo.getAttribute('data-id');
+
+    inputs.forEach(input => {
+        updatedVehicle[input.getAttribute('data-key')] = input.value;
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: `/usuarios/cambiosvehiculo?usuarioId=${usuarioId}`,
+        data: JSON.stringify(updatedVehicle),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Vehículo actualizado exitosamente');
+            inputs.forEach(input => {
+                const span = document.createElement('span');
+                span.className = 'editable';
+                span.setAttribute('data-key', input.getAttribute('data-key'));
+                span.innerText = input.value;
+                input.parentNode.replaceChild(span, input);
+            });
+            button.innerText = 'Modificar';
+            button.onclick = function() { edicionveh(button); };
+        },
+        error: function(error) {
+            console.error('Error al actualizar el vehículo: ', error);
+        }
+    });
+}
+
+function eliminarVehiculo(patente) {
+    $.ajax({
+        type: 'POST',
+        url: `/usuarios/eliminarvehiculos`,
+        data: JSON.stringify({ patente: patente }),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Vehículo eliminado exitosamente');
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Vehículo eliminado exitosamente',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Recargar la lista de vehículos
+                location.reload();
+            });
+        },
+        error: function(error) {
+            console.error('Error al eliminar el vehículo: ', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo eliminar el vehículo',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+}
 function deleteReservation(patente, idEspacio) {
     const usuarioId = localStorage.getItem("usuarioId");
     Swal.fire({
@@ -644,15 +780,43 @@ function deleteReservation(patente, idEspacio) {
                 
                 
                 window.location.href = "iniciosesion.html";
-
+                history.pushState(null, null, window.location.href);
+                window.onpopstate = function () {
+                    history.go(1);
+                };
             }
         });
     }
 
-    history.pushState(null, null, window.location.href);
-                window.onpopstate = function () {
-                    history.go(1);
-                };
+    window.addEventListener('popstate', function(event) {
+            Swal.fire({
+                title: '¿Quieres cerrar sesión?',
+                text: "Serás redirigido a la página de inicio de sesión.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cerrar sesión'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Limpiar el localStorage
+                    localStorage.clear();
+                    // Redirigir a la página de inicio de sesión
+                    window.location.href = 'iniciosesion.html';
+                } else {
+                    // Añadir una nueva entrada al historial para evitar cerrar la página
+                    history.pushState(null, null, location.href);
+                }
+            });
+        });
+
+        // Evitar el retroceso al cargar la página
+        history.pushState(null, null, location.href);
+
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = 'iniciosesion.html';
+        }
 </script>
 
 </body>

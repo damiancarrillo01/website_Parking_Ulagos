@@ -2,21 +2,16 @@
 const { pool } = require("../config/database");
 
 exports.registroUsuario = async (req, res) => {
-  const { nombre, apellido, correo, contraseña, confirmarContraseña } =
-    req.body;
+  const { nombre, apellido, correo, contraseña, confirmarContraseña } = req.body;
   let tipoUsuario;
 
   if (correo.endsWith("@alumnos.ulagos.cl")) {
     tipoUsuario = "Estudiante";
   } else if (correo.endsWith("@ulagos.cl")) {
     tipoUsuario = "Docente";
-  }else {
-    return res
-      .status(400)
-      .send("El correo electrónico debe ser de la Universidad de Los Lagos");
+  } else {
+    return res.status(400).json({ error: "El correo electrónico debe ser de la Universidad de Los Lagos" });
   }
-
-  console.log("TipoUsuario:", tipoUsuario);
 
   try {
     const correoExistente = await pool.query(
@@ -25,19 +20,15 @@ exports.registroUsuario = async (req, res) => {
     );
 
     if (correoExistente.rowCount > 0) {
-      return res.status(400).send("correo en uso");
+      return res.status(400).json({ error: "El correo ya está en uso" });
     }
 
     const contraseñaRegex = /^(?=.*[A-Z])(?=.*\W).{10,}$/;
 
     if (!contraseñaRegex.test(contraseña)) {
-      return res
-        .status(400)
-        .send(
-          "La contraseña debe tener al menos una letra mayúscula, un símbolo y un mínimo de 10 caracteres."
-        );
+      return res.status(400).json({ error: "Tu contraseña debe tener 10 caracteres, una mayúscula y un símbolo.." });
     } else if (contraseña !== confirmarContraseña) {
-      return res.status(400).send("Las contraseñas no coinciden");
+      return res.status(400).json({ error: "Las contraseñas no coinciden" });
     }
 
     const result = await pool.query(
@@ -48,7 +39,7 @@ exports.registroUsuario = async (req, res) => {
     res.redirect("/");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error procesando los datos");
+    res.status(500).json({ error: "Error procesando los datos" });
   }
 };
 
@@ -63,46 +54,57 @@ exports.inicioSesionUsuario = async (req, res) => {
   console.log("Correo:", correo);
   console.log("Contraseña:", contraseña);
 
+  // Verificar que el correo sea institucional
+  if (!correo.endsWith("@alumnos.ulagos.cl") && 
+      !correo.endsWith("@ulagos.cl") && 
+      !correo.endsWith("@guardias.ulagos.cl") && 
+      !correo.endsWith("@admin.ulagos.cl")) {
+    return res.status(400).json({ error: "Correo no es institucional." });
+  }
+
   try {
     let result;
     let tipoUsuario;
     let usuarioId;
     let nombre;
 
-    // Verificar si el correo existe en la tabla Usuarios
-    result = await pool.query(
-      "SELECT id_usuario, CONCAT(nombre, ' ', apellido) AS nombre_completo, tipo_usuario FROM Usuarios WHERE correo = $1",
-      [correo]
-    );
-
-    // Si no hay resultados, el correo no existe en la tabla Usuarios
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: "El usuario no existe" });
-    }
-
-    // Si el correo existe, verificar la contraseña
-    const usuario = result.rows[0];
-    if (correo.endsWith("@guardias.ulagos.cl") || correo.endsWith("@admin.ulagos.cl")) {
+    // Verificar si el correo existe en la tabla Usuarios o Guardias
+    if (correo.endsWith("@alumnos.ulagos.cl") || correo.endsWith("@ulagos.cl") || correo.endsWith("@admin.ulagos.cl")) {
       result = await pool.query(
-        "SELECT id_guardia, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Guardias WHERE correo = $1 AND contraseña = $2",
-        [correo, contraseña]
+        "SELECT id_usuario, correo, contraseña, tipo_usuario, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Usuarios WHERE correo = $1",
+        [correo]
       );
-    } else {
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: "El usuario no existe" });
+      }
+
+      // Verificar la contraseña
+      if (result.rows[0].contraseña !== contraseña) {
+        return res.status(400).json({ error: "Contraseña incorrecta." });
+      }
+
+      usuarioId = result.rows[0].id_usuario;
+      tipoUsuario = result.rows[0].tipo_usuario;
+      nombre = result.rows[0].nombre_completo;
+
+    } else if (correo.endsWith("@guardias.ulagos.cl")) {
       result = await pool.query(
-        "SELECT id_usuario, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Usuarios WHERE correo = $1 AND contraseña = $2",
-        [correo, contraseña]
+        "SELECT id_guardia, correo, contraseña, CONCAT(nombre, ' ', apellido) AS nombre_completo FROM Guardias WHERE correo = $1",
+        [correo]
       );
-    }
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: "El usuario no existe" });
+      }
 
-    // Si no hay resultados, la contraseña es incorrecta
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: "Esa combinación de correo electrónico y contraseña es incorrecta." });
-    }
+      // Verificar la contraseña
+      if (result.rows[0].contraseña !== contraseña) {
+        return res.status(400).json({ error: "Contraseña incorrecta." });
+      }
 
-    // Obtener los datos del usuario
-    usuarioId = usuario.id_usuario || result.rows[0].id_guardia;
-    tipoUsuario = usuario.tipo_usuario || (correo.endsWith("@guardias.ulagos.cl") ? "guardia" : "admin");
-    nombre = result.rows[0].nombre_completo;
+      usuarioId = result.rows[0].id_guardia;
+      tipoUsuario = "guardia"; // Tipo de usuario hardcoded para guardia
+      nombre = result.rows[0].nombre_completo;
+    }
 
     console.log("ID de Usuario:", usuarioId);
     console.log("Tipo de Usuario:", tipoUsuario);
@@ -115,6 +117,7 @@ exports.inicioSesionUsuario = async (req, res) => {
     res.status(500).json({ error: "Error procesando los datos" });
   }
 };
+
 
 exports.sedes = async (req, res) => {
   const { buttonId } = req.body; // Obtener el idboton del cuerpo de la solicitud
@@ -191,7 +194,7 @@ exports.vehiculos = async (req, res) => {
   try {
     // Consulta para obtener los vehículos del usuario
     const result = await pool.query(
-      "SELECT p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v JOIN poseer_vehiculo p ON p.patente = v.patente WHERE p.id_usuario = $1",
+      "SELECT v.id_vehiculo,p.patente, v.tipo_vehiculo, v.color, v.modelo, v.tamaño FROM Vehiculo v JOIN poseer_vehiculo p ON p.patente = v.patente WHERE p.id_usuario = $1",
       [usuarioId]
     );
 
@@ -200,6 +203,67 @@ exports.vehiculos = async (req, res) => {
   } catch (err) {
     console.error("Error al obtener los vehículos:", err);
     res.status(500).send("Error al obtener los vehículos");
+  }
+};
+
+exports.actualizarVehiculo = async (req, res) => {
+  const { usuarioId, id_vehiculo, patente, modelo, color } = req.body;
+  console.log('tu id_vehiculo', id_vehiculo);
+  console.log('tu patente', patente);
+  console.log('tu modelo', modelo);
+  console.log('tu color', color);
+
+  // Verifica si los datos requeridos están presentes
+  if (!id_vehiculo || !patente || !modelo || !color) {
+    return res.status(400).send("Datos incompletos");
+  }
+
+  try {
+    
+    // Consulta para actualizar el vehículo en la base de datos
+    const resultVehiculo = await pool.query(
+      "UPDATE Vehiculo SET modelo = $1, color = $2 WHERE patente = $3",
+      [modelo, color, patente]
+    );
+
+    console.log('Filas afectadas en Vehiculo:', resultVehiculo.rowCount);
+
+    res.send("Vehículo actualizado exitosamente");
+  } catch (err) {
+    console.error("Error al actualizar el vehículo:", err);
+    res.status(500).send("Error al actualizar el vehículo");
+  }
+};
+exports.eliminarVehiculo = async (req, res) => {
+  const { patente } = req.body;
+  
+  console.log('tupatente:', patente);
+
+  // Verifica si se proporcionó la patente
+  if (!patente) {
+    return res.status(400).send("Patente no proporcionada");
+  }
+
+  try {
+    const patenteres = await pool.query(
+      "SELECT Patente FROM reservas WHERE patente = $1",
+      [patente]
+    );
+
+    // Verificar si la patente permanece en reservas
+    if (patenteres.rows.length > 0) {
+      return res.status(400).send("Esta patente permanece en reserva");
+    }
+
+    // Consulta para eliminar el vehículo
+    await pool.query("DELETE FROM poseer_vehiculo WHERE patente = $1", [patente]);
+    await pool.query("DELETE FROM Vehiculo WHERE patente = $1", [patente]);
+
+    console.log(`Vehículo con patente ${patente} eliminado`);
+    res.status(200).send("Vehículo eliminado exitosamente");
+  } catch (err) {
+    console.error("Error al eliminar el vehículo:", err);
+    res.status(500).send("Error al eliminar el vehículo");
   }
 };
 exports.reserva = async (req, res) => {
