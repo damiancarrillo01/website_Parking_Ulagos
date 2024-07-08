@@ -80,7 +80,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
       // Verificar la contraseña
       if (result.rows[0].contraseña !== contraseña) {
-        return res.status(400).json({ error: "Contraseña incorrecta." });
+        return res.status(400).json({ error: "Combinacion de correo y contraseña es incorrecta." });
       }
 
       usuarioId = result.rows[0].id_usuario;
@@ -98,7 +98,7 @@ exports.inicioSesionUsuario = async (req, res) => {
 
       // Verificar la contraseña
       if (result.rows[0].contraseña !== contraseña) {
-        return res.status(400).json({ error: "Contraseña incorrecta." });
+        return res.status(400).json({ error: "Combinacion de correo y contraseña es incorrecta." });
       }
 
       usuarioId = result.rows[0].id_guardia;
