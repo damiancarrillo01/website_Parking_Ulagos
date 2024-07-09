@@ -477,10 +477,13 @@ exports.selectReserva = async (req, res) => {
   }
 };
 exports.selectGuardia = async (req, res) => {
-  const id_usuario = global.usuarioId;
-  if (!id_usuario) {
+  const { usuarioId } = req.query;
+
+
+  if (!usuarioId) {
     return res.status(400).json({ error: "Usuario no autenticado" });
   }
+
   try {
     const selectGuardia = await pool.query(
       "SELECT g.id_guardia, e.nombre_edificio, s.nombre_sede " +
@@ -488,8 +491,9 @@ exports.selectGuardia = async (req, res) => {
         "JOIN edificios e ON g.id_edificio = e.id_edificio " +
         "JOIN sedes s ON e.id_sede = s.id_sede " +
         "WHERE g.id_guardia = $1;",
-      [id_usuario]
+      [usuarioId]
     );
+
     if (selectGuardia.rows.length > 0) {
       const guardiaReporte = selectGuardia.rows[0];
       res.status(200).json({ guardiaReporte });
@@ -503,6 +507,7 @@ exports.selectGuardia = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
 exports.reporteGuardia = async (req, res) => {
   const { patente, reporte, id_espacio,id_usuario } = req.body;
   // Convertir id_espacio a entero
